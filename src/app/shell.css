@@ -9,9 +9,12 @@
   color:var(--ink-3);font-size:10.5px;font-weight:800;transition:.16s;position:relative}
 .tabbar__item span{letter-spacing:-.02em}
 .tabbar__item.is-active{color:var(--ink)}
-.tabbar__item.is-active::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:26px;height:3px;border-radius:0 0 3px 3px;background:var(--brand)}
-.tabbar__item.is-active svg{filter:drop-shadow(0 0 8px rgba(236,72,153,.6));color:#c9a9ff}
+.tabbar__ic{display:grid;place-items:center;width:44px;height:28px;border-radius:99px;
+  transition:background .22s cubic-bezier(.34,1.4,.5,1),transform .22s cubic-bezier(.34,1.4,.5,1),box-shadow .22s}
+.tabbar__item.is-active .tabbar__ic{color:#fff;transform:translateY(-1px);
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  box-shadow:0 6px 18px rgba(124,58,237,.45),inset 0 1px 0 rgba(255,255,255,.35)}
+.tabbar__item.is-active .tabbar__lb{color:var(--brand2)}
 
 /* screen container */
 .screen{flex:1;overflow-y:auto;padding:var(--sp-4) var(--sp-4) var(--sp-6);

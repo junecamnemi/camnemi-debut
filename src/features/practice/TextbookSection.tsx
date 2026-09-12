@@ -21,7 +21,7 @@ function useBook(file: string, onLoad: (units: BookUnit[]) => void) {
   }, [file]);
 }
 
-/** 훈련 → 교재 (TOPIK 사이트에서 만든 샛별 한국어 1A~6B) */
+/** 훈련 → 교재 (최신 Glowsis Korean 1A~6B — GLOWSIS STORY / GLOW POINT / TOPIK TYPE) */
 export function TextbookSection() {
   const [levelIdx, setLevelIdx] = useState(0);
   const [units, setUnits] = useState<BookUnit[]>([]);
@@ -65,7 +65,7 @@ export function TextbookSection() {
       {/* 단원 목록 */}
       <div className="block">
         <div className="block__h">
-          <span className="block__t">샛별 한국어 {lvl.level}</span>
+          <span className="block__t">Glowsis Korean {lvl.level}</span>
           <span className="block__more">{lvl.units.length} 단원</span>
         </div>
         {lvl.units.map((u, i) => (
