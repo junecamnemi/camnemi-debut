@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { JamoItem } from '../../../types/game';
+import { speak } from '../../../services/tts';
 
 interface Props {
   stage: 'cons' | 'vow';
@@ -18,12 +19,7 @@ export function JamoLesson({ stage, consonants, vowels }: Props) {
   function play(j: string, r: string) {
     setPlayed(j);
     setMsg(`🔊 ${j} — 소리 [${r}]`);
-    try {
-      const u = new SpeechSynthesisUtterance(j);
-      u.lang = 'ko-KR';
-      u.rate = 0.75;
-      speechSynthesis.speak(u);
-    } catch { /* TTS 미지원 환경 무시 */ }
+    void speak(j, { speed: -2 });  // CLOVA (자모는 조금 천천히)
   }
 
   return (

@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import type { WriteTask } from '../../../types/game';
+import { speak } from '../../../services/tts';
 
 interface Props {
   task: WriteTask;
@@ -77,16 +78,14 @@ export function WritingPractice({ task, charIdx, onCharDone }: Props) {
           ? `🎉 최고예요! "${task.word}" 다 썼어요!`
           : `✅ 잘했어요! "${target}" 완벽해요!`,
       });
-      speak('잘했어요');
+      void speak('잘했어요');
       onCharDone(isLast);
     } else {
       setFb({ ok: false, msg: '아직 조금 비어 있어요. 점선 글자를 따라 써보세요 ✍️' });
     }
   }
 
-  function speak(t: string) {
-    try { const u = new SpeechSynthesisUtterance(t); u.lang = 'ko-KR'; speechSynthesis.speak(u); } catch { /* noop */ }
-  }
+
 
   return (
     <div className="card dlg">

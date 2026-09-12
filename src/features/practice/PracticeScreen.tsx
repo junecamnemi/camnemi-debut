@@ -3,6 +3,7 @@ import { PRACTICE, KIND_LABEL, KIND_ICON, type PracticeKind } from '../../conten
 import { Icon } from '../../components/Icon';
 import { HeroCarousel } from '../../components/HeroCarousel';
 import { TextbookSection } from './TextbookSection';
+import { speakScript } from '../../services/tts';
 
 /** 훈련 — 문제풀이 연습 + 교재 */
 export function PracticeScreen() {
@@ -49,7 +50,7 @@ function PracticeSection() {
   function next() { setPicked(null); setIdx((i) => i + 1); }
   function speak() {
     if (!q?.audio) return;
-    try { const u = new SpeechSynthesisUtterance(q.audio); u.lang = 'ko-KR'; u.rate = .92; speechSynthesis.speak(u); } catch { /* noop */ }
+    void speakScript(q.audio);  // CLOVA TTS
   }
 
   const kinds: PracticeKind[] = ['read', 'listen', 'vocab'];
