@@ -1,5 +1,5 @@
 /* ══ EP.1 — clean stage UI (v2 polish) ══ */
-.ep{display:flex;flex-direction:column;min-height:100%;flex:1}
+.ep{display:flex;flex-direction:column;flex:1;min-height:0;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 
 /* scene transition */
 .scene{animation:sceneIn .38s cubic-bezier(.22,1,.36,1)}
