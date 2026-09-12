@@ -14,8 +14,8 @@ export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' |
       <div className="home__bgwrap">
         <video
           className="home__bg"
-          src="assets/carousel/aran_sing_v.mp4"
-          poster="assets/carousel/aran_sing_v.jpg"
+          src="assets/carousel/aran_profile_v.mp4"
+          poster="assets/carousel/aran_profile_v.jpg"
           autoPlay loop muted playsInline preload="auto"
         />
         <div className="home__scrim" />
