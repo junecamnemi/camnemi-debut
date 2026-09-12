@@ -100,7 +100,11 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
       <Hud epLabel={phase === 'reward' ? 'EP.1 클리어' : `EP.${ep.no} ${ep.title}`} careerLabel={label} progress={pct} />
 
       <div className="ep__body">
-        <div className="scene" key={`${phase}-${dlgIdx}-${combineIdx}-${charIdx}-${taskIdx}`}
+        {/* key 는 phase 만 사용한다. 대사(dlgIdx)·문제(combineIdx)·글자(charIdx) 진행은
+            서브트리를 재마운트하지 않고 prop 변화로만 반영 → <video> 파괴/재로드(깜빡임) 방지,
+            springIn 요동도 실제 단계 전환일 때만 재생된다. 각 하위 씬은 자체 useEffect 로
+            prop 변화 시 내부 상태를 초기화한다(CombineGame/WritingPractice). */}
+        <div className="scene" key={phase}
              style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)', flex: 1 }}>
           {phase === 'dlg' && <DialogueScene member={member} line={ep.dialogue[dlgIdx]} />}
           {phase === 'jamo' && <JamoLesson stage={jamoStage} consonants={ep.consonants} vowels={ep.vowels} />}
