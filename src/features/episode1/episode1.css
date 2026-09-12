@@ -135,6 +135,13 @@
   padding:8px 16px;font-size:12.5px;font-weight:700;transition:.15s}
 .chip:hover{border-color:var(--violet);color:var(--ink);background:rgba(124,58,237,.1)}
 
+/* 예명 장면 배경 */
+.naming__scene{position:relative;width:100%;aspect-ratio:16/9;border-radius:var(--r-md);overflow:hidden;
+  margin-bottom:-46px;border:1px solid var(--line)}
+.naming__scene img{width:100%;height:100%;object-fit:cover;animation:kenburns 16s ease-in-out infinite alternate}
+.naming__scene::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 30%,var(--bg-2) 100%)}
+
 /* ── reward ── */
 .reward{text-align:center;padding:var(--sp-6) var(--sp-4)}
 .reward__pc{width:148px;border-radius:var(--r-md);box-shadow:var(--sh-lg);
@@ -152,6 +159,42 @@
 .reward__item:nth-child(3){animation-delay:.19s}.reward__item:nth-child(4){animation-delay:.26s}
 .reward__ic{width:27px;height:27px;border-radius:9px;background:var(--brand);display:grid;place-items:center;
   font-size:14px;flex:none}
+
+/* ── EP.1 애니메이션 장면 ── */
+.char--scene{flex-direction:column}
+.sceneframe{position:relative;z-index:1;width:min(88%,330px);aspect-ratio:11/20;max-height:400px;
+  border-radius:20px;overflow:hidden;border:1px solid var(--line-strong);
+  box-shadow:0 22px 46px rgba(0,0,0,.6);background:var(--bg-2);
+  -webkit-mask-image:linear-gradient(180deg,#000 86%,transparent 100%);
+          mask-image:linear-gradient(180deg,#000 86%,transparent 100%)}
+.sceneframe__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  animation:kenburns 14s ease-in-out infinite alternate;will-change:transform}
+@keyframes kenburns{
+  0%{transform:scale(1.04) translate(0,0)}
+  100%{transform:scale(1.16) translate(-2%,-3%)}
+}
+.sceneframe__vig{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 80% at 50% 20%,transparent 40%,rgba(11,7,20,.55) 100%)}
+/* 부드럽게 흐르는 빛 */
+.sceneframe__light{position:absolute;inset:-30%;pointer-events:none;
+  background:linear-gradient(105deg,transparent 42%,rgba(255,240,220,.20) 50%,transparent 58%);
+  background-size:250% 100%;animation:shine 7s ease-in-out infinite}
+/* 떠다니는 빛 입자 */
+.sceneframe .p{position:absolute;width:5px;height:5px;border-radius:50%;background:#ffe9c9;
+  box-shadow:0 0 10px 2px rgba(255,220,170,.7);opacity:0;pointer-events:none}
+.sceneframe .p1{left:22%;bottom:8%;animation:mote 7s ease-in infinite}
+.sceneframe .p2{left:64%;bottom:14%;animation:mote 9s ease-in infinite .8s}
+.sceneframe .p3{left:41%;bottom:6%;animation:mote 8s ease-in infinite 2.2s}
+.sceneframe .p4{left:80%;bottom:10%;animation:mote 10s ease-in infinite 3.4s}
+@keyframes mote{
+  0%{transform:translateY(0) scale(.6);opacity:0}
+  18%{opacity:.9}
+  70%{opacity:.55}
+  100%{transform:translateY(-150px) translateX(14px) scale(1.15);opacity:0}
+}
+@media (prefers-reduced-motion: reduce){
+  .sceneframe__img,.sceneframe__light,.sceneframe .p{animation:none}
+}
 
 /* ── controls ── */
 .ctl{position:sticky;bottom:0;display:flex;gap:var(--sp-3);padding:var(--sp-4);

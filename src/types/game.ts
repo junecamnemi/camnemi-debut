@@ -17,6 +17,8 @@ export interface DialogueLine {
   ko: string;
   en?: string;
   tip?: string;
+  /** EP.1 애니 장면 이미지 (선택) */
+  scene?: string;
 }
 
 export interface JamoItem {

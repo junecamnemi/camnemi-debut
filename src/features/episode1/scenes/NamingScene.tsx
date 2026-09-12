@@ -13,6 +13,9 @@ export function NamingScene({ member, value, onChange }: Props) {
   const valid = value.trim().length >= 2;
   return (
     <div className="card naming">
+      <div className="naming__scene">
+        <img src="assets/ep1/ep1_naming.webp" alt="" />
+      </div>
       <img className="naming__av" src={member.portrait} alt={member.ko} />
       <h3>이 아이돌의 예명을 지어주세요</h3>
       <div className="naming__sub">직접 지은 이름으로 데뷔해요<br />Give your idol a stage name</div>

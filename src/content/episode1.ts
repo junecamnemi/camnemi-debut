@@ -9,11 +9,15 @@ export const EPISODE1: Episode = {
   member: 'aran',
 
   dialogue: [
-    { who: '아란', ko: '…여기가 글로시스 기획사예요?', en: '…Is this the Glowsis agency?' },
-    { who: '나 · 대표', ko: '네, 맞아요. 오늘부터 우리 같이 시작해요!', en: "Yes. Let's start together from today!" },
-    { who: '아란', ko: '저, 한국어를 잘 못해요… 괜찮아요?', en: "I'm not good at Korean… is that okay?" },
+    { who: '아란', ko: '…여기가 글로시스 기획사예요?', en: '…Is this the Glowsis agency?',
+      scene: 'assets/ep1/ep1_arrival.webp' },
+    { who: '나 · 대표', ko: '네, 맞아요. 오늘부터 우리 같이 시작해요!', en: "Yes. Let's start together from today!",
+      scene: 'assets/ep1/ep1_arrival.webp' },
+    { who: '아란', ko: '저, 한국어를 잘 못해요… 괜찮아요?', en: "I'm not good at Korean… is that okay?",
+      scene: 'assets/ep1/ep1_intro.webp' },
     { who: '나 · 대표', ko: '괜찮아요. 첫 걸음은 한글이에요. 같이 배워요!', en: "It's okay. The first step is Hangul. Let's learn together!",
-      tip: '오늘의 트레이닝 — 한글 자음·모음 → 조합 → 쓰기 → 예명 짓기' },
+      tip: '오늘의 트레이닝 — 한글 자음·모음 → 조합 → 쓰기 → 예명 짓기',
+      scene: 'assets/ep1/ep1_study.webp' },
   ],
 
   consonants: [
