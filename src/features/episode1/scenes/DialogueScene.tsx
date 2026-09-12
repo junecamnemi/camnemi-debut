@@ -17,7 +17,13 @@ export function DialogueScene({ member, line }: Props) {
       <div className="char char--scene">
         <div className="char__halo" />
 
-        {line.scene ? (
+        {line.sceneVideo ? (
+          <div className="sceneframe" key={line.sceneVideo}>
+            <video className="sceneframe__vid" src={line.sceneVideo} poster={line.scene}
+                   autoPlay loop muted playsInline preload="metadata" />
+            <div className="sceneframe__vig" />
+          </div>
+        ) : line.scene ? (
           <div className="sceneframe" key={line.scene}>
             <img className="sceneframe__img" src={line.scene} alt="" />
             <div className="sceneframe__light" />
