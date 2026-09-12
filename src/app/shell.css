@@ -244,9 +244,8 @@
 
 /* ── 로그인 ── */
 .login{position:relative;flex:1;display:flex;flex-direction:column;overflow:hidden}
-.login__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
-.login__ov{position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(11,7,20,.5) 0%,rgba(11,7,20,.86) 46%,rgba(11,7,20,.98) 100%)}
+.login__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:1;filter:brightness(1.3)}
+.login__ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,7,20,.16) 0%,rgba(11,7,20,.10) 50%,rgba(11,7,20,.62) 100%)}
 .login__in{position:relative;z-index:1;display:flex;flex-direction:column;flex:1;
   padding:64px 22px 26px;justify-content:center}
 .login__brand{font-size:30px;font-weight:900;letter-spacing:-.03em;
