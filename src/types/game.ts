@@ -50,6 +50,24 @@ export interface EpisodeReward {
   label: string;
 }
 
+
+/** EP.2 자기소개 표현 카드 */
+export interface PhraseItem {
+  ko: string;      // 한국어 문장
+  rom: string;     // 로마자
+  en: string;      // 영어 뜻
+}
+
+/** 문법 포인트 */
+export interface GrammarNote {
+  title: string;   // -이에요 / -예요
+  body: string;    // 설명 (en)
+  ex: string[];    // 예문
+}
+
+/** 매너/관계 미니게임 문항 (CombineQuestion 재사용) */
+export type MannerQuestion = CombineQuestion;
+
 /** 자모 학습 단계 */
 export type JamoStage = 'cons' | 'vow' | 'dcons' | 'dvow';
 
@@ -68,8 +86,11 @@ export interface Episode {
   subtitle: string;
   member: MemberId;
   dialogue: DialogueLine[];
-  consonants: JamoItem[];      // 기본 자음 14
-  vowels: JamoItem[];          // 기본 모음 10
+  consonants?: JamoItem[];     // 기본 자음 14 (EP.1)
+  vowels?: JamoItem[];         // 기본 모음 10 (EP.1)
+  phrases?: PhraseItem[];      // 자기소개 표현 (EP.2+)
+  grammar?: GrammarNote[];     // 문법 포인트 (EP.2+)
+  manners?: MannerQuestion[];  // 매너/관계 미니게임 (EP.2+)
   doubleCons?: JamoItem[];     // 쌍자음 5
   complexVow?: JamoItem[];     // 복합모음 11
   finals?: FinalWord[];        // 받침 예시

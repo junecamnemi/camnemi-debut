@@ -99,6 +99,9 @@ const DICT = {
     write_great: 'Nice!',
     write_done: 'You did it!',
     reward_title: 'Unlocked',
+    self_intro: 'Self-introduction phrases',
+    tap_to_hear: 'Tap a card to hear it',
+    grammar: 'Grammar',
     // hero carousel scene labels
     scene_home: 'Home', scene_song: 'Song', scene_stage: 'Stage', scene_rank: 'Rank', scene_set: 'Settings',
     scene_c_song: 'Concert · Song', scene_c_stage: 'Concert · Stage', scene_c_rank: 'Concert · Rank', scene_c_set: 'Concert · Settings',

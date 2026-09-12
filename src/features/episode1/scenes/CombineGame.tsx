@@ -26,13 +26,15 @@ export function CombineGame({ question, onAnswered }: Props) {
         <small>{question.q}</small>
       </div>
 
-      <div className="combo">
-        <div className="combo__tile">{question.a}</div>
-        <span className="combo__op">+</span>
-        <div className="combo__tile">{question.b}</div>
-        <span className="combo__op">=</span>
-        <div className="combo__tile combo__tile--res">{picked ? question.answer : '?'}</div>
-      </div>
+      {(question.a || question.b) && (
+        <div className="combo">
+          <div className="combo__tile">{question.a}</div>
+          <span className="combo__op">+</span>
+          <div className="combo__tile">{question.b}</div>
+          <span className="combo__op">=</span>
+          <div className="combo__tile combo__tile--res">{picked ? question.answer : '?'}</div>
+        </div>
+      )}
 
       <div className="opts">
         {question.opts.map((opt, i) => {

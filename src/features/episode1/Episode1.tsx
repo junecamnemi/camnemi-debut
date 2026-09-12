@@ -62,7 +62,7 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
   const isLastCombine = combineIdx >= ep.combine.length - 1;
   const jamoIdx = JAMO_ORDER.indexOf(jamoStage);
   const jamoItems = (st: JamoStage) =>
-    st === 'cons' ? ep.consonants : st === 'vow' ? ep.vowels : st === 'dcons' ? (ep.doubleCons ?? []) : (ep.complexVow ?? []);
+    st === 'cons' ? (ep.consonants ?? []) : st === 'vow' ? (ep.vowels ?? []) : st === 'dcons' ? (ep.doubleCons ?? []) : (ep.complexVow ?? []);
 
   const canAdvance =
     phase === 'dlg' ? true
@@ -125,8 +125,8 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
           {phase === 'dlg' && <DialogueScene member={member} line={ep.dialogue[dlgIdx]} />}
           {phase === 'jamo' && (
             <JamoLesson
-              title={t(JAMO_UI[jamoStage].key)}
-              sub={`${JAMO_UI[jamoStage].en} · ${t('jamo_count')(jamoItems(jamoStage).length)}`}
+              title={t((JAMO_UI[jamoStage] ?? JAMO_UI.cons).key)}
+              sub={`${(JAMO_UI[jamoStage] ?? JAMO_UI.cons).en} · ${t('jamo_count')(jamoItems(jamoStage).length)}`}
               items={jamoItems(jamoStage)}
             />
           )}

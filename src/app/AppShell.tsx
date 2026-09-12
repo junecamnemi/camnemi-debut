@@ -9,6 +9,8 @@ import { MyScreen } from '../features/my/MyScreen';
 import { Episode1 } from '../features/episode1/Episode1';
 import { LoginScreen } from '../features/auth/LoginScreen';
 import { EPISODE1 } from '../content/episode1';
+import { EPISODE2 } from '../content/episode2';
+import { Episode2 } from '../features/episode2/Episode2';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../services/auth';
 import './shell.css';
@@ -23,7 +25,7 @@ export function AppShell() {
     try { return localStorage.getItem(GUEST_KEY) === '1'; } catch { return false; }
   });
   const [tab, setTab] = useState<TabKey>('home');
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState<0 | 1 | 2>(0);
 
   const authed = !!userId || guest;
 
@@ -46,14 +48,16 @@ export function AppShell() {
   }
 
   // 에피소드 플레이 중 → 전체화면 (탭바 숨김)
-  if (playing) {
+  if (playing !== 0) {
     return (
       <div className="shell">
         <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px 0' }}>
           <button className="btn btn--ghost" style={{ flex: '0 0 auto', padding: '10px 16px', fontSize: 13 }}
-                  onClick={() => setPlaying(false)}>← {t('back')}</button>
+                  onClick={() => setPlaying(0)}>← {t('back')}</button>
         </div>
-        <Episode1 ep={EPISODE1} userId={userId} />
+        {playing === 1
+          ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} />
+          : <Episode2 ep={EPISODE2} userId={userId ?? undefined} />}
       </div>
     );
   }
@@ -68,7 +72,7 @@ export function AppShell() {
     <div className="shell">
       {tab === 'home' && <HomeScreen onGo={(t) => setTab(t)} />}
       {tab === 'train' && <PracticeScreen />}
-      {tab === 'story' && <StoryScreen onReplay={() => setPlaying(true)} />}
+      {tab === 'story' && <StoryScreen onPlay={setPlaying} />}
       {tab === 'cards' && <CollectionScreen />}
       {tab === 'my' && <MyScreen onLogout={guest ? logout : logout} authed={!!userId} />}
 

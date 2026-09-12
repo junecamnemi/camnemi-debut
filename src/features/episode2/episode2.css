@@ -1,0 +1,18 @@
+/* ══ EP.2 — 자기소개 표현 + 문법 ══ */
+.phrase-wrap{display:flex;flex-direction:column;gap:var(--sp-3)}
+.plist{display:flex;flex-direction:column;gap:8px}
+.pcard2{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:12px 14px;cursor:pointer;transition:transform .16s cubic-bezier(.34,1.4,.5,1),border-color .16s}
+.pcard2:hover{border-color:var(--line-strong);transform:translateY(-2px)}
+.pcard2:active{transform:scale(.98)}
+.pcard2__ko{font-size:16px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.pcard2__rom{font-size:11px;color:var(--brand2);font-weight:700}
+.pcard2__en{font-size:11.5px;color:var(--ink-3);font-weight:600}
+.gnotes{display:flex;flex-direction:column;gap:8px}
+.gnote{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:var(--r-md);padding:11px 13px;cursor:pointer}
+.gnote.on{border-color:var(--brand2);background:rgba(124,58,237,.12)}
+.gnote__t{font-size:13px;font-weight:900;color:var(--ink)}
+.gnote__b{font-size:11.5px;color:var(--ink-2);margin-top:6px;line-height:1.5}
+.gnote__ex{font-size:12px;color:var(--brand2);font-weight:700;margin-top:5px}
+.naming__q{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:10px}

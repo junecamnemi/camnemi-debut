@@ -5,8 +5,8 @@ import { useI18n } from '../../i18n';
 interface Epi { no: number; title: string; desc: string; state: 'done' | 'now' | 'locked' }
 
 const EPISODES: Epi[] = [
-  { no: 1, title: 'First Step: Hangul', desc: 'Agency opens · Aran joins', state: 'now' },
-  { no: 2, title: 'Nice to Meet You', desc: 'Self-introduction', state: 'locked' },
+  { no: 1, title: 'First Step: Hangul', desc: 'Agency opens · Aran joins', state: 'done' },
+  { no: 2, title: 'Nice to Meet You', desc: 'Self-introduction · Chaea joins', state: 'now' },
   { no: 3, title: 'Our Schedule', desc: 'Time & dates', state: 'locked' },
   { no: 4, title: 'With a Senior Idol', desc: 'Manners & greetings', state: 'locked' },
   { no: 5, title: 'Stage Outfit', desc: 'Shopping', state: 'locked' },
@@ -24,7 +24,7 @@ const EPISODES: Epi[] = [
 ];
 
 /** Story — episode list (EP.1–16 to debut), 세로 영상 배경 위 콘텐츠 */
-export function StoryScreen({ onReplay }: { onReplay?: () => void }) {
+export function StoryScreen({ onPlay }: { onPlay?: (n: 1 | 2) => void }) {
   const { t } = useI18n();
   const done = EPISODES.filter((e) => e.state === 'done').length;
 
@@ -47,8 +47,10 @@ export function StoryScreen({ onReplay }: { onReplay?: () => void }) {
       }
     >
       <div className="screen">
-        {onReplay && (
-          <button className="btn btn--primary" onClick={onReplay}>{t('replay_ep')(1)}</button>
+        {onPlay && (
+          <button className="btn btn--primary" onClick={() => onPlay(2)}>
+            {EPISODES.find(e=>e.no===2)?.title} · Play
+          </button>
         )}
         <div className="block">
           {EPISODES.map((e) => (
