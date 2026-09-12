@@ -117,7 +117,7 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
 
   return (
     <div className="ep">
-      <Hud epLabel={phase === 'reward' ? t('ep1_clear') : `EP.${ep.no} ${ep.title}`} careerLabel={label} progress={pct} />
+      <Hud epLabel={phase === 'reward' ? t('ep1_clear') : `EP.${ep.no} ${t('ep1_title')}`} careerLabel={label} progress={pct} />
 
       <div className="ep__body">
         <div className="scene" key={phase}

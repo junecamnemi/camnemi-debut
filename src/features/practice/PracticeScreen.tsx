@@ -56,7 +56,7 @@ export function PracticeScreen() {
                 <button key={k} className="tile" onClick={() => { setKind(k); setQi(0); setPicked(null); }}>
                   <span className="tile__ic"><Icon name={KIND_ICON[k]} size={20} /></span>
                   <span><span className="tile__t">{t(kindKey[k])}</span>
-                    <span className="tile__d">{n} questions</span></span>
+                    <span className="tile__d">{t('questions_n')(n)}</span></span>
                   <Icon name="chev" size={18} />
                 </button>
               );
@@ -94,7 +94,7 @@ export function PracticeScreen() {
                   {picked === q.answer ? `✅ ${t('correct')}` : `💡 ${t('incorrect')}`} {q.explain}
                 </div>
                 <button className="btn btn--primary" onClick={nextQ}>
-                  {qi + 1 < list.length ? t('next') : 'Back to menu'}
+                  {qi + 1 < list.length ? t('next') : t('back_menu')}
                 </button>
               </>
             )}

@@ -5,7 +5,7 @@ export const EPISODE1: Episode = {
   id: 'ep01',
   no: 1,
   title: '첫 걸음, 한글',
-  subtitle: '기획사 글로시스 · 아란 영입',
+  subtitle: 'Glowsis Agency · Aran joins',
   member: 'aran',
 
   dialogue: [
@@ -16,7 +16,7 @@ export const EPISODE1: Episode = {
     { who: 'Aran', ko: '저, 한국어를 잘 못해요… 괜찮아요?', en: "I'm not good at Korean… is that okay?",
       scene: 'assets/ep1/ep1_intro.jpg', sceneVideo: 'assets/ep1/video/intro.mp4' },
     { who: 'Me · CEO', ko: '괜찮아요. 첫 걸음은 한글이에요. 같이 배워요!', en: "It's okay. The first step is Hangul. Let's learn together!",
-      tip: '오늘의 트레이닝 — 한글 자음·모음 → 조합 → 쓰기 → 예명 짓기',
+      tip: "Today's training — Hangul letters → combine → writing → stage name",
       scene: 'assets/ep1/ep1_study.jpg', sceneVideo: 'assets/ep1/video/study.mp4' },
   ],
 

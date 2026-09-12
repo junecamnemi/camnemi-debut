@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
+import { useI18n, type TKey } from '../i18n';
 
 /** TOPIK 앱과 동일한 아란 히어로 캐러셀 — 일상 5 + 콘서트 4 (수동 전환, 자동 아님) */
-interface Scene { k: string; label: string; src: string; poster: string; pos: string }
+interface Scene { k: string; labelKey: TKey; src: string; poster: string; pos: string }
 
 const BASE = 'assets/carousel/';
 /** 각 씬의 poster 는 해당 영상의 첫 프레임 → 전환 중에도 올바른 장면이 보인다
  *  (이전에는 프로필 사진을 poster 로 써서 전환 때 프로필이 튀어나왔다) */
 const SCENES: Scene[] = [
-  { k: 'home',    label: '홈',          src: BASE + 'aran_home.mp4',    poster: BASE + 'aran_home.jpg',    pos: 'center 32%' },
-  { k: 'book',    label: '노래',        src: BASE + 'aran_book.mp4',    poster: BASE + 'aran_book.jpg',    pos: 'center 40%' },
-  { k: 'daily',   label: '무대',        src: BASE + 'aran_daily.mp4',   poster: BASE + 'aran_daily.jpg',   pos: 'center 46%' },
-  { k: 'rank',    label: '랭크',        src: BASE + 'aran_rank.mp4',    poster: BASE + 'aran_rank.jpg',    pos: 'center 40%' },
-  { k: 'my',      label: '설정',        src: BASE + 'aran_my.mp4',      poster: BASE + 'aran_my.jpg',      pos: 'center 34%' },
-  { k: 'c_book',  label: '콘서트 · 노래', src: BASE + 'aran_c_book.mp4',  poster: BASE + 'aran_c_book.jpg',  pos: 'center 40%' },
-  { k: 'c_daily', label: '콘서트 · 무대', src: BASE + 'aran_c_daily.mp4', poster: BASE + 'aran_c_daily.jpg', pos: 'center 40%' },
-  { k: 'c_rank',  label: '콘서트 · 랭크', src: BASE + 'aran_c_rank.mp4',  poster: BASE + 'aran_c_rank.jpg',  pos: 'center 40%' },
-  { k: 'c_my',    label: '콘서트 · 설정', src: BASE + 'aran_c_my.mp4',    poster: BASE + 'aran_c_my.jpg',    pos: 'center 40%' },
+  { k: 'home',    labelKey: 'scene_home',          src: BASE + 'aran_home.mp4',    poster: BASE + 'aran_home.jpg',    pos: 'center 32%' },
+  { k: 'book',    labelKey: 'scene_song',        src: BASE + 'aran_book.mp4',    poster: BASE + 'aran_book.jpg',    pos: 'center 40%' },
+  { k: 'daily',   labelKey: 'scene_stage',        src: BASE + 'aran_daily.mp4',   poster: BASE + 'aran_daily.jpg',   pos: 'center 46%' },
+  { k: 'rank',    labelKey: 'scene_rank',        src: BASE + 'aran_rank.mp4',    poster: BASE + 'aran_rank.jpg',    pos: 'center 40%' },
+  { k: 'my',      labelKey: 'scene_set',        src: BASE + 'aran_my.mp4',      poster: BASE + 'aran_my.jpg',      pos: 'center 34%' },
+  { k: 'c_book',  labelKey: 'scene_c_song', src: BASE + 'aran_c_book.mp4',  poster: BASE + 'aran_c_book.jpg',  pos: 'center 40%' },
+  { k: 'c_daily', labelKey: 'scene_c_stage', src: BASE + 'aran_c_daily.mp4', poster: BASE + 'aran_c_daily.jpg', pos: 'center 40%' },
+  { k: 'c_rank',  labelKey: 'scene_c_rank', src: BASE + 'aran_c_rank.mp4',  poster: BASE + 'aran_c_rank.jpg',  pos: 'center 40%' },
+  { k: 'c_my',    labelKey: 'scene_c_set', src: BASE + 'aran_c_my.mp4',    poster: BASE + 'aran_c_my.jpg',    pos: 'center 40%' },
 ];
 
 const LS_KEY = 'camnemi_debut_hero_scene';
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export function HeroCarousel({ badge, title, subtitle, small }: Props) {
+  const { t } = useI18n();
   const [idx, setIdx] = useState(() => {
     try { const s = parseInt(localStorage.getItem(LS_KEY) || '0', 10); return s >= 0 && s < SCENES.length ? s : 0; }
     catch { return 0; }
@@ -73,11 +75,11 @@ export function HeroCarousel({ badge, title, subtitle, small }: Props) {
       <div className="hero__ov" />
 
       {/* 수동 전환 컨트롤 */}
-      <button className="hero__nav prev" onClick={() => go(-1)} aria-label="이전">‹</button>
-      <button className="hero__nav next" onClick={() => go(1)} aria-label="다음">›</button>
+      <button className="hero__nav prev" onClick={() => go(-1)} aria-label="Previous">‹</button>
+      <button className="hero__nav next" onClick={() => go(1)} aria-label="Next">›</button>
       <div className="hero__dots">
         {SCENES.map((s, i) => (
-          <button key={s.k} className={`hero__dot${i === idx ? ' on' : ''}`} onClick={() => jump(i)} aria-label={s.label} />
+          <button key={s.k} className={`hero__dot${i === idx ? ' on' : ''}`} onClick={() => jump(i)} aria-label={t(s.labelKey)} />
         ))}
       </div>
 
@@ -87,7 +89,7 @@ export function HeroCarousel({ badge, title, subtitle, small }: Props) {
         {subtitle && <p className="hero__sub">{subtitle}</p>}
       </div>
 
-      <span className="hero__scenelabel">{SCENES[idx].label}</span>
+      <span className="hero__scenelabel">{t(SCENES[idx].labelKey)}</span>
     </div>
   );
 }

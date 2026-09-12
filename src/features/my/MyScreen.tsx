@@ -8,6 +8,7 @@ import { useI18n, type Lang } from '../../i18n';
 export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?: boolean }) {
   const { t, lang, setLang } = useI18n();
   const m = MEMBERS[PLAYER.memberId];
+  const name = (lang === 'ko' ? m.ko : m.en);
   const p = PLAYER;
   const curIdx = CAREER.findIndex((c) => c.key === p.careerKey);
 
@@ -24,7 +25,7 @@ export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?:
       </div>
 
       <HeroCarousel small badge={t('my_profile')} title={`‘${p.stageName}’`}
-                    subtitle={`${m.ko} · ${t(CAREER[curIdx].labelKey)}`} />
+                    subtitle={`${name} · ${t(CAREER[curIdx].labelKey)}`} />
 
       
 
@@ -34,7 +35,7 @@ export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?:
           <img className="profile__av" src={m.portrait} alt={p.stageName} />
           <div className="profile__txt">
             <div className="profile__name">{p.stageName}</div>
-            <div className="profile__meta">{m.ko} · {m.role}</div>
+            <div className="profile__meta">{name} · {m.roleEn ?? m.role}</div>
             <div className="profile__badge">{t(CAREER[curIdx].labelKey)}</div>
           </div>
         </div>

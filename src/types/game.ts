@@ -3,6 +3,7 @@
 export type MemberId = 'aran' | 'chaea' | 'dahee' | 'roy';
 
 export interface Member {
+  roleEn?: string;   // English role
   id: MemberId;
   ko: string;
   en: string;

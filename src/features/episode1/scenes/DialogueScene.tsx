@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { DialogueLine, Member } from '../../../types/game';
+import { useI18n } from '../../../i18n';
 
 interface Props {
   member: Member;
@@ -84,6 +85,8 @@ function SceneMedia({ videoSrc, imgSrc }: { videoSrc?: string; imgSrc?: string }
  * 미디어 레이어는 대사 진행과 분리되어 안정적으로 유지되고, 장면이 바뀔 때만 크로스페이드된다.
  */
 export function DialogueScene({ member, line }: Props) {
+  const { lang } = useI18n();
+  const mname = lang === 'ko' ? member.ko : member.en;
   const halo = `var(${member.color})`;
   const hasScene = !!(line.sceneVideo || line.scene);
 
@@ -117,8 +120,8 @@ export function DialogueScene({ member, line }: Props) {
 
         <div className="char__tag">
           <span className="char__dot" />
-          <b>{member.ko}</b>
-          <i>{member.en} · {member.role}</i>
+          <b>{mname}</b>
+          <i>{member.en} · {member.roleEn ?? member.role}</i>
         </div>
       </div>
 

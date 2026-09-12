@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { TabBar, type TabKey } from '../components/TabBar';
+import { useI18n } from '../i18n';
 import { HomeScreen } from '../features/home/HomeScreen';
 import { PracticeScreen } from '../features/practice/PracticeScreen';
 import { StoryScreen } from '../features/story/StoryScreen';
@@ -16,6 +17,7 @@ const GUEST_KEY = 'camnemi_debut_guest';
 
 /** 앱 메인 프레임 — 로그인(Supabase) + 탭 네비게이션 + 화면 + 에피소드 실행 */
 export function AppShell() {
+  const { t } = useI18n();
   const { userId, loading } = useAuth();
   const [guest, setGuest] = useState(() => {
     try { return localStorage.getItem(GUEST_KEY) === '1'; } catch { return false; }
@@ -49,7 +51,7 @@ export function AppShell() {
       <div className="shell">
         <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px 0' }}>
           <button className="btn btn--ghost" style={{ flex: '0 0 auto', padding: '10px 16px', fontSize: 13 }}
-                  onClick={() => setPlaying(false)}>← 나가기</button>
+                  onClick={() => setPlaying(false)}>← {t('back')}</button>
         </div>
         <Episode1 ep={EPISODE1} userId={userId} />
       </div>
@@ -70,7 +72,7 @@ export function AppShell() {
         <>
           <StoryScreen />
           <div style={{ padding: '0 16px 16px' }}>
-            <button className="btn btn--primary" onClick={() => setPlaying(true)}>EP.1 다시 보기 / 플레이 →</button>
+            <button className="btn btn--primary" onClick={() => setPlaying(true)}>{t('replay_ep')(1)}</button>
           </div>
         </>
       )}

@@ -6,8 +6,9 @@ import { useI18n } from '../../i18n';
 
 /** Home — my idol + today's training + quick tiles */
 export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' | 'my') => void }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const m = MEMBERS[PLAYER.memberId];
+  const name = (lang === 'ko' ? m.ko : m.en);
 
   return (
     <>
@@ -28,7 +29,7 @@ export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' |
             <img className="profile__av" src={m.portrait} alt={PLAYER.stageName} />
             <div className="profile__txt">
               <div className="profile__name">{PLAYER.stageName}</div>
-              <div className="profile__meta">{m.ko} · {t(CAREER.find((c) => c.key === PLAYER.careerKey)!.labelKey)} · {PLAYER.careerPct}%</div>
+              <div className="profile__meta">{name} · {t(CAREER.find((c) => c.key === PLAYER.careerKey)!.labelKey)} · {PLAYER.careerPct}%</div>
             </div>
           </div>
         </div>
