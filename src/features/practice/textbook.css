@@ -1,0 +1,56 @@
+/* ══ 교재(책) 뷰어 — 플립 페이지 ══ */
+.tb2{display:flex;flex-direction:column;gap:var(--sp-3)}
+
+.tb2__bar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.tb2__back{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;
+  color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:7px 12px}
+.tb2__back svg{transform:rotate(180deg)}
+.tb2__back:active{transform:scale(.96)}
+.tb2__crumb{font-size:11px;font-weight:800;color:var(--ink-3)}
+
+.tb2__head{padding:2px 2px 0}
+.tb2__no{font-size:10.5px;font-weight:900;letter-spacing:.14em;color:var(--brand2)}
+.tb2__ti{font-size:21px;font-weight:900;color:var(--ink);letter-spacing:-.03em;margin-top:3px}
+.tb2__en{font-size:12px;font-weight:700;color:var(--ink-3);margin-top:3px}
+
+/* ── 책 (paper) ── */
+.book{position:relative;border-radius:18px;overflow:hidden;background:#F7F4FF;
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 20px 46px rgba(0,0,0,.5), 0 2px 0 rgba(255,255,255,.05)}
+.book__spine{position:absolute;left:0;top:0;bottom:0;width:12px;z-index:3;pointer-events:none;
+  background:linear-gradient(90deg,rgba(40,20,80,.22),rgba(40,20,80,.05) 55%,transparent)}
+.book__page{position:relative;z-index:1;padding:20px 17px 24px;min-height:min(58vh,540px);
+  animation:bookIn .34s cubic-bezier(.22,1,.36,1)}
+.book__blk + .book__blk{margin-top:16px}
+@keyframes bookIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+
+/* ── 넘김 컨트롤 ── */
+.book__nav{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.book__arrow{flex:none;width:40px;height:40px;display:grid;place-items:center;border-radius:14px;
+  color:var(--ink);background:var(--surface);border:1px solid var(--line);
+  transition:transform .16s cubic-bezier(.34,1.4,.5,1),background .16s}
+.book__arrow svg{transform:rotate(180deg)}
+.book__arrow--r svg{transform:none}
+.book__arrow:disabled{opacity:.32}
+.book__arrow:not(:disabled):active{transform:scale(.93)}
+.book__dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;flex:1}
+.book__dot{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.24);transition:.2s}
+.book__dot.on{width:20px;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+
+.book__foot{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:800;color:var(--ink-3)}
+.book__lb{color:var(--brand2);letter-spacing:.06em;text-transform:uppercase}
+
+/* 단원 목록 */
+.tblist{display:flex;flex-direction:column;gap:8px}
+.tbrow{display:flex;align-items:center;gap:11px;text-align:left;padding:11px 13px;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  transition:transform .16s cubic-bezier(.34,1.4,.5,1),border-color .16s}
+.tbrow:hover{border-color:var(--line-strong);transform:translateY(-2px)}
+.tbrow:active{transform:scale(.985)}
+.tbrow__no{flex:none;width:26px;height:26px;display:grid;place-items:center;border-radius:9px;
+  font-size:11px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand2))}
+.tbrow__tx{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.tbrow__ti{font-size:13.5px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.tbrow__en{font-size:11px;font-weight:600;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbrow svg{color:var(--ink-3);flex:none}
