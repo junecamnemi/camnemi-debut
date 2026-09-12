@@ -27,7 +27,7 @@ export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
 
   return (
     <div className="login">
-      <video className="login__bg" src="assets/hero/stage_lo.mp4" poster="assets/hero/story.webp"
+      <video className="login__bg" src="assets/login/login_concert.mp4" poster="assets/login/login_concert.jpg"
              autoPlay loop muted playsInline />
       <div className="login__ov" />
 
