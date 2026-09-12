@@ -20,13 +20,46 @@ export const EPISODE1: Episode = {
       scene: 'assets/ep1/ep1_study.webp', sceneVideo: 'assets/ep1/video/study.mp4' },
   ],
 
+  // 기본 자음 14자 (훈민정음 순)
   consonants: [
-    { j: 'ㄱ', r: 'g/k' }, { j: 'ㄴ', r: 'n' }, { j: 'ㄷ', r: 'd' }, { j: 'ㄹ', r: 'r/l' },
-    { j: 'ㅁ', r: 'm' }, { j: 'ㅂ', r: 'b/p' }, { j: 'ㅅ', r: 's' }, { j: 'ㅇ', r: 'ng' },
+    { j: 'ㄱ', r: 'g/k',  n: '기역' }, { j: 'ㄴ', r: 'n',    n: '니은' },
+    { j: 'ㄷ', r: 'd/t',  n: '디귿' }, { j: 'ㄹ', r: 'r/l',  n: '리을' },
+    { j: 'ㅁ', r: 'm',    n: '미음' }, { j: 'ㅂ', r: 'b/p',  n: '비읍' },
+    { j: 'ㅅ', r: 's',    n: '시옷' }, { j: 'ㅇ', r: 'ng',   n: '이응' },
+    { j: 'ㅈ', r: 'j',    n: '지읒' }, { j: 'ㅊ', r: 'ch',   n: '치읓' },
+    { j: 'ㅋ', r: 'k',    n: '키읔' }, { j: 'ㅌ', r: 't',    n: '티읕' },
+    { j: 'ㅍ', r: 'p',    n: '피읖' }, { j: 'ㅎ', r: 'h',    n: '히읗' },
   ],
+  // 기본 모음 10자
   vowels: [
-    { j: 'ㅏ', r: 'a' }, { j: 'ㅑ', r: 'ya' }, { j: 'ㅓ', r: 'eo' }, { j: 'ㅕ', r: 'yeo' },
-    { j: 'ㅗ', r: 'o' }, { j: 'ㅛ', r: 'yo' }, { j: 'ㅜ', r: 'u' }, { j: 'ㅠ', r: 'yu' },
+    { j: 'ㅏ', r: 'a',   n: '아' }, { j: 'ㅑ', r: 'ya',  n: '야' },
+    { j: 'ㅓ', r: 'eo',  n: '어' }, { j: 'ㅕ', r: 'yeo', n: '여' },
+    { j: 'ㅗ', r: 'o',   n: '오' }, { j: 'ㅛ', r: 'yo',  n: '요' },
+    { j: 'ㅜ', r: 'u',   n: '우' }, { j: 'ㅠ', r: 'yu',  n: '유' },
+    { j: 'ㅡ', r: 'eu',  n: '으' }, { j: 'ㅣ', r: 'i',   n: '이' },
+  ],
+  // 쌍자음 5자 (된소리)
+  doubleCons: [
+    { j: 'ㄲ', r: 'kk', n: '쌍기역' }, { j: 'ㄸ', r: 'tt', n: '쌍디귿' },
+    { j: 'ㅃ', r: 'pp', n: '쌍비읍' }, { j: 'ㅆ', r: 'ss', n: '쌍시옷' },
+    { j: 'ㅉ', r: 'jj', n: '쌍지읒' },
+  ],
+  // 복합모음 11자
+  complexVow: [
+    { j: 'ㅐ', r: 'ae',  n: '애' }, { j: 'ㅒ', r: 'yae', n: '얘' },
+    { j: 'ㅔ', r: 'e',   n: '에' }, { j: 'ㅖ', r: 'ye',  n: '예' },
+    { j: 'ㅘ', r: 'wa',  n: '와' }, { j: 'ㅙ', r: 'wae', n: '왜' },
+    { j: 'ㅚ', r: 'oe',  n: '외' }, { j: 'ㅝ', r: 'wo',  n: '워' },
+    { j: 'ㅞ', r: 'we',  n: '웨' }, { j: 'ㅟ', r: 'wi',  n: '위' },
+    { j: 'ㅢ', r: 'ui',  n: '의' },
+  ],
+  // 받침(종성) 예시 — 글자 아래에 오는 자음
+  finals: [
+    { word: '밥',   reading: 'bap',       meaning: 'rice',   final: 'ㅂ' },
+    { word: '물',   reading: 'mul',       meaning: 'water',  final: 'ㄹ' },
+    { word: '사람', reading: 'sa-ram',    meaning: 'person', final: 'ㅁ' },
+    { word: '한국', reading: 'han-guk',   meaning: 'Korea',  final: 'ㄱ' },
+    { word: '집',   reading: 'jip',       meaning: 'house',  final: 'ㅂ' },
   ],
 
   combine: [

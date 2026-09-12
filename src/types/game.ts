@@ -26,6 +26,7 @@ export interface DialogueLine {
 export interface JamoItem {
   j: string;   // 자모 글자
   r: string;   // 로마자
+  n?: string;  // 한글 이름 (ㄱ → 기역)
 }
 
 export interface CombineQuestion {
@@ -46,6 +47,17 @@ export interface EpisodeReward {
   label: string;
 }
 
+/** 자모 학습 단계 */
+export type JamoStage = 'cons' | 'vow' | 'dcons' | 'dvow';
+
+/** 받침 예시 (개념 학습) */
+export interface FinalWord {
+  word: string;      // 받침 있는 낱말 (밥)
+  reading: string;   // 발음 (bap)
+  meaning: string;   // 뜻 (rice)
+  final: string;     // 받침 글자 (ㅂ)
+}
+
 export interface Episode {
   id: string;
   no: number;
@@ -53,8 +65,11 @@ export interface Episode {
   subtitle: string;
   member: MemberId;
   dialogue: DialogueLine[];
-  consonants: JamoItem[];
-  vowels: JamoItem[];
+  consonants: JamoItem[];      // 기본 자음 14
+  vowels: JamoItem[];          // 기본 모음 10
+  doubleCons?: JamoItem[];     // 쌍자음 5
+  complexVow?: JamoItem[];     // 복합모음 11
+  finals?: FinalWord[];        // 받침 예시
   combine: CombineQuestion[];
   writing: WriteTask[];
   rewards: EpisodeReward[];

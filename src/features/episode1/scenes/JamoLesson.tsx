@@ -3,23 +3,21 @@ import type { JamoItem } from '../../../types/game';
 import { speak } from '../../../services/tts';
 
 interface Props {
-  stage: 'cons' | 'vow';
-  consonants: JamoItem[];
-  vowels: JamoItem[];
+  title: string;   // 자음 / 모음 / 쌍자음 / 복합모음
+  sub: string;     // Consonants · 14자
+  items: JamoItem[];
+  hint?: string;
 }
 
-/** 한글 자음·모음 학습 — 카드 탭 → 발음(TTS) */
-export function JamoLesson({ stage, consonants, vowels }: Props) {
+/** 한글 자모 학습 — 카드 탭 → 이름/발음(TTS) */
+export function JamoLesson({ title, sub, items, hint }: Props) {
   const [played, setPlayed] = useState<string | null>(null);
-  const [msg, setMsg] = useState('카드를 눌러 소리를 들어보세요 🔊');
-  const list = stage === 'cons' ? consonants : vowels;
-  const title = stage === 'cons' ? '자음' : '모음';
-  const sub = stage === 'cons' ? 'Consonants' : 'Vowels';
+  const [msg, setMsg] = useState(hint ?? '카드를 눌러 소리를 들어보세요 🔊');
 
-  function play(j: string, r: string) {
-    setPlayed(j);
-    setMsg(`🔊 ${j} — 소리 [${r}]`);
-    void speak(j, { speed: -2 });  // CLOVA (자모는 조금 천천히)
+  function play(item: JamoItem) {
+    setPlayed(item.j);
+    setMsg(item.n ? `🔊 ${item.j} (${item.n}) — 소리 [${item.r}]` : `🔊 ${item.j} — 소리 [${item.r}]`);
+    void speak(item.n ?? item.j, { speed: -2 });   // 이름으로 읽어 더 정확
   }
 
   return (
@@ -29,14 +27,15 @@ export function JamoLesson({ stage, consonants, vowels }: Props) {
         <span className="sec__sub">{sub}</span>
       </div>
       <div className="jgrid">
-        {list.map((item) => (
+        {items.map((item) => (
           <button
             key={item.j}
             className={`jcard${played === item.j ? ' is-played' : ''}`}
-            onClick={() => play(item.j, item.r)}
+            onClick={() => play(item)}
           >
             <div className="jcard__j">{item.j}</div>
             <div className="jcard__r">{item.r}</div>
+            {item.n && <div className="jcard__n">{item.n}</div>}
           </button>
         ))}
       </div>
