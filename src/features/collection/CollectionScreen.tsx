@@ -1,25 +1,31 @@
 import { PLAYER } from '../../content/player';
 import { Icon } from '../../components/Icon';
-import { HeroCarousel } from '../../components/HeroCarousel';
+import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n } from '../../i18n';
 
-/** Collection — photocard grid */
+/** Collection — photocard grid (세로 영상 배경 위 콘텐츠) */
 export function CollectionScreen() {
   const { t } = useI18n();
   const owned = PLAYER.cards.filter((c) => c.owned).length;
 
   return (
-    <>
-      <div className="appbar">
-        <span className="appbar__brand">{t('collection')}</span>
-        <span className="appbar__right">{owned} / {PLAYER.cards.length}</span>
-      </div>
-
-      <HeroCarousel small badge={t('collected')(owned, PLAYER.cards.length)}
-                    title={t('collection_hero')} subtitle={t('collection_sub')} />
-
-      
-
+    <ScreenBg
+      video="assets/bg/cards.mp4"
+      poster="assets/bg/cards.jpg"
+      appbar={
+        <div className="appbar appbar--abs">
+          <span className="appbar__brand">{t('collection')}</span>
+          <span className="appbar__right">{owned} / {PLAYER.cards.length}</span>
+        </div>
+      }
+      head={
+        <>
+          <span className="scr__badge">{t('collected')(owned, PLAYER.cards.length)}</span>
+          <h1 className="scr__title">{t('collection_hero')}</h1>
+          <p className="scr__sub">{t('collection_sub')}</p>
+        </>
+      }
+    >
       <div className="screen">
         <div className="cardgrid">
           {PLAYER.cards.map((c, i) => (
@@ -30,6 +36,6 @@ export function CollectionScreen() {
           ))}
         </div>
       </div>
-    </>
+    </ScreenBg>
   );
 }

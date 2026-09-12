@@ -429,16 +429,49 @@
 
 @keyframes pulseSoft{0%,100%{opacity:1}50%{opacity:.62}}
 
-/* ── Home: 고정 배경(영상 재생) + 콘텐츠만 스크롤 ── */
+/* ══════════════════════════════════════════════════════════════
+   공용: 세로 영상 배경 + 콘텐츠 오버레이 (홈 디자인 언어를 4개 탭에 이식)
+   - 배경 영상은 .scr 안에서 절대배치 → 스크롤에 고정, 계속 재생
+   - .scr__scrim = 상·하단 어둡게 하는 그라데이션 스크림(가독성)
+   - .appbar--abs = 배경 위 투명 상단바 (흰 텍스트)
+   - .scr__head = 영상 위에 뜬 badge/title/sub (홈 hero 톤)
+   - .scr__panel = 반투명+blur 글래스 콘텐츠 패널.
+       페이지(.app/.shell/.scr)는 절대 스크롤하지 않고,
+       콘텐츠가 한 화면을 넘칠 때만 이 패널 1개가 내부 스크롤(배경 고정).
+   ══════════════════════════════════════════════════════════════ */
+.scr{position:relative;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+.scr__bgwrap{position:absolute;inset:0;z-index:0;overflow:hidden}
+.scr__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;display:block}
+.scr__scrim{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,5,16,.64) 0%,rgba(8,5,16,.14) 20%,rgba(8,5,16,.5) 50%,rgba(8,5,16,.92) 100%)}
+.scr__head{position:relative;z-index:2;flex:none;padding:58px var(--sp-4) var(--sp-4)}
+.scr__badge{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+  padding:4px 11px;border-radius:99px;backdrop-filter:blur(10px);margin-bottom:9px}
+.scr__title{font-size:23px;font-weight:900;letter-spacing:-.035em;line-height:1.2;color:#fff;
+  text-shadow:0 2px 16px rgba(0,0,0,.6)}
+.scr__sub{font-size:12.5px;color:rgba(255,255,255,.85);margin-top:6px;font-weight:600;
+  text-shadow:0 1px 10px rgba(0,0,0,.55)}
+.scr__panel{position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:flex;flex-direction:column;gap:var(--sp-4);padding:var(--sp-4) var(--sp-4) var(--sp-6);
+  background:linear-gradient(180deg,rgba(12,7,22,.5) 0%,rgba(12,7,22,.84) 72px);
+  border-top-left-radius:var(--r-xl);border-top-right-radius:var(--r-xl);
+  backdrop-filter:blur(14px);border-top:1px solid var(--line);scrollbar-width:none}
+.scr__panel::-webkit-scrollbar{display:none}
+/* 패널 내부에서는 컴포넌트 자체 스크롤/여백을 패널에 위임 */
+.scr__panel .screen{flex:none;overflow:visible;padding:0;gap:var(--sp-4);animation:none}
+.scr__panel .segbar{margin:0 0 var(--sp-3)}
+
+/* ── Home: 고정 배경(영상 재생) + 콘텐츠, 페이지 스크롤 없음 ── */
 .home{position:relative;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
 .home__bgwrap{position:absolute;inset:0;z-index:0;overflow:hidden}
 .home__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 16%;display:block}
 .home__scrim{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(8,5,16,.66) 0%,rgba(8,5,16,.10) 28%,rgba(8,5,16,.42) 58%,rgba(8,5,16,.88) 100%)}
-.home__scroll{position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;
+.home__scroll{position:relative;z-index:1;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;
   -webkit-overflow-scrolling:touch}
-.home__hero{position:relative;flex:none;height:min(78vh,680px);display:flex;flex-direction:column;
-  justify-content:flex-end;gap:0;padding:0 16px 24px}
+.home__hero{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;
+  justify-content:flex-end;gap:0;padding:0 16px 20px}
 .home__head{position:relative;z-index:2}
 .home__badge{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;
   background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
@@ -448,9 +481,9 @@
 .home__sub{font-size:12.5px;color:rgba(255,255,255,.85);margin-top:6px;font-weight:600;
   text-shadow:0 1px 10px rgba(0,0,0,.55)}
 .home__cta{position:relative;z-index:2;margin-top:14px}
-.home__body{position:relative;flex:none;min-height:58vh;padding:var(--sp-5) var(--sp-4) var(--sp-6);
+.home__body{position:relative;flex:none;padding:var(--sp-4) var(--sp-4) var(--sp-5);
   display:flex;flex-direction:column;gap:var(--sp-4);
-  background:linear-gradient(180deg,rgba(12,7,22,0) 0%,var(--bg) 76px)}
+  background:linear-gradient(180deg,rgba(12,7,22,0) 0%,rgba(12,7,22,.72) 60px)}
 .appbar--abs{position:absolute;top:0;left:0;right:0;z-index:6}
 .appbar--abs .appbar__brand{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
 .appbar--abs .appbar__right{color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.55)}

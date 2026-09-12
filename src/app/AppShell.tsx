@@ -68,14 +68,7 @@ export function AppShell() {
     <div className="shell">
       {tab === 'home' && <HomeScreen onGo={(t) => setTab(t)} />}
       {tab === 'train' && <PracticeScreen />}
-      {tab === 'story' && (
-        <>
-          <StoryScreen />
-          <div style={{ padding: '0 16px 16px' }}>
-            <button className="btn btn--primary" onClick={() => setPlaying(true)}>{t('replay_ep')(1)}</button>
-          </div>
-        </>
-      )}
+      {tab === 'story' && <StoryScreen onReplay={() => setPlaying(true)} />}
       {tab === 'cards' && <CollectionScreen />}
       {tab === 'my' && <MyScreen onLogout={guest ? logout : logout} authed={!!userId} />}
 

@@ -1,5 +1,5 @@
 import { Icon } from '../../components/Icon';
-import { HeroCarousel } from '../../components/HeroCarousel';
+import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n } from '../../i18n';
 
 interface Epi { no: number; title: string; desc: string; state: 'done' | 'now' | 'locked' }
@@ -23,23 +23,33 @@ const EPISODES: Epi[] = [
   { no: 16, title: 'Debut Stage', desc: 'TOPIK I Level 2 · Music video', state: 'locked' },
 ];
 
-/** Story — episode list (EP.1–16 to debut) */
-export function StoryScreen() {
+/** Story — episode list (EP.1–16 to debut), 세로 영상 배경 위 콘텐츠 */
+export function StoryScreen({ onReplay }: { onReplay?: () => void }) {
   const { t } = useI18n();
   const done = EPISODES.filter((e) => e.state === 'done').length;
 
   return (
-    <>
-      <div className="appbar">
-        <span className="appbar__brand">{t('story')}</span>
-        <span className="appbar__right">EP.{done}/{EPISODES.length}</span>
-      </div>
-
-      <HeroCarousel badge={t('story_hero_badge')} title={t('story_hero_title')} subtitle={t('story_hero_sub')} />
-
-      
-
+    <ScreenBg
+      video="assets/bg/story.mp4"
+      poster="assets/bg/story.jpg"
+      appbar={
+        <div className="appbar appbar--abs">
+          <span className="appbar__brand">{t('story')}</span>
+          <span className="appbar__right">EP.{done}/{EPISODES.length}</span>
+        </div>
+      }
+      head={
+        <>
+          <span className="scr__badge">{t('story_hero_badge')}</span>
+          <h1 className="scr__title">{t('story_hero_title')}</h1>
+          <p className="scr__sub">{t('story_hero_sub')}</p>
+        </>
+      }
+    >
       <div className="screen">
+        {onReplay && (
+          <button className="btn btn--primary" onClick={onReplay}>{t('replay_ep')(1)}</button>
+        )}
         <div className="block">
           {EPISODES.map((e) => (
             <button key={e.no} className={`epi${e.state === 'locked' ? ' is-locked' : ''}`} disabled={e.state === 'locked'}>
@@ -55,6 +65,6 @@ export function StoryScreen() {
           ))}
         </div>
       </div>
-    </>
+    </ScreenBg>
   );
 }

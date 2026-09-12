@@ -1,10 +1,10 @@
 import { MEMBERS } from '../../content/members';
 import { PLAYER, STATE_KEY, CAREER } from '../../content/player';
 import { Icon } from '../../components/Icon';
-import { HeroCarousel } from '../../components/HeroCarousel';
+import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n, type Lang } from '../../i18n';
 
-/** My — idol profile · career · stats · skills · language · account */
+/** My — idol profile · career · stats · skills · language · account (세로 영상 배경 위 콘텐츠) */
 export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?: boolean }) {
   const { t, lang, setLang } = useI18n();
   const m = MEMBERS[PLAYER.memberId];
@@ -18,17 +18,23 @@ export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?:
   ];
 
   return (
-    <>
-      <div className="appbar">
-        <span className="appbar__brand">GLOWSIS</span>
-        <span className="appbar__right"><Icon name="gear" size={19} /></span>
-      </div>
-
-      <HeroCarousel small badge={t('my_profile')} title={`‘${p.stageName}’`}
-                    subtitle={`${name} · ${t(CAREER[curIdx].labelKey)}`} />
-
-      
-
+    <ScreenBg
+      video="assets/bg/my.mp4"
+      poster="assets/bg/my.jpg"
+      appbar={
+        <div className="appbar appbar--abs">
+          <span className="appbar__brand">GLOWSIS</span>
+          <span className="appbar__right"><Icon name="gear" size={19} /></span>
+        </div>
+      }
+      head={
+        <>
+          <span className="scr__badge">{t('my_profile')}</span>
+          <h1 className="scr__title">‘{p.stageName}’</h1>
+          <p className="scr__sub">{name} · {t(CAREER[curIdx].labelKey)}</p>
+        </>
+      }
+    >
       <div className="screen">
         {/* profile */}
         <div className="profile">
@@ -107,6 +113,6 @@ export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?:
           </button>
         </div>
       </div>
-    </>
+    </ScreenBg>
   );
 }

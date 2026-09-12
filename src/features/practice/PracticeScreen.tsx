@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { PRACTICE, KIND_ICON, type PracticeKind } from '../../content/practice';
 import { Icon } from '../../components/Icon';
-import { HeroCarousel } from '../../components/HeroCarousel';
+import { ScreenBg } from '../../components/ScreenBg';
 import { TextbookSection } from './TextbookSection';
 import { speakScript } from '../../services/tts';
 import { useI18n, type TKey } from '../../i18n';
 
-/** Train — practice problems + textbook */
+/** Train — practice problems + textbook (세로 영상 배경 위 콘텐츠) */
 export function PracticeScreen() {
   const { t } = useI18n();
   const [mode, setMode] = useState<'practice' | 'textbook'>('practice');
@@ -27,21 +27,23 @@ export function PracticeScreen() {
   const kindKey: Record<PracticeKind, TKey> = { read: 'kind_read', listen: 'kind_listen', vocab: 'kind_vocab' };
 
   return (
-    <>
-      <div className="appbar">
-        <span className="appbar__brand">{t('train')}</span>
-        <span className="appbar__right">TOPIK I</span>
-      </div>
-
-      <HeroCarousel
-        small={mode === 'textbook'}
-        badge={mode === 'practice' ? 'TOPIK I' : t('train_textbook')}
-        title={mode === 'practice' ? t('train_hero_title') : t('train_tb_title')}
-        subtitle={mode === 'practice' ? t('train_hero_sub') : t('train_tb_sub')}
-      />
-
-      
-
+    <ScreenBg
+      video="assets/bg/train.mp4"
+      poster="assets/bg/train.jpg"
+      appbar={
+        <div className="appbar appbar--abs">
+          <span className="appbar__brand">{t('train')}</span>
+          <span className="appbar__right">TOPIK I</span>
+        </div>
+      }
+      head={
+        <>
+          <span className="scr__badge">{mode === 'practice' ? 'TOPIK I' : t('train_textbook')}</span>
+          <h1 className="scr__title">{mode === 'practice' ? t('train_hero_title') : t('train_tb_title')}</h1>
+          <p className="scr__sub">{mode === 'practice' ? t('train_hero_sub') : t('train_tb_sub')}</p>
+        </>
+      }
+    >
       <div className="segbar">
         <button className={`seg${mode === 'practice' ? ' on' : ''}`} onClick={() => setMode('practice')}>{t('train_practice')}</button>
         <button className={`seg${mode === 'textbook' ? ' on' : ''}`} onClick={() => setMode('textbook')}>{t('train_textbook')}</button>
@@ -101,6 +103,6 @@ export function PracticeScreen() {
           </>
         )}
       </div>
-    </>
+    </ScreenBg>
   );
 }
