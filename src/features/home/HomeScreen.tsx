@@ -1,6 +1,5 @@
 import { MEMBERS } from '../../content/members';
 import { PLAYER, CAREER } from '../../content/player';
-import { Icon } from '../../components/Icon';
 import { useI18n } from '../../i18n';
 
 /** Home — 노래하는 아란 세로 영상 배경 + 하단 CTA */
@@ -50,28 +49,6 @@ export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' |
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="block">
-          <div className="block__h">{t('home_quick')}</div>
-          <button className="tile" onClick={() => onGo('train')}>
-            <span className="tile__ic"><Icon name="train" size={20} /></span>
-            <span><span className="tile__t">{t('tile_practice')}</span>
-              <span className="tile__d">{t('tile_practice_d')}</span></span>
-            <Icon name="chev" size={18} />
-          </button>
-          <button className="tile" onClick={() => onGo('story')}>
-            <span className="tile__ic"><Icon name="film" size={20} /></span>
-            <span><span className="tile__t">{t('tile_story')}</span>
-              <span className="tile__d">{t('tile_story_d')}</span></span>
-            <Icon name="chev" size={18} />
-          </button>
-          <button className="tile" onClick={() => onGo('cards')}>
-            <span className="tile__ic"><Icon name="cards" size={20} /></span>
-            <span><span className="tile__t">{t('tile_cards')}</span>
-              <span className="tile__d">{t('tile_cards_d')}</span></span>
-            <Icon name="chev" size={18} />
-          </button>
         </div>
       </div>
     </div>
