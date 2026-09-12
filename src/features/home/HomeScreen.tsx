@@ -1,23 +1,21 @@
 import { MEMBERS } from '../../content/members';
 import { PLAYER, CAREER } from '../../content/player';
+import { Icon } from '../../components/Icon';
 import { useI18n } from '../../i18n';
+import { useHearts, fmtNum } from '../../hooks/useHearts';
 
-/** Home — 노래하는 아란 세로 영상 배경 + 하단 CTA */
+/** Home — 고정된 세로 배경(노래하는 아란) + 하단 CTA + 하트 카운터 */
 export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' | 'my') => void }) {
   const { t, lang } = useI18n();
   const m = MEMBERS[PLAYER.memberId];
   const name = lang === 'ko' ? m.ko : m.en;
+  const hearts = useHearts(PLAYER.hearts);
 
   return (
     <div className="home">
-      {/* 배경: 노래하는 아란 (세로) */}
+      {/* 배경: 노래하는 아란 (고정 프레임 — 움직임 없음) */}
       <div className="home__bgwrap">
-        <video
-          className="home__bg"
-          src="assets/carousel/aran_profile_v.mp4"
-          poster="assets/carousel/aran_profile_v.jpg"
-          autoPlay loop muted playsInline preload="auto"
-        />
+        <img className="home__bg" src="assets/carousel/aran_profile_v.jpg" alt="" />
         <div className="home__scrim" />
 
         <div className="appbar appbar--abs">
@@ -31,7 +29,6 @@ export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' |
           <p className="home__sub">{t('home_hero_sub')}</p>
         </div>
 
-        {/* Continue — 아래로 내림 */}
         <div className="home__cta">
           <button className="btn btn--primary" onClick={() => onGo('story')}>{t('continue')}</button>
         </div>
@@ -47,6 +44,10 @@ export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' |
               <div className="profile__meta">
                 {name} · {t(CAREER.find((c) => c.key === PLAYER.careerKey)!.labelKey)} · {PLAYER.careerPct}%
               </div>
+            </div>
+            <div className="hearts" title="fans sending love">
+              <Icon name="heart" size={15} />
+              <span className="hearts__n">{fmtNum(hearts)}</span>
             </div>
           </div>
         </div>

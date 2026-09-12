@@ -1,5 +1,6 @@
 /** 인라인 SVG 아이콘 (Lucide 스타일, stroke 기반) */
 const P: Record<string, string> = {
+  heart: '<path d="M12 20.5S3.5 14.9 3.5 9.2A4.7 4.7 0 0 1 12 6.4a4.7 4.7 0 0 1 8.5 2.8c0 5.7-8.5 11.3-8.5 11.3Z"/>',
   home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/>',
   train: '<path d="M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 19l-2 3M16 19l2 3M4 11h16"/><circle cx="8.5" cy="15" r=".6"/><circle cx="15.5" cy="15" r=".6"/>',
   story: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/>',

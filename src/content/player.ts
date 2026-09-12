@@ -12,6 +12,7 @@ export interface PlayerState {
   careerKey: 'entry' | 'rookie' | 'team' | 'debut_ready' | 'debut';  // → i18n career_*
   careerPct: number;      // 0~100
   streakDays: number;
+  hearts: number;         // 팬 하트 (5초당 +1)
   studyDays: number;
   mastered: number;
   skills: SkillItem[];
@@ -25,6 +26,7 @@ export const PLAYER: PlayerState = {
   careerKey: 'rookie',
   careerPct: 42,
   streakDays: 7,
+  hearts: 1280,
   studyDays: 23,
   mastered: 12,
   skills: [
