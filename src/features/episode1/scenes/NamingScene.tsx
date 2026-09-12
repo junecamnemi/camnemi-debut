@@ -14,7 +14,7 @@ export function NamingScene({ member, value, onChange }: Props) {
   return (
     <div className="card naming">
       <div className="naming__scene">
-        <video src="assets/ep1/video/naming.mp4" poster="assets/ep1/ep1_naming.webp"
+        <video src="assets/ep1/video/naming.mp4" poster="assets/ep1/ep1_naming.jpg"
                autoPlay loop muted playsInline preload="metadata" />
       </div>
       <img className="naming__av" src={member.portrait} alt={member.ko} />
