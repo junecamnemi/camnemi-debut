@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import type { WriteTask } from '../../types/game';
+import type { WriteTask } from '../../../types/game';
 
 interface Props {
   task: WriteTask;

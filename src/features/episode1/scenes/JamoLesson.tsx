@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { JamoItem } from '../../types/game';
+import type { JamoItem } from '../../../types/game';
 
 interface Props {
   stage: 'cons' | 'vow';

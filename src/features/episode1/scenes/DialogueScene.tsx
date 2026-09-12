@@ -1,4 +1,4 @@
-import type { DialogueLine, Member } from '../../types/game';
+import type { DialogueLine, Member } from '../../../types/game';
 
 interface Props {
   member: Member;

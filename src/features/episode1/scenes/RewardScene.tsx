@@ -1,4 +1,4 @@
-import type { EpisodeReward } from '../../types/game';
+import type { EpisodeReward } from '../../../types/game';
 
 interface Props {
   stageName: string;

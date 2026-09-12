@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { CombineQuestion } from '../../types/game';
+import type { CombineQuestion } from '../../../types/game';
 
 interface Props {
   question: CombineQuestion;

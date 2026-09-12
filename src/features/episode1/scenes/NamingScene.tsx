@@ -1,4 +1,4 @@
-import type { Member } from '../../types/game';
+import type { Member } from '../../../types/game';
 
 interface Props {
   member: Member;
