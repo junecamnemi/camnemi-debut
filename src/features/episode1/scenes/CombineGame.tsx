@@ -22,8 +22,8 @@ export function CombineGame({ question, onAnswered }: Props) {
   return (
     <div className="card dlg">
       <div className="mg__q">
-        {question.q}
-        <small>{question.qen}</small>
+        {question.qen}
+        <small>{question.q}</small>
       </div>
 
       <div className="combo">
@@ -51,7 +51,7 @@ export function CombineGame({ question, onAnswered }: Props) {
 
       {picked && (
         <div className={`fb ${correct ? 'fb--ok' : 'fb--no'}`}>
-          {correct ? '✅ ' + question.ok : '⚠️ ' + question.no}
+          {correct ? '✅ ' + (question.okEn ?? question.ok) : '⚠️ ' + (question.noEn ?? question.no)}
         </div>
       )}
     </div>

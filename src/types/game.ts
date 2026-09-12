@@ -30,6 +30,8 @@ export interface JamoItem {
 }
 
 export interface CombineQuestion {
+  okEn?: string;   // English feedback (shown when UI lang = en)
+  noEn?: string;
   a: string; b: string; answer: string;
   opts: string[];
   q: string; qen: string;

@@ -1,57 +1,56 @@
 import { MEMBERS } from '../../content/members';
-import { PLAYER } from '../../content/player';
+import { PLAYER, CAREER } from '../../content/player';
 import { Icon } from '../../components/Icon';
 import { HeroCarousel } from '../../components/HeroCarousel';
+import { useI18n } from '../../i18n';
 
-/** 홈 — 히어로(무대 영상) + 오늘의 트레이닝 + 바로가기 */
+/** Home — my idol + today's training + quick tiles */
 export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' | 'my') => void }) {
+  const { t } = useI18n();
   const m = MEMBERS[PLAYER.memberId];
+
   return (
     <>
+      <HeroCarousel badge={t('home_today')} title={t('home_hero_title')} subtitle={t('home_hero_sub')} />
+
+      {/* 투명 헤더 — 히어로 위에 오버레이 */}
       <div className="appbar">
         <span className="appbar__brand">GLOWSIS</span>
-        <span style={{ marginLeft: 'auto', fontSize: 11.5, fontWeight: 800, color: 'var(--ink-2)' }}>
-          🔥 {PLAYER.streakDays}일 연속
-        </span>
+        <span className="appbar__right">🔥 {t('streak')(PLAYER.streakDays)}</span>
       </div>
 
-      <HeroCarousel
-        badge="오늘의 트레이닝"
-        title="아란과 자기소개를 배워요"
-        subtitle="EP.2 · -이에요/예요 · 약 12분"
-      />
-
       <div className="screen">
-        <button className="btn btn--primary" onClick={() => onGo('story')}>이어서 하기</button>
+        <button className="btn btn--primary" onClick={() => onGo('story')}>{t('continue')}</button>
 
         <div className="block">
-          <span className="block__t">내 아이돌</span>
-          <button className="profile" onClick={() => onGo('my')} style={{ textAlign: 'left' }}>
+          <div className="block__h">{t('home_my_idol')}</div>
+          <div className="profile profile--mini">
             <img className="profile__av" src={m.portrait} alt={PLAYER.stageName} />
-            <div className="profile__meta">
-              <div className="profile__name">‘{PLAYER.stageName}’</div>
-              <div className="profile__role">{m.ko} · {m.role}</div>
-              <span className="profile__stage">🎤 {PLAYER.careerStage} · {PLAYER.careerPct}%</span>
+            <div className="profile__txt">
+              <div className="profile__name">{PLAYER.stageName}</div>
+              <div className="profile__meta">{m.ko} · {t(CAREER.find((c) => c.key === PLAYER.careerKey)!.labelKey)} · {PLAYER.careerPct}%</div>
             </div>
-            <Icon name="chev" size={18} />
-          </button>
+          </div>
         </div>
 
         <div className="block">
-          <span className="block__t">바로가기</span>
+          <div className="block__h">{t('home_quick')}</div>
           <button className="tile" onClick={() => onGo('train')}>
             <span className="tile__ic"><Icon name="train" size={20} /></span>
-            <span><span className="tile__t">문제풀이 연습</span><span className="tile__d">읽기 · 듣기 · 어휘</span></span>
+            <span><span className="tile__t">{t('tile_practice')}</span>
+              <span className="tile__d">{t('tile_practice_d')}</span></span>
             <Icon name="chev" size={18} />
           </button>
           <button className="tile" onClick={() => onGo('story')}>
-            <span className="tile__ic"><Icon name="story" size={20} /></span>
-            <span><span className="tile__t">스토리 · 에피소드</span><span className="tile__d">EP.1~16 데뷔까지</span></span>
+            <span className="tile__ic"><Icon name="film" size={20} /></span>
+            <span><span className="tile__t">{t('tile_story')}</span>
+              <span className="tile__d">{t('tile_story_d')}</span></span>
             <Icon name="chev" size={18} />
           </button>
           <button className="tile" onClick={() => onGo('cards')}>
             <span className="tile__ic"><Icon name="cards" size={20} /></span>
-            <span><span className="tile__t">포토카드 컬렉션</span><span className="tile__d">{PLAYER.cards.filter(c => c.owned).length} / {PLAYER.cards.length} 수집</span></span>
+            <span><span className="tile__t">{t('tile_cards')}</span>
+              <span className="tile__d">{t('tile_cards_d')}</span></span>
             <Icon name="chev" size={18} />
           </button>
         </div>

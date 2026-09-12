@@ -1,5 +1,5 @@
 /* ══ App shell — tab bar + screens ══ */
-.shell{display:flex;flex-direction:column;flex:1;min-height:0}
+.shell{display:flex;flex-direction:column;flex:1;min-height:0;position:relative}
 
 /* tab bar */
 .tabbar{position:sticky;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);
@@ -20,16 +20,22 @@
 .screen__sub{font-size:12.5px;color:var(--ink-3);margin-top:3px;font-weight:600}
 
 /* top bar for screens */
-.appbar{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-5) var(--sp-4) var(--sp-2)}
-.appbar__brand{font-weight:900;font-size:17px;letter-spacing:-.03em;
-  background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.appbar{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;gap:var(--sp-3);
+  padding:14px var(--sp-4) 10px;background:transparent;pointer-events:none}
+.appbar>*{pointer-events:auto}
+.appbar__right{margin-left:auto;font-size:11.5px;font-weight:800;color:rgba(255,255,255,.9);
+  text-shadow:0 1px 8px rgba(0,0,0,.55)}
+.appbar__brand{font-weight:900;font-size:17px;letter-spacing:-.03em;color:#fff;
+  text-shadow:0 1px 10px rgba(0,0,0,.5)}
 
 /* ── Hero banner (각 탭 상단) ── */
 .hero{position:relative;width:100%;height:172px;overflow:hidden;
   border-bottom-left-radius:var(--r-lg);border-bottom-right-radius:var(--r-lg);
   border:1px solid var(--line);border-top:none;flex:none}
 .hero--sm{height:132px}
-.hero__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%}
+.hero__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%;
+  opacity:0;transition:opacity .55s ease;pointer-events:none;z-index:0}
+.hero__bg.is-active{opacity:1;z-index:1}
 .hero video.hero__bg{object-position:center}
 .hero__ov{position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(11,7,20,.24) 0%,rgba(11,7,20,.42) 46%,rgba(11,7,20,.92) 100%)}
@@ -357,3 +363,15 @@
   background:var(--brand-soft);border:1px solid var(--line);color:#c9a9ff}
 .tile__t{font-size:14.5px;font-weight:800}
 .tile__d{font-size:11.5px;color:var(--ink-3);margin-top:2px;font-weight:600}
+
+/* ── 언어 선택 ── */
+.langbar{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.langbtn{padding:13px 10px;border-radius:14px;font-size:14px;font-weight:800;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--line);transition:.16s}
+.langbtn:hover{border-color:var(--line-strong);color:var(--ink)}
+.langbtn.on{background:var(--brand);color:#fff;border-color:transparent;box-shadow:0 8px 20px rgba(124,58,237,.32)}
+/* ── 미니 프로필 / 카드 행 ── */
+.profile--mini{padding:12px}
+.profile--mini .profile__av{width:52px;height:52px}
+.cardrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pcard--sm{border-radius:12px}

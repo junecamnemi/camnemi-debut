@@ -1,46 +1,54 @@
 import { Icon } from '../../components/Icon';
 import { HeroCarousel } from '../../components/HeroCarousel';
+import { useI18n } from '../../i18n';
 
 interface Epi { no: number; title: string; desc: string; state: 'done' | 'now' | 'locked' }
 
 const EPISODES: Epi[] = [
-  { no: 1, title: '첫 걸음, 한글', desc: '자음·모음 · 쓰기 · 예명', state: 'done' },
-  { no: 2, title: '자기소개', desc: '-이에요/예요 · 숫자와 나이', state: 'now' },
-  { no: 3, title: '있어요 / 없어요', desc: '소유 표현 · -(으)ㄹ 수 있다', state: 'locked' },
-  { no: 4, title: '시간과 약속', desc: '몇 시 · 청유문', state: 'locked' },
-  { no: 5, title: '쇼핑', desc: '이거 얼마예요 · 지시대명사', state: 'locked' },
+  { no: 1, title: 'First Step: Hangul', desc: 'Agency opens · Aran joins', state: 'now' },
+  { no: 2, title: 'Nice to Meet You', desc: 'Self-introduction', state: 'locked' },
+  { no: 3, title: 'Our Schedule', desc: 'Time & dates', state: 'locked' },
+  { no: 4, title: 'With a Senior Idol', desc: 'Manners & greetings', state: 'locked' },
+  { no: 5, title: 'Stage Outfit', desc: 'Shopping', state: 'locked' },
+  { no: 6, title: 'Dinner After Practice', desc: 'Food & ordering', state: 'locked' },
+  { no: 7, title: 'Moving In', desc: 'Transport & places', state: 'locked' },
+  { no: 8, title: 'Joint Stage', desc: 'Collab with seniors', state: 'locked' },
+  { no: 9, title: 'Team Project', desc: 'Suggestions', state: 'locked' },
+  { no: 10, title: 'Recording Day', desc: 'Ability & possibility', state: 'locked' },
+  { no: 11, title: 'Concept & Styling', desc: 'Colors & appearance', state: 'locked' },
+  { no: 12, title: 'Collab Song', desc: 'Music show', state: 'locked' },
+  { no: 13, title: 'Debut Prep', desc: 'Reasons & causes', state: 'locked' },
+  { no: 14, title: 'Rehearsal', desc: 'Review', state: 'locked' },
+  { no: 15, title: 'Interview', desc: 'Feelings & announcement', state: 'locked' },
+  { no: 16, title: 'Debut Stage', desc: 'TOPIK I Level 2 · Music video', state: 'locked' },
 ];
 
-/** 스토리 — 에피소드 목록 (EP.1~16 데뷔까지) */
+/** Story — episode list (EP.1–16 to debut) */
 export function StoryScreen() {
+  const { t } = useI18n();
   const done = EPISODES.filter((e) => e.state === 'done').length;
 
   return (
     <>
-      <div className="appbar"><span className="appbar__brand">스토리</span>
-        <span style={{ marginLeft: 'auto', fontSize: 12, fontWeight: 800, color: 'var(--ink-3)' }}>
-          EP.{done}/{EPISODES.length}
-        </span>
+      <HeroCarousel badge={t('story_hero_badge')} title={t('story_hero_title')} subtitle={t('story_hero_sub')} />
+
+      <div className="appbar">
+        <span className="appbar__brand">{t('story')}</span>
+        <span className="appbar__right">EP.{done}/{EPISODES.length}</span>
       </div>
-      <HeroCarousel
-        badge="기획사 글로시스"
-        title="데뷔 프로젝트"
-        subtitle="EP.1~16 · 아란과 함께 데뷔(TOPIK 2급)까지"
-      />
+
       <div className="screen">
         <div className="block">
           {EPISODES.map((e) => (
-            <button key={e.no} className="epi" disabled={e.state === 'locked'}>
-              <span className={`epi__no${e.state === 'locked' ? ' locked' : ''}`}>
-                {e.state === 'locked' ? <Icon name="lock" size={16} /> : e.no}
-              </span>
-              <span className="epi__meta">
-                <span className="epi__t">EP.{e.no} {e.title}</span>
+            <button key={e.no} className={`epi${e.state === 'locked' ? ' is-locked' : ''}`} disabled={e.state === 'locked'}>
+              <span className={`epi__no${e.state === 'done' ? ' is-done' : e.state === 'now' ? ' is-now' : ''}`}>{e.no}</span>
+              <span className="epi__txt">
+                <span className="epi__t">{e.title}</span>
                 <span className="epi__d">{e.desc}</span>
               </span>
-              {e.state === 'done' && <span className="epi__state">✓ 완료</span>}
-              {e.state === 'now' && <span className="epi__play"><Icon name="play" size={15} /></span>}
-              {e.state === 'locked' && <span className="epi__state" style={{ color: 'var(--ink-3)' }}>잠김</span>}
+              {e.state === 'done' ? <span className="epi__st">✓</span>
+                : e.state === 'now' ? <span className="epi__play"><Icon name="play" size={16} /></span>
+                : <span className="epi__lock"><Icon name="lock" size={15} /></span>}
             </button>
           ))}
         </div>

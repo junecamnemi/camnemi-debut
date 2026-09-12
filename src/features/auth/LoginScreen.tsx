@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { sendMagicLink, signInWithProvider, type OAuthProvider } from '../../services/auth';
+import { useI18n } from '../../i18n';
 
-/** 로그인 — Supabase 매직링크(패스워드리스) + Google + Facebook. 일반 id/pw 없음. */
+/** Sign in — Supabase magic link (passwordless) + Google + Facebook */
 export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -21,7 +23,6 @@ export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
     const res = await signInWithProvider(provider);
     setBusy(false);
     if (res.error) setError(res.error);
-    // 성공 시 브라우저가 provider 로그인으로 리다이렉트됩니다
   }
 
   return (
@@ -32,13 +33,13 @@ export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
 
       <div className="login__in">
         <div className="login__brand">GLOWSIS</div>
-        <div className="login__tag">데뷔 프로젝트</div>
-        <p className="login__sub">한국어를 배우며 나의 아이돌을 데뷔시키세요</p>
+        <div className="login__tag">Debut Project</div>
+        <p className="login__sub">Learn Korean. Debut your idol.</p>
 
         <div className="login__card">
           {!sent ? (
             <>
-              <label className="login__label">이메일로 시작하기</label>
+              <label className="login__label">{t('auth_start')}</label>
               <input
                 className="login__in-field"
                 type="email"
@@ -50,36 +51,34 @@ export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
                 onKeyDown={(e) => { if (e.key === 'Enter' && valid) sendLink(); }}
               />
               <button className="btn btn--primary login__btn" disabled={!valid || busy} onClick={sendLink}>
-                {busy ? '보내는 중…' : '매직링크 받기'}
+                {busy ? t('auth_sending') : t('auth_send')}
               </button>
-              <p className="login__note">비밀번호 없이 이메일 링크로 로그인해요</p>
+              <p className="login__note">{t('auth_note')}</p>
               {error && <p className="login__err">{error}</p>}
 
-              <div className="login__or"><span>또는</span></div>
+              <div className="login__or"><span>{t('auth_or')}</span></div>
 
               <div className="login__socials">
                 <button className="sbtn" disabled={busy} onClick={() => oauth('google')}>
-                  <span className="sbtn__ic g">G</span> Google로 계속
+                  <span className="sbtn__ic g">G</span> {t('auth_google')}
                 </button>
                 <button className="sbtn" disabled={busy} onClick={() => oauth('facebook')}>
-                  <span className="sbtn__ic f">f</span> Facebook으로 계속
+                  <span className="sbtn__ic f">f</span> {t('auth_facebook')}
                 </button>
               </div>
             </>
           ) : (
             <div className="login__sent">
               <div className="login__sent-ic">✉️</div>
-              <div className="login__sent-t">메일을 보냈어요</div>
-              <p className="login__sent-d"><b>{email}</b> 로 로그인 링크를 보냈습니다.<br />메일함을 확인해주세요.</p>
-              <button className="login__link" onClick={() => setSent(false)}>다른 이메일 사용</button>
+              <div className="login__sent-t">{t('auth_sent_t')}</div>
+              <p className="login__sent-d">{t('auth_sent_d')(email)}</p>
+              <button className="login__link" onClick={() => setSent(false)}>{t('auth_other')}</button>
             </div>
           )}
         </div>
 
-        <p className="login__foot">계속 진행하면 이용약관 및 개인정보 처리방침에 동의하게 됩니다.</p>
-        {onGuest && (
-          <button className="login__guest" onClick={onGuest}>로그인 없이 둘러보기 →</button>
-        )}
+        <p className="login__foot">{t('auth_foot')}</p>
+        {onGuest && <button className="login__guest" onClick={onGuest}>{t('auth_guest')}</button>}
       </div>
     </div>
   );

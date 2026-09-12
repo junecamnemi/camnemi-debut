@@ -9,13 +9,13 @@ export const EPISODE1: Episode = {
   member: 'aran',
 
   dialogue: [
-    { who: '아란', ko: '…여기가 글로시스 기획사예요?', en: '…Is this the Glowsis agency?',
+    { who: 'Aran', ko: '…여기가 글로시스 기획사예요?', en: '…Is this the Glowsis agency?',
       scene: 'assets/ep1/ep1_arrival.jpg', sceneVideo: 'assets/ep1/video/arrival.mp4' },
-    { who: '나 · 대표', ko: '네, 맞아요. 오늘부터 우리 같이 시작해요!', en: "Yes. Let's start together from today!",
+    { who: 'Me · CEO', ko: '네, 맞아요. 오늘부터 우리 같이 시작해요!', en: "Yes. Let's start together from today!",
       scene: 'assets/ep1/ep1_arrival.jpg', sceneVideo: 'assets/ep1/video/arrival.mp4' },
-    { who: '아란', ko: '저, 한국어를 잘 못해요… 괜찮아요?', en: "I'm not good at Korean… is that okay?",
+    { who: 'Aran', ko: '저, 한국어를 잘 못해요… 괜찮아요?', en: "I'm not good at Korean… is that okay?",
       scene: 'assets/ep1/ep1_intro.jpg', sceneVideo: 'assets/ep1/video/intro.mp4' },
-    { who: '나 · 대표', ko: '괜찮아요. 첫 걸음은 한글이에요. 같이 배워요!', en: "It's okay. The first step is Hangul. Let's learn together!",
+    { who: 'Me · CEO', ko: '괜찮아요. 첫 걸음은 한글이에요. 같이 배워요!', en: "It's okay. The first step is Hangul. Let's learn together!",
       tip: '오늘의 트레이닝 — 한글 자음·모음 → 조합 → 쓰기 → 예명 짓기',
       scene: 'assets/ep1/ep1_study.jpg', sceneVideo: 'assets/ep1/video/study.mp4' },
   ],
@@ -65,13 +65,16 @@ export const EPISODE1: Episode = {
   combine: [
     { a: 'ㄱ', b: 'ㅏ', answer: '가', opts: ['가', '나', '다', '마'],
       q: '두 글자를 조합하면 어떤 글자가 될까요?', qen: 'Combine them — what syllable is it?',
-      ok: '정답! ㄱ + ㅏ = 가 (ga)', no: 'ㄱ(자음) + ㅏ(모음) = 가. 왼쪽 → 오른쪽으로 읽어요.' },
+      ok: '정답! ㄱ + ㅏ = 가 (ga)', no: 'ㄱ(자음) + ㅏ(모음) = 가. 왼쪽 → 오른쪽으로 읽어요.',
+      okEn: 'Correct! ㄱ + ㅏ = 가 (ga)', noEn: 'A consonant comes first, then the vowel: ㄱ + ㅏ = 가.' },
     { a: 'ㄴ', b: 'ㅏ', answer: '나', opts: ['가', '나', '아', '자'],
       q: '이번엔 다른 조합이에요', qen: 'Another combo',
-      ok: '정답! ㄴ + ㅏ = 나 (na)', no: 'ㄴ + ㅏ = 나. 자음이 먼저, 모음이 뒤에 와요.' },
+      ok: '정답! ㄴ + ㅏ = 나 (na)', no: 'ㄴ + ㅏ = 나. 자음이 먼저, 모음이 뒤에 와요.',
+      okEn: 'Correct! ㄴ + ㅏ = 나 (na)', noEn: 'Consonant first, vowel second: ㄴ + ㅏ = 나.' },
     { a: 'ㅁ', b: 'ㅏ', answer: '마', opts: ['바', '사', '마', '아'],
       q: '마지막! 이 글자를 만들어보세요', qen: 'Last one!',
-      ok: '정답! ㅁ + ㅏ = 마 (ma) — 아란의 마!', no: 'ㅁ(입술소리) + ㅏ = 마 예요.' },
+      ok: '정답! ㅁ + ㅏ = 마 (ma) — 아란의 마!', no: 'ㅁ(입술소리) + ㅏ = 마 예요.',
+      okEn: "Correct! ㅁ + ㅏ = 마 (ma) — Aran's 마!", noEn: 'ㅁ (lip sound) + ㅏ = 마.' },
   ],
 
   writing: [
@@ -82,7 +85,7 @@ export const EPISODE1: Episode = {
   ],
 
   rewards: [
-    { icon: '🎴', label: '아란 포토카드 No.001 (확정 해금)' },
+    { icon: '🎴', label: 'Aran Photocard No.001 (guaranteed unlock)' },
     { icon: '✍️', label: '스킬 · 한글 쓰기 → 숙련 (+3)' },
     { icon: '⭐', label: '예명 등록 — 내 아이돌 완성' },
     { icon: '🏠', label: '기획사 배경 해금' },

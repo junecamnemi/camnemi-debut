@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import type { WriteTask } from '../../../types/game';
 import { speak } from '../../../services/tts';
+import { useI18n } from '../../../i18n';
 
 interface Props {
   task: WriteTask;
@@ -10,6 +11,7 @@ interface Props {
 
 /** 쓰기 연습 — 실제 아이돌 이름을 손으로 따라쓰고, 잉크량으로 인식 판정 */
 export function WritingPractice({ task, charIdx, onCharDone }: Props) {
+  const { t } = useI18n();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
   const [done, setDone] = useState(false);
@@ -75,13 +77,13 @@ export function WritingPractice({ task, charIdx, onCharDone }: Props) {
       setFb({
         ok: true,
         msg: isLast
-          ? `🎉 최고예요! "${task.word}" 다 썼어요!`
-          : `✅ 잘했어요! "${target}" 완벽해요!`,
+          ? `🎉 ${t('write_done')} "${task.word}"`
+          : `✅ ${t('write_great')} "${target}"`,
       });
-      void speak('잘했어요');
+      void speak('Great job');
       onCharDone(isLast);
     } else {
-      setFb({ ok: false, msg: '아직 조금 비어 있어요. 점선 글자를 따라 써보세요 ✍️' });
+      setFb({ ok: false, msg: 'Almost — trace over the guide letter ✍️' });
     }
   }
 
@@ -89,8 +91,8 @@ export function WritingPractice({ task, charIdx, onCharDone }: Props) {
 
   return (
     <div className="card dlg">
-      <div className="write__label">✍️ 손으로 따라 써보세요 · Trace by hand</div>
-      <div className="write__word">{task.word} ({task.roman}) — {charIdx + 1}번째 글자 “{target}”</div>
+      <div className="write__label">✍️ {t('write_trace')}</div>
+      <div className="write__word">{task.word} ({task.roman}) — letter {charIdx + 1}/{chars.length}: “{target}”</div>
 
       <div className="write__pad">
         <div className="write__guide">
@@ -107,8 +109,8 @@ export function WritingPractice({ task, charIdx, onCharDone }: Props) {
       </div>
 
       <div className="write__tools">
-        <button className="wbtn" onClick={clear}>지우기</button>
-        <button className="wbtn" onClick={check}>확인</button>
+        <button className="wbtn" onClick={clear}>Clear</button>
+        <button className="wbtn" onClick={check}>{t("check")}</button>
       </div>
 
       <div className="write__dots">

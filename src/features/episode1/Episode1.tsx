@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Episode, JamoStage } from '../../types/game';
 import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer } from '../../services/game';
 import { MEMBERS } from '../../content/members';
+import { useI18n, type TKey } from '../../i18n';
 import { Hud } from '../../components/Hud';
 import { DialogueScene } from './scenes/DialogueScene';
 import { JamoLesson } from './scenes/JamoLesson';
@@ -17,28 +18,29 @@ type Phase = 'dlg' | 'jamo' | 'final' | 'combine' | 'write' | 'name' | 'reward';
 /** 자모 단계 순서 */
 const JAMO_ORDER: JamoStage[] = ['cons', 'vow', 'dcons', 'dvow'];
 
-const JAMO_UI: Record<JamoStage, { title: string; en: string }> = {
-  cons:  { title: '자음',   en: 'Consonants' },
-  vow:   { title: '모음',   en: 'Vowels' },
-  dcons: { title: '쌍자음', en: 'Double consonants' },
-  dvow:  { title: '복합모음', en: 'Compound vowels' },
+const JAMO_UI: Record<JamoStage, { key: TKey; en: string }> = {
+  cons:  { key: 'jamo_cons',  en: 'Consonants' },
+  vow:   { key: 'jamo_vow',   en: 'Vowels' },
+  dcons: { key: 'jamo_dcons', en: 'Double consonants' },
+  dvow:  { key: 'jamo_dvow',  en: 'Compound vowels' },
 };
 
 /** 진행률/커리어 라벨 */
 function progressFor(phase: Phase, dlgIdx: number, dlgLen: number, jamoStage: JamoStage, combineIdx: number, combineLen: number, charIdx: number, wordLen: number) {
   const jamoBase = 30 + JAMO_ORDER.indexOf(jamoStage) * 5;   // 30,35,40,45
   switch (phase) {
-    case 'dlg':     return { pct: 16 + Math.round((dlgIdx / dlgLen) * 8), label: '커리어 · 입문' };
-    case 'jamo':    return { pct: jamoBase, label: '커리어 · 입문 → 연습생' };
-    case 'final':   return { pct: 52, label: '커리어 · 한글 완성' };
-    case 'combine': return { pct: 58 + Math.round((combineIdx / combineLen) * 12), label: '커리어 · 연습생 준비' };
-    case 'write':   return { pct: 72 + Math.round((charIdx / wordLen) * 12), label: '커리어 · 한글 쓰기' };
-    case 'name':    return { pct: 90, label: '커리어 · 예명 등록' };
-    case 'reward':  return { pct: 100, label: '커리어 · 연습생 달성' };
+    case 'dlg':     return { pct: 16 + Math.round((dlgIdx / dlgLen) * 8), label: 'Career · Entry' };
+    case 'jamo':    return { pct: jamoBase, label: 'Career · Entry → Trainee' };
+    case 'final':   return { pct: 52, label: 'Career · Hangul complete' };
+    case 'combine': return { pct: 58 + Math.round((combineIdx / combineLen) * 12), label: 'Career · Trainee prep' };
+    case 'write':   return { pct: 72 + Math.round((charIdx / wordLen) * 12), label: 'Career · Writing' };
+    case 'name':    return { pct: 90, label: 'Career · Stage name' };
+    case 'reward':  return { pct: 100, label: 'Career · Trainee reached' };
   }
 }
 
 export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }) {
+  const { t } = useI18n();
   const member = MEMBERS[ep.member];
 
   const [phase, setPhase] = useState<Phase>('dlg');
@@ -72,13 +74,13 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
     : false;
 
   const nextLabel =
-    phase === 'dlg' ? (isLastDialogue ? '트레이닝 시작' : '다음')
-    : phase === 'jamo' ? (jamoIdx < JAMO_ORDER.length - 1 ? `${JAMO_UI[JAMO_ORDER[jamoIdx + 1]].title} 배우기` : '받침 배우기')
-    : phase === 'final' ? '조합 게임'
-    : phase === 'combine' ? (isLastCombine ? '쓰기 연습' : '다음 문제')
-    : phase === 'write' ? (writeDone ? (charIdx >= task.word.length - 1 ? '예명 짓기' : '다음 글자') : '글자를 다 쓴 뒤 확인')
-    : phase === 'name' ? (stageName.trim().length >= 2 ? `‘${stageName.trim()}’(으)로 데뷔하기` : '이름을 입력하세요')
-    : '다음 에피소드';
+    phase === 'dlg' ? (isLastDialogue ? t('ep1_start') : t('next'))
+    : phase === 'jamo' ? (jamoIdx < JAMO_ORDER.length - 1 ? t('ep1_learn')(t(JAMO_UI[JAMO_ORDER[jamoIdx + 1]].key)) : t('ep1_learn')(t('jamo_final')))
+    : phase === 'final' ? t('ep1_combine')
+    : phase === 'combine' ? (isLastCombine ? t('ep1_writing') : t('next'))
+    : phase === 'write' ? (writeDone ? (charIdx >= task.word.length - 1 ? t('ep1_naming') : t('ep1_next_char')) : t('ep1_check_first'))
+    : phase === 'name' ? (stageName.trim().length >= 2 ? t('ep1_debut_as')(stageName.trim()) : t('ep1_name_placeholder'))
+    : t('next');
 
   function advance() {
     if (!canAdvance) return;
@@ -115,7 +117,7 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
 
   return (
     <div className="ep">
-      <Hud epLabel={phase === 'reward' ? 'EP.1 클리어' : `EP.${ep.no} ${ep.title}`} careerLabel={label} progress={pct} />
+      <Hud epLabel={phase === 'reward' ? t('ep1_clear') : `EP.${ep.no} ${ep.title}`} careerLabel={label} progress={pct} />
 
       <div className="ep__body">
         <div className="scene" key={phase}
@@ -123,8 +125,8 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
           {phase === 'dlg' && <DialogueScene member={member} line={ep.dialogue[dlgIdx]} />}
           {phase === 'jamo' && (
             <JamoLesson
-              title={JAMO_UI[jamoStage].title}
-              sub={`${JAMO_UI[jamoStage].en} · ${jamoItems(jamoStage).length}자`}
+              title={t(JAMO_UI[jamoStage].key)}
+              sub={`${JAMO_UI[jamoStage].en} · ${t('jamo_count')(jamoItems(jamoStage).length)}`}
               items={jamoItems(jamoStage)}
             />
           )}

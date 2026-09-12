@@ -1,103 +1,106 @@
 import { MEMBERS } from '../../content/members';
-import { PLAYER, STATE_LABEL } from '../../content/player';
+import { PLAYER, STATE_KEY, CAREER } from '../../content/player';
 import { Icon } from '../../components/Icon';
 import { HeroCarousel } from '../../components/HeroCarousel';
+import { useI18n, type Lang } from '../../i18n';
 
-/** My — 내 아이돌 프로필 · 커리어 · 학습 통계 · 숙련도 */
+
+/** My — idol profile · career · stats · skills · language · account */
 export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?: boolean }) {
+  const { t, lang, setLang } = useI18n();
   const m = MEMBERS[PLAYER.memberId];
   const p = PLAYER;
+  const curIdx = CAREER.findIndex((c) => c.key === p.careerKey);
+
+  const LANGS: { id: Lang; label: string }[] = [
+    { id: 'en', label: 'English' },
+    { id: 'ko', label: '한국어' },
+  ];
 
   return (
     <>
+      <HeroCarousel small badge={t('my_profile')} title={`‘${p.stageName}’`}
+                    subtitle={`${m.ko} · ${t(CAREER[curIdx].labelKey)}`} />
+
       <div className="appbar">
         <span className="appbar__brand">GLOWSIS</span>
-        <span style={{ marginLeft: 'auto', color: 'var(--ink-2)' }}><Icon name="gear" size={20} /></span>
+        <span className="appbar__right"><Icon name="gear" size={19} /></span>
       </div>
 
-      <HeroCarousel
-        small
-        badge="내 프로필"
-        title={`‘${p.stageName}’`}
-        subtitle={`${m.ko} · ${p.careerStage}`}
-      />
-
       <div className="screen">
-
         {/* profile */}
         <div className="profile">
           <img className="profile__av" src={m.portrait} alt={p.stageName} />
-          <div className="profile__meta">
-            <div className="profile__name">‘{p.stageName}’</div>
-            <div className="profile__role">{m.ko} ({m.en}) · {m.role}</div>
-            <span className="profile__stage">🎤 {p.careerStage}</span>
+          <div className="profile__txt">
+            <div className="profile__name">{p.stageName}</div>
+            <div className="profile__meta">{m.ko} · {m.role}</div>
+            <div className="profile__badge">{t(CAREER[curIdx].labelKey)}</div>
           </div>
-          <button className="profile__edit">예명 변경</button>
         </div>
 
         {/* stats */}
         <div className="stats">
-          <div className="stat">
-            <div className="stat__v">{p.streakDays}<small>일</small></div>
-            <div className="stat__k">연속 학습</div>
-          </div>
-          <div className="stat">
-            <div className="stat__v">{p.studyDays}<small>일</small></div>
-            <div className="stat__k">총 학습일</div>
-          </div>
-          <div className="stat">
-            <div className="stat__v">{p.mastered}<small>개</small></div>
-            <div className="stat__k">숙련 스킬</div>
-          </div>
+          <div className="stat"><b>{p.streakDays}</b><span>{t('stat_streak')}</span></div>
+          <div className="stat"><b>{p.studyDays}</b><span>{t('stat_days')}</span></div>
+          <div className="stat"><b>{p.mastered}</b><span>{t('stat_mastered')}</span></div>
         </div>
 
-        {/* career */}
-        <div className="career">
-          <div className="career__top">
-            <span className="career__stage">데뷔까지</span>
-            <span className="career__pct">{p.careerPct}%</span>
+        {/* career path */}
+        <div className="block">
+          <div className="block__h">{t('my_path')}</div>
+          <div className="path">
+            {CAREER.map((c, i) => (
+              <div key={c.key} className={`path__step${i < curIdx ? ' is-done' : i === curIdx ? ' is-now' : ''}`}>
+                <span className="path__dot" />
+                <span className="path__lb">{t(c.labelKey)}</span>
+              </div>
+            ))}
           </div>
-          <div className="career__bar"><div className="career__fill" style={{ width: `${p.careerPct}%` }} /></div>
-          <div className="career__steps"><span>입문</span><span>연습생</span><span>팀 프로젝트</span><span>데뷔 준비</span><span>데뷔</span></div>
         </div>
 
         {/* skills */}
         <div className="block">
-          <div className="block__h">
-            <span className="block__t">학습 스킬</span>
-            <span className="block__more">전체 보기</span>
-          </div>
+          <div className="block__h">{t('my_skills')}</div>
           {p.skills.map((s) => (
             <div key={s.label} className="skill">
-              <span className={`skill__badge ${s.state}`} />
-              <span className="skill__label">{s.label}</span>
+              <span className={`skill__badge is-${s.state}`}>{t(STATE_KEY[s.state])}</span>
+              <span className="skill__txt">{s.label}</span>
               <span className="skill__unit">{s.unit}</span>
-              <span className={`skill__state ${s.state}`}>{STATE_LABEL[s.state]}</span>
             </div>
           ))}
         </div>
 
         {/* cards preview */}
         <div className="block">
-          <div className="block__h">
-            <span className="block__t">포토카드</span>
-            <span className="block__more">{p.cards.filter(c => c.owned).length} / {p.cards.length}</span>
-          </div>
-          <div className="cardgrid">
-            {p.cards.slice(0, 3).map((c) => (
-              <div key={c.id} className={`pcard${c.owned ? '' : ' is-locked'}`}>
-                <img src={c.img} alt="" />
-                {!c.owned && <div className="pcard__lock"><Icon name="lock" size={20} /></div>}
+          <div className="block__h">{t('my_cards')}</div>
+          <div className="cardrow">
+            {p.cards.slice(0, 4).map((c) => (
+              <div key={c.id} className={`pcard pcard--sm${c.owned ? '' : ' is-locked'}`}>
+                <img src={c.img} alt="" loading="lazy" />
               </div>
             ))}
           </div>
         </div>
 
+        {/* language */}
+        <div className="block">
+          <div className="block__h">{t('my_language')}</div>
+          <div className="langbar">
+            {LANGS.map((l) => (
+              <button key={l.id} className={`langbtn${lang === l.id ? ' on' : ''}`}
+                      onClick={() => setLang(l.id)}>
+                {l.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* account */}
         <div className="block">
           <button className="tile" onClick={onLogout}>
             <span className="tile__ic"><Icon name="user" size={20} /></span>
-            <span><span className="tile__t">{authed ? '로그아웃' : '로그인하기'}</span>
-              <span className="tile__d">{authed ? '계정에서 나가기' : '진도를 저장하려면 로그인'}</span></span>
+            <span><span className="tile__t">{authed ? t('logout') : t('login')}</span>
+              <span className="tile__d">{authed ? t('logout_d') : t('login_d')}</span></span>
             <Icon name="chev" size={18} />
           </button>
         </div>

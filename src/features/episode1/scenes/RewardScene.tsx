@@ -9,10 +9,10 @@ interface Props {
 export function RewardScene({ stageName, rewards }: Props) {
   return (
     <div className="card reward">
-      <img className="reward__pc" src="assets/photocards/pc0.webp" alt="포토카드" />
+      <img className="reward__pc" src="assets/photocards/pc0.webp" alt="photocard" />
       <div className="reward__name">‘{stageName}’</div>
-      <div className="reward__h">포토카드 No.001 획득</div>
-      <div className="reward__sub">{'첫 멤버 영입 · 한글 첫걸음 완료'}</div>
+      <div className="reward__h">Photocard No.001 unlocked</div>
+      <div className="reward__sub">{'First recruit · Hangul first step complete'}</div>
 
       <div className="reward__list">
         {rewards.map((r) => (
