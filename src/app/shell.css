@@ -429,18 +429,17 @@
 
 @keyframes pulseSoft{0%,100%{opacity:1}50%{opacity:.62}}
 
-/* ── Home: 세로 영상 배경 + 하단 CTA ── */
-.home{display:flex;flex-direction:column;flex:1;min-height:0}
-.home__bgwrap{position:relative;flex:none;height:min(76vh,660px);overflow:hidden;
-  border-bottom-left-radius:26px;border-bottom-right-radius:26px;background:var(--bg-2)}
-.home__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 16%;
-  display:block}
+/* ── Home: 고정 배경(영상 재생) + 콘텐츠만 스크롤 ── */
+.home{position:relative;display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+.home__bgwrap{position:absolute;inset:0;z-index:0;overflow:hidden}
+.home__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 16%;display:block}
 .home__scrim{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(8,5,16,.68) 0%,rgba(8,5,16,.12) 30%,rgba(8,5,16,.52) 64%,rgba(8,5,16,.95) 100%)}
-.appbar--abs{position:absolute;top:0;left:0;right:0;z-index:4}
-.appbar--abs .appbar__brand{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
-.appbar--abs .appbar__right{color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.55)}
-.home__head{position:absolute;left:18px;right:18px;bottom:104px;z-index:3}
+  background:linear-gradient(180deg,rgba(8,5,16,.66) 0%,rgba(8,5,16,.10) 28%,rgba(8,5,16,.42) 58%,rgba(8,5,16,.88) 100%)}
+.home__scroll{position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;
+  -webkit-overflow-scrolling:touch}
+.home__hero{position:relative;flex:none;height:min(78vh,680px);display:flex;flex-direction:column;
+  justify-content:flex-end;gap:0;padding:0 16px 24px}
+.home__head{position:relative;z-index:2}
 .home__badge{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;
   background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
   padding:4px 11px;border-radius:99px;backdrop-filter:blur(10px);margin-bottom:9px}
@@ -448,7 +447,13 @@
   text-shadow:0 2px 16px rgba(0,0,0,.6)}
 .home__sub{font-size:12.5px;color:rgba(255,255,255,.85);margin-top:6px;font-weight:600;
   text-shadow:0 1px 10px rgba(0,0,0,.55)}
-.home__cta{position:absolute;left:16px;right:16px;bottom:24px;z-index:4}
+.home__cta{position:relative;z-index:2;margin-top:14px}
+.home__body{position:relative;flex:none;min-height:58vh;padding:var(--sp-5) var(--sp-4) var(--sp-6);
+  display:flex;flex-direction:column;gap:var(--sp-4);
+  background:linear-gradient(180deg,rgba(12,7,22,0) 0%,var(--bg) 76px)}
+.appbar--abs{position:absolute;top:0;left:0;right:0;z-index:6}
+.appbar--abs .appbar__brand{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.appbar--abs .appbar__right{color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.55)}
 
 /* ── 하트 카운터 (팬 하트) ── */
 .hearts{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:5px;

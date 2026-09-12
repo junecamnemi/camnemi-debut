@@ -50,7 +50,7 @@ button{font-family:inherit; cursor:pointer; border:none; background:none; color:
 input{font-family:inherit}
 
 /* app shell — mobile-first, centered */
-.app{position:relative; min-height:100%; max-width:440px; margin:0 auto;
+.app{position:relative; height:100%; max-width:440px; margin:0 auto; overflow:hidden;
   display:flex; flex-direction:column; background:var(--bg)}
 .app__stage{position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
@@ -62,7 +62,7 @@ input{font-family:inherit}
   background:conic-gradient(from 90deg, transparent, rgba(139,92,246,.14), transparent 40%);
   animation:aurora 22s linear infinite}
 @keyframes aurora{to{transform:rotate(360deg)}}
-.app__inner{position:relative; z-index:1; display:flex; flex-direction:column; min-height:100%; flex:1}
+.app__inner{position:relative; z-index:1; display:flex; flex-direction:column; height:100%; min-height:0; flex:1}
 
 /* ── game animations ── */
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
