@@ -53,7 +53,7 @@ const DICT = {
     my_profile: 'My Profile',
     my_career: 'Career',
     my_stats: 'Study stats',
-    stat_streak: 'Streak', stat_days: 'Total days', stat_mastered: 'Skills mastered',
+    stat_streak: 'Streak', stat_days: 'Days', stat_mastered: 'Mastered',
     my_path: 'Path to debut',
     my_skills: 'Learning skills',
     my_cards: 'Photocards',
