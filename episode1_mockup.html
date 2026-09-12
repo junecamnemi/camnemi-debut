@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글로시스 — EP.1 첫 걸음, 한글</title>
+<style>
+:root{
+  --v:#7c3aed; --p:#ec4899; --grad:linear-gradient(135deg,#7c3aed,#ec4899); --aran:#3b82f6;
+  --bg0:#0a0612; --panel:rgba(26,17,44,.74); --brd:rgba(168,120,255,.22);
+  --ink:#f6f1ff; --dim:#b7a8d6; --mute:#8878a8; --gold:#f5c451; --ok:#34d399; --no:#fb7185;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  background:var(--bg0);color:var(--ink);overflow-x:hidden}
+.stage{position:fixed;inset:0;z-index:0;background:radial-gradient(120% 80% at 50% 0%,#2a1450,#150b26 45%,#0a0612)}
+.stage::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(38% 30% at 50% 22%,rgba(124,58,237,.42),transparent 70%),
+             radial-gradient(30% 24% at 82% 30%,rgba(236,72,153,.26),transparent 70%);filter:blur(6px)}
+.wrap{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-bottom:18px}
+.top{display:flex;align-items:center;gap:10px;padding:14px 16px 8px}
+.brand{font-weight:900;font-size:16px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ep{margin-left:auto;font-size:11px;font-weight:800;color:var(--dim);border:1px solid var(--brd);padding:4px 10px;border-radius:100px;background:var(--panel)}
+.career{display:flex;align-items:center;gap:8px;padding:4px 16px 0}
+.career .bar{flex:1;height:7px;border-radius:100px;background:rgba(255,255,255,.09);overflow:hidden}
+.career .fill{height:100%;width:20%;background:var(--grad);border-radius:100px;transition:width .6s cubic-bezier(.3,1,.4,1)}
+.career .lbl{font-size:11px;font-weight:700;color:var(--dim);white-space:nowrap}
+.charbox{position:relative;flex:1;display:flex;align-items:flex-end;justify-content:center;min-height:250px;margin-top:6px}
+.charGlow{position:absolute;bottom:40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.5),transparent 68%);filter:blur(22px)}
+.charvid{position:relative;height:100%;max-height:330px;border-radius:20px 20px 0 0;object-fit:cover;filter:drop-shadow(0 18px 34px rgba(0,0,0,.55));z-index:2}
+.namecard{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:3;background:var(--panel);
+  border:1px solid var(--brd);backdrop-filter:blur(12px);border-radius:100px;padding:6px 16px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--aran);box-shadow:0 0 10px var(--aran)}
+.namecard b{font-size:14px}.namecard i{font-style:normal;font-size:11px;color:var(--dim)}
+.panel{margin:0 16px;background:var(--panel);border:1px solid var(--brd);border-radius:18px;backdrop-filter:blur(14px);box-shadow:0 12px 34px rgba(0,0,0,.45)}
+.dlg{padding:15px 17px;min-height:108px}
+.who{font-size:12px;font-weight:800;color:var(--dim);margin-bottom:7px}
+.ko{font-size:19px;font-weight:700;line-height:1.45}
+.en{font-size:12.5px;color:var(--mute);margin-top:6px}
+.tip{margin-top:9px;font-size:12px;color:var(--gold);background:rgba(245,196,81,.09);border-left:3px solid var(--gold);padding:7px 10px;border-radius:0 8px 8px 0}
+.sec{margin:0 16px}
+.sech{font-size:12px;font-weight:800;color:var(--dim);letter-spacing:.04em;margin:0 0 9px 2px;text-transform:uppercase}
+.jgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.jcard{background:var(--panel);border:1px solid var(--brd);border-radius:14px;padding:12px 6px;text-align:center;cursor:pointer;transition:.18s}
+.jcard:hover{transform:translateY(-3px);border-color:rgba(168,120,255,.5)}
+.jcard .j{font-size:28px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.jcard .r{font-size:10px;color:var(--mute);margin-top:5px;font-weight:600}
+.jcard.played{border-color:var(--ok)}
+.mg{padding:16px}
+.mgq{font-size:14px;font-weight:800;margin-bottom:10px}
+.mgq .en{display:block;font-size:11.5px;color:var(--mute);font-weight:600;margin-top:3px}
+.combo{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0}
+.tile{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;background:rgba(255,255,255,.05);border:1.5px dashed var(--brd)}
+.tile.sel{border:2px solid var(--v);background:rgba(124,58,237,.16)}
+.tile.res{border:2px solid var(--aran);background:rgba(59,130,246,.16);color:var(--aran);-webkit-text-fill-color:var(--aran)}
+.op{font-size:22px;color:var(--mute);font-weight:700}
+.opts{display:grid;gap:9px}
+.opt{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:13px;background:rgba(255,255,255,.045);border:1px solid var(--brd);cursor:pointer;text-align:left;font-family:inherit}
+.opt:hover{background:rgba(255,255,255,.09)}
+.opt .k{width:24px;height:24px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex:none;color:#fff}
+.opt .t{font-size:15.5px;font-weight:700;color:var(--ink)}
+.opt.correct{background:rgba(52,211,153,.16);border-color:var(--ok)}
+.opt.wrong{background:rgba(251,113,133,.14);border-color:var(--no)}
+.opt.locked{pointer-events:none}
+.fb{margin-top:11px;font-size:13px;padding:11px 13px;border-radius:11px;display:none}
+.fb.show{display:block}
+.fb.ok{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4)}
+.fb.no{background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.38)}
+
+/* ── 쓰기 연습 ── */
+.write{padding:16px}
+.wTarget{text-align:center;margin-bottom:4px}
+.wTarget .lbl{font-size:12px;color:var(--dim);font-weight:700;margin-bottom:8px}
+.wTarget .word{font-size:15px;color:var(--mute);font-weight:700}
+.wCanvasWrap{position:relative;margin:12px auto;width:100%;max-width:330px;height:160px;border-radius:16px;
+  background:rgba(255,255,255,.03);border:1.5px dashed var(--brd);overflow:hidden;touch-action:none}
+.guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:64px;font-weight:900;color:rgba(168,120,255,.16);pointer-events:none;letter-spacing:6px;user-select:none}
+.guide .gb{width:66px;height:96px;border:1.5px solid rgba(168,120,255,.14);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.guide .gb.done{border-color:var(--ok);background:rgba(52,211,153,.08)}
+canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.wTools{display:flex;gap:8px;justify-content:center;margin-top:6px}
+.wbtn{background:rgba(255,255,255,.07);border:1px solid var(--brd);color:var(--dim);border-radius:11px;
+  padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.wbtn:hover{background:rgba(255,255,255,.12)}
+.wProgress{display:flex;gap:6px;justify-content:center;margin-top:12px}
+.wProgress .p{width:34px;height:6px;border-radius:99px;background:rgba(255,255,255,.1)}
+.wProgress .p.done{background:var(--ok)}
+
+/* ── 예명 짓기 ── */
+.naming{padding:22px 18px;text-align:center}
+.naming h3{font-size:19px;font-weight:900;margin-bottom:6px}
+.naming .sub{font-size:12.5px;color:var(--dim);margin-bottom:16px}
+.naming .avatar{width:110px;height:110px;border-radius:50%;object-fit:cover;border:3px solid var(--aran);
+  box-shadow:0 0 26px rgba(59,130,246,.5);margin:0 auto 14px;display:block;background:#1a1130}
+.nameInput{width:100%;padding:15px;border-radius:14px;background:rgba(255,255,255,.05);
+  border:1.5px solid var(--brd);color:var(--ink);font-size:20px;font-weight:800;text-align:center;
+  font-family:inherit;outline:none}
+.nameInput:focus{border-color:var(--v);box-shadow:0 0 0 3px rgba(124,58,237,.2)}
+.nameHint{font-size:11.5px;color:var(--mute);margin-top:9px}
+.chips{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.chip{background:rgba(255,255,255,.05);border:1px solid var(--brd);color:var(--dim);border-radius:99px;
+  padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.chip:hover{border-color:var(--v);color:var(--ink)}
+
+/* ── 보상 ── */
+.reward{text-align:center;padding:22px 18px}
+.pc{width:150px;border-radius:16px;box-shadow:0 18px 40px rgba(0,0,0,.5);transform:rotate(-3deg);animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{0%{transform:scale(.7) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(-3deg);opacity:1}}
+.reward h3{font-size:19px;font-weight:900;margin:14px 0 4px}
+.reward .sub{font-size:12px;color:var(--dim)}
+.reward .stageName{font-size:24px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin:8px 0}
+.rlist{display:grid;gap:8px;margin:16px 0 0;text-align:left}
+.ritem{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.045);border:1px solid var(--brd);border-radius:12px;padding:11px 13px;font-size:13.5px;font-weight:600}
+.ritem .ic{width:26px;height:26px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;color:#fff}
+
+.ctl{display:flex;gap:10px;padding:14px 16px 0;margin-top:auto}
+.btn{flex:1;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:.18s}
+.btn.p{background:var(--grad);color:#fff;box-shadow:0 10px 26px rgba(124,58,237,.4)}
+.btn.p:hover{transform:translateY(-2px)}
+.btn.g{flex:0 0 56px;background:rgba(255,255,255,.07);color:var(--dim);border:1px solid var(--brd)}
+.btn:disabled{opacity:.45;box-shadow:none;transform:none;cursor:not-allowed}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="stage"></div>
+<div class="wrap">
+  <div class="top"><span class="brand">GLOWSIS</span><span class="ep" id="ep">EP.1 첫 걸음, 한글</span></div>
+  <div class="career"><span class="lbl" id="cLabel">커리어 · 입문</span><div class="bar"><div class="fill" id="cFill"></div></div></div>
+
+  <!-- 1 DIALOGUE -->
+  <section id="phDlg">
+    <div class="charbox">
+      <div class="charGlow"></div>
+      <video class="charvid" src="assets/video/aran_loop.mp4" autoplay loop muted playsinline poster="assets/chars/aran.webp"
+        onerror="this.replaceWith(Object.assign(document.createElement('img'),{src:'assets/chars/aran.webp',className:'charvid'}))"></video>
+      <div class="namecard"><span class="dot"></span><b>아란</b><i>Aran · 리더·메인보컬</i></div>
+    </div>
+    <div class="panel dlg"><div class="who" id="who">아란</div><div class="ko" id="ko"></div><div class="en" id="en"></div><div class="tip hide" id="tip"></div></div>
+  </section>
+
+  <!-- 2 JAMO -->
+  <section id="phJamo" class="hide">
+    <div class="sec"><div class="sech" id="jTitle">자음</div><div class="jgrid" id="jGrid"></div></div>
+    <div class="panel dlg" style="margin-top:14px"><div class="ko" style="font-size:16px" id="jMsg">카드를 눌러 소리를 들어보세요 🔊</div><div class="en" id="jMsgEn">Tap to hear it.</div></div>
+  </section>
+
+  <!-- 3 MINI-GAME -->
+  <section id="phMg" class="hide"><div class="panel mg"><div class="mgq" id="mgQ"></div><div class="combo" id="combo"></div><div class="opts" id="opts"></div><div class="fb" id="fb"></div></div></section>
+
+  <!-- 4 WRITING -->
+  <section id="phWrite" class="hide">
+    <div class="panel write">
+      <div class="wTarget">
+        <div class="lbl">✍️ 손으로 따라 써보세요 · Trace by hand</div>
+        <div class="word" id="wWord">블랙핑크 (BLACKPINK)</div>
+      </div>
+      <div class="wCanvasWrap" id="cwrap">
+        <div class="guide" id="guide"></div>
+        <canvas id="cv"></canvas>
+      </div>
+      <div class="wTools">
+        <button class="wbtn" onclick="clearCanvas()">지우기</button>
+        <button class="wbtn" onclick="checkWriting()">확인</button>
+      </div>
+      <div class="wProgress" id="wProg"></div>
+      <div class="fb" id="wfb"></div>
+    </div>
+  </section>
+
+  <!-- 5 NAMING -->
+  <section id="phName" class="hide">
+    <div class="panel naming">
+      <img class="avatar" id="nAvatar" src="assets/chars/aran.webp" alt="아란">
+      <h3>이 아이돌의 예명을 지어주세요</h3>
+      <div class="sub">직접 지은 이름으로 데뷔해요 · Give your idol a stage name</div>
+      <input class="nameInput" id="nameIn" maxlength="12" placeholder="예: 루나, 스텔라, 하늘…">
+      <div class="nameHint">한글 또는 영문 2~12자</div>
+      <div class="chips">
+        <button class="chip" onclick="pickName('루나')">루나</button>
+        <button class="chip" onclick="pickName('스텔라')">스텔라</button>
+        <button class="chip" onclick="pickName('하늘')">하늘</button>
+        <button class="chip" onclick="pickName('별이')">별이</button>
+      </div>
+      <div class="fb" id="nfb"></div>
+    </div>
+  </section>
+
+  <!-- 6 REWARD -->
+  <section id="phRw" class="hide">
+    <div class="panel reward">
+      <img class="pc" src="assets/photocards/pc0.webp" alt="포토카드">
+      <div class="stageName" id="rwName">아란</div>
+      <h3>포토카드 No.001 획득</h3>
+      <div class="sub">첫 멤버 영입 · 한글 첫걸음 완료</div>
+      <div class="rlist">
+        <div class="ritem"><span class="ic">🎴</span>포토카드 (확정 해금)</div>
+        <div class="ritem"><span class="ic">✍️</span>스킬 · 한글 쓰기 → 숙련 (+3)</div>
+        <div class="ritem"><span class="ic">⭐</span>예명 등록 — 내 아이돌 완성</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ctl"><button class="btn g hide" id="back">←</button><button class="btn p" id="next">다음</button></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* 한국 아이돌 이름 (쓰기 연습 소재) */
+const IDOLS=["블랙핑크","비티에스","트와이스","뉴진스","아이유","세븐틴"];
+
+const DLG=[
+ {who:"아란",ko:"…여기가 글로시스 기획사예요?",en:"…Is this the Glowsis agency?"},
+ {who:"나 (대표)",ko:"네, 맞아요. 오늘부터 우리 같이 시작해요!",en:"Yes. Let's start together from today!"},
+ {who:"아란",ko:"저, 한국어를 잘 못해요… 괜찮아요?",en:"I'm not good at Korean… is that okay?"},
+ {who:"나 (대표)",ko:"괜찮아요. 첫 걸음은 한글이에요. 같이 배워요!",tip:"오늘의 트레이닝: 한글 자음·모음 → 쓰기 → 예명 짓기"},
+];
+const CONS=[{j:"ㄱ",r:"g/k"},{j:"ㄴ",r:"n"},{j:"ㄷ",r:"d"},{j:"ㄹ",r:"r/l"},{j:"ㅁ",r:"m"},{j:"ㅂ",r:"b/p"},{j:"ㅅ",r:"s"},{j:"ㅇ",r:"ng"}];
+const VOW=[{j:"ㅏ",r:"a"},{j:"ㅑ",r:"ya"},{j:"ㅓ",r:"eo"},{j:"ㅕ",r:"yeo"},{j:"ㅗ",r:"o"},{j:"ㅛ",r:"yo"},{j:"ㅜ",r:"u"},{j:"ㅠ",r:"yu"}];
+const QUIZ=[
+ {q:"두 글자를 조합하면?",qen:"Combine them",a:"ㄱ",b:"ㅏ",answer:"가",opts:["가","나","다","마"],ok:"정답! ㄱ + ㅏ = 가 (ga)",no:"ㄱ(자음)+ㅏ(모음) = 가. 왼쪽→오른쪽으로 읽어요."},
+ {q:"이번엔 다른 조합!",qen:"Another combo",a:"ㄴ",b:"ㅏ",answer:"나",opts:["가","나","아","자"],ok:"정답! ㄴ + ㅏ = 나 (na)",no:"ㄴ + ㅏ = 나. 자음 먼저, 모음이 뒤에."},
+ {q:"마지막!",qen:"Last one",a:"ㅁ",b:"ㅏ",answer:"마",opts:["바","사","마","아"],ok:"정답! ㅁ + ㅏ = 마 (ma)",no:"ㅁ + ㅏ = 마."},
+];
+let phase="dlg",dIdx=0,jStage="cons",qIdx=0,answered=false,writeIdx=0,idolIdx=0,stageName="";
+
+function setProgress(p,l){$("cFill").style.width=p+"%"; if(l)$("cLabel").textContent=l;}
+
+/* DIALOGUE */
+function renderDlg(){const d=DLG[dIdx];$("who").textContent=d.who;$("ko").textContent=d.ko;$("en").textContent=d.en;
+  const t=$("tip"); if(d.tip){t.textContent="✨ "+d.tip;t.classList.remove("hide");}else t.classList.add("hide");
+  $("next").textContent=dIdx===DLG.length-1?"트레이닝 시작":"다음";$("back").classList.toggle("hide",dIdx===0);setProgress(18,"커리어 · 입문");}
+
+/* JAMO */
+function renderJamo(){const l=jStage==="cons"?CONS:VOW;
+  $("jTitle").textContent=jStage==="cons"?"자음 · Consonants":"모음 · Vowels";
+  $("jGrid").innerHTML=l.map(c=>`<div class="jcard" onclick="playJamo(this,'${c.j}','${c.r}')"><div class="j">${c.j}</div><div class="r">${c.r}</div></div>`).join("");
+  $("next").textContent=jStage==="cons"?"모음 배우기 →":"쓰기 연습 →";$("back").classList.remove("hide");setProgress(34,"커리어 · 입문 → 연습생");}
+function playJamo(el,j,r){document.querySelectorAll(".jcard.played").forEach(e=>e.classList.remove("played"));el.classList.add("played");
+  $("jMsg").textContent=`🔊 ${j} — 소리 [${r}]`;$("jMsgEn").textContent="Listen and repeat.";
+  try{const u=new SpeechSynthesisUtterance(j);u.lang="ko-KR";u.rate=.75;speechSynthesis.speak(u);}catch(e){}}
+
+/* MINI-GAME */
+function renderMg(){const q=QUIZ[qIdx];answered=false;$("mgQ").innerHTML=q.q+'<span class="en">'+q.qen+'</span>';
+  $("combo").innerHTML=`<div class="tile sel">${q.a}</div><div class="op">+</div><div class="tile sel">${q.b}</div><div class="op">=</div><div class="tile res" id="res">?</div>`;
+  $("opts").innerHTML=q.opts.map((o,i)=>`<button class="opt" onclick="pick(this,'${o}')"><span class="k">${"ABCD"[i]}</span><span class="t">${o}</span></button>`).join("");
+  $("fb").className="fb";$("fb").innerHTML="";$("next").disabled=true;$("next").textContent="정답을 선택하세요";$("back").classList.add("hide");setProgress(50,"커리어 · 연습생 준비");}
+function pick(btn,o){if(answered)return;answered=true;const q=QUIZ[qIdx];
+  document.querySelectorAll("#opts .opt").forEach(e=>e.classList.add("locked"));const fb=$("fb");
+  if(o===q.answer){btn.classList.add("correct");$("res").textContent=q.answer;fb.className="fb ok show";fb.innerHTML="✅ "+q.ok;}
+  else{btn.classList.add("wrong");document.querySelectorAll("#opts .opt").forEach((e,i)=>{if(q.opts[i]===q.answer)e.classList.add("correct");});$("res").textContent=q.answer;fb.className="fb no show";fb.innerHTML="⚠️ "+q.no;}
+  $("next").disabled=false;$("next").textContent=qIdx===QUIZ.length-1?"쓰기 연습 →":"다음 문제";}
+
+/* WRITING — 실제 아이돌 이름 따라쓰기 + 인식 */
+function startWrite(){idolIdx=Math.floor(Math.random()*IDOLS.length);writeIdx=0;renderWrite();}
+function curWord(){return IDOLS[idolIdx];}
+function renderWrite(){
+  const word=curWord(),ch=word[writeIdx];
+  $("wWord").textContent = `${word} — ${writeIdx+1}번째 글자 "${ch}"`;
+  $("guide").innerHTML=`<div class="gb">${ch}</div>`;
+  $("wProg").innerHTML = word.split("").map((_,i)=>`<div class="p ${i<writeIdx?'done':''}"></div>`).join("");
+  $("wfb").className="fb";$("wfb").innerHTML="";
+  $("next").disabled=true;$("next").textContent="글자를 다 쓴 뒤 '확인'";
+  clearCanvas();setProgress(62+Math.round(writeIdx/word.length*14),"커리어 · 한글 쓰기");
+}
+let drawing=false;
+function initCanvas(){
+  const cv=$("cv"),wrap=$("cwrap");const r=wrap.getBoundingClientRect();
+  cv.width=r.width*2;cv.height=r.height*2;const ctx=cv.getContext("2d");
+  ctx.scale(2,2);ctx.lineWidth=5;ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#a878ff";
+  const pos=e=>{const b=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return[t.clientX-b.left,t.clientY-b.top];};
+  const down=e=>{drawing=true;ctx.beginPath();ctx.moveTo(...pos(e));e.preventDefault();};
+  const move=e=>{if(!drawing)return;ctx.lineTo(...pos(e));ctx.stroke();e.preventDefault();};
+  const up=()=>drawing=false;
+  cv.onmousedown=down;cv.onmousemove=move;window.addEventListener("mouseup",up);
+  cv.ontouchstart=down;cv.ontouchmove=move;cv.ontouchend=up;
+}
+function clearCanvas(){const cv=$("cv");cv.getContext("2d").clearRect(0,0,cv.width,cv.height);}
+function checkWriting(){
+  const cv=$("cv"),ctx=cv.getContext("2d");const d=ctx.getImageData(0,0,cv.width,cv.height).data;
+  let ink=0;for(let i=3;i<d.length;i+=4){if(d[i]>20)ink++;}
+  const ratio=ink/(cv.width*cv.height);
+  const fb=$("wfb"),word=curWord();
+  if(ratio>0.012){
+    document.querySelector(".guide .gb")?.classList.add("done");
+    const ch=word[writeIdx];
+    if(writeIdx<word.length-1){
+      fb.className="fb ok show";fb.innerHTML=`✅ 잘했어요! "<b>${ch}</b>" 완벽해요!`;
+      writeIdx++;$("next").disabled=false;$("next").textContent="다음 글자 →";
+    }else{
+      fb.className="fb ok show";fb.innerHTML=`🎉 최고예요! "<b>${word}</b>" 다 썼어요! 정말 잘했어요!`;
+      $("next").disabled=false;$("next").textContent="예명 짓기 →";
+    }
+    try{const u=new SpeechSynthesisUtterance("잘했어요");u.lang="ko-KR";speechSynthesis.speak(u);}catch(e){}
+  }else{
+    fb.className="fb no show";fb.innerHTML="아직 조금 비어 있어요. 점선 글자를 따라 써보세요 ✍️";
+  }
+}
+
+/* NAMING */
+function renderName(){$("next").disabled=true;$("next").textContent="이름을 입력하세요";$("back").classList.add("hide");setProgress(88,"커리어 · 예명 등록");
+  $("nameIn").oninput=()=>{const v=$("nameIn").value.trim();$("next").disabled=v.length<2;
+    $("next").textContent=v.length<2?"이름을 입력하세요":"‘"+v+"’(으)로 데뷔하기 →";};}
+function pickName(n){$("nameIn").value=n;$("nameIn").dispatchEvent(new Event("input"));}
+
+/* REWARD */
+function renderRw(){stageName=$("nameIn").value.trim()||"아란";
+  $("rwName").textContent="‘"+stageName+"’";$("next").textContent="다음 에피소드 →";$("back").classList.add("hide");$("next").disabled=false;setProgress(100,"커리어 · 연습생 달성");}
+
+function show(p){phase=p;
+  $("phDlg").classList.toggle("hide",p!=="dlg");$("phJamo").classList.toggle("hide",p!=="jamo");
+  $("phMg").classList.toggle("hide",p!=="mg");$("phWrite").classList.toggle("hide",p!=="write");
+  $("phName").classList.toggle("hide",p!=="name");$("phRw").classList.toggle("hide",p!=="rw");
+  $("ep").textContent=p==="rw"?"EP.1 클리어":"EP.1 첫 걸음, 한글";
+  if(p==="dlg")renderDlg(); if(p==="jamo")renderJamo(); if(p==="mg")renderMg();
+  if(p==="write"){startWrite();setTimeout(initCanvas,30);} if(p==="name")renderName(); if(p==="rw")renderRw();
+  $("back").classList.toggle("hide", p==="mg"||p==="name"||p==="rw");
+}
+
+$("next").onclick=()=>{
+  if(phase==="dlg"){dIdx<DLG.length-1?(dIdx++,renderDlg()):(jStage="cons",show("jamo"));}
+  else if(phase==="jamo"){jStage==="cons"?(jStage="vow",renderJamo()):(qIdx=0,show("mg"));}
+  else if(phase==="mg"){if(!answered)return;qIdx<QUIZ.length-1?(qIdx++,renderMg()):show("write");}
+  else if(phase==="write"){ if(writeIdx<curWord().length-1){renderWrite();} else {show("name");} }
+  else if(phase==="name"){ if(($("nameIn").value||"").trim().length>=2) show("rw"); }
+  else if(phase==="rw"){ /* 다음 에피소드 미구현 */ }
+};
+$("back").onclick=()=>{ if(phase==="dlg"&&dIdx>0){dIdx--;renderDlg();} else if(phase==="jamo"&&jStage==="vow"){jStage="cons";renderJamo();} };
+
+show("dlg");
+</script>
+</body>
+</html>

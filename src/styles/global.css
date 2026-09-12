@@ -1,0 +1,98 @@
+/* ══════════════════════════════════════════════════════════
+   글로시스: 데뷔 프로젝트 — Design tokens & primitives (game feel)
+   ══════════════════════════════════════════════════════════ */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+:root{
+  /* brand */
+  --violet:#7c3aed; --pink:#ec4899;
+  --brand:linear-gradient(135deg,#8b5cf6 0%,#ec4899 100%);
+  --brand-soft:linear-gradient(135deg,rgba(124,58,237,.22),rgba(236,72,153,.18));
+  --violet-deep:#5b21b6; --pink-deep:#db2777;
+
+  /* member accents */
+  --aran:#5b8def; --chaea:#34d399; --dahee:#f472b6; --roy:#f5c451;
+
+  /* stage surfaces */
+  --bg:#0c0716; --bg-2:#170e29;
+  --surface:rgba(255,255,255,.055);
+  --surface-2:rgba(255,255,255,.09);
+  --line:rgba(168,120,255,.2);
+  --line-strong:rgba(168,120,255,.42);
+
+  /* ink */
+  --ink:#f7f4ff; --ink-2:#c9bce6; --ink-3:#8f81ac;
+
+  /* state */
+  --ok:#34d399; --no:#fb7185; --gold:#fbbf24;
+
+  /* geometry */
+  --r-sm:14px; --r-md:18px; --r-lg:22px; --r-xl:28px;
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-8:32px;
+
+  --sh-sm:0 4px 14px rgba(0,0,0,.35);
+  --sh-md:0 12px 30px rgba(0,0,0,.45);
+  --sh-lg:0 22px 54px rgba(0,0,0,.55);
+  --sh-brand:0 8px 0 #4c1d95, 0 14px 30px rgba(124,58,237,.5);      /* 3D 입체 버튼 */
+  --glow-v:0 0 26px rgba(139,92,246,.5);
+  --glow-p:0 0 26px rgba(236,72,153,.45);
+}
+
+*{box-sizing:border-box; margin:0; padding:0}
+html,body,#root{height:100%}
+body{
+  font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  background:var(--bg); color:var(--ink);
+  -webkit-font-smoothing:antialiased; letter-spacing:-.01em;
+  overflow-x:hidden;
+}
+button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; -webkit-tap-highlight-color:transparent}
+input{font-family:inherit}
+
+/* app shell — mobile-first, centered */
+.app{position:relative; min-height:100%; max-width:440px; margin:0 auto;
+  display:flex; flex-direction:column; background:var(--bg)}
+.app__stage{position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(90% 55% at 50% -8%, rgba(139,92,246,.42), transparent 62%),
+    radial-gradient(70% 45% at 88% 12%, rgba(236,72,153,.24), transparent 66%),
+    linear-gradient(180deg,#1a0f2e 0%,#0c0716 46%)}
+/* subtle moving aurora */
+.app__stage::after{content:""; position:absolute; inset:-30%;
+  background:conic-gradient(from 90deg, transparent, rgba(139,92,246,.14), transparent 40%);
+  animation:aurora 22s linear infinite}
+@keyframes aurora{to{transform:rotate(360deg)}}
+.app__inner{position:relative; z-index:1; display:flex; flex-direction:column; min-height:100%; flex:1}
+
+/* ── game animations ── */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulseGlow{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes pop{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@keyframes springIn{0%{opacity:0;transform:translateY(16px) scale(.97)}60%{opacity:1;transform:translateY(-4px) scale(1.01)}100%{transform:none}}
+@keyframes shine{0%{background-position:-140% 0}100%{background-position:240% 0}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-5px) rotate(1deg)}}
+
+/* ── shared primitives ── */
+.card{
+  position:relative; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-lg); backdrop-filter:blur(16px);
+  box-shadow:var(--sh-md);
+}
+/* 게임풍 3D 버튼 */
+.btn{
+  position:relative; border-radius:var(--r-md); font-weight:900; font-size:15.5px;
+  padding:16px 20px; letter-spacing:-.01em;
+  transition:transform .12s cubic-bezier(.3,1.4,.5,1), box-shadow .12s, filter .12s;
+}
+.btn--primary{ background:var(--brand); color:#fff; box-shadow:var(--sh-brand); flex:1 }
+.btn--primary:not(:disabled):hover{ transform:translateY(-2px); filter:brightness(1.06);
+  box-shadow:0 10px 0 #4c1d95, 0 18px 34px rgba(124,58,237,.55) }
+.btn--primary:not(:disabled):active{ transform:translateY(6px); box-shadow:0 2px 0 #4c1d95, 0 4px 12px rgba(124,58,237,.5) }
+.btn--primary:disabled{ opacity:.4; box-shadow:0 6px 0 #2e1065; cursor:not-allowed; filter:grayscale(.3) }
+.btn--ghost{ background:var(--surface-2); color:var(--ink-2); border:1px solid var(--line); flex:0 0 56px }
+.btn--ghost:hover{ background:rgba(255,255,255,.14) }
+/* shine sweep on primary */
+.btn--primary::after{content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);
+  background-size:220% 100%; background-position:-140% 0; animation:shine 3.4s ease-in-out infinite}
