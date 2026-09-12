@@ -4,7 +4,7 @@ import { Icon } from '../../components/Icon';
 import { HeroCarousel } from '../../components/HeroCarousel';
 
 /** My — 내 아이돌 프로필 · 커리어 · 학습 통계 · 숙련도 */
-export function MyScreen() {
+export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?: boolean }) {
   const m = MEMBERS[PLAYER.memberId];
   const p = PLAYER;
 
@@ -91,6 +91,15 @@ export function MyScreen() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="block">
+          <button className="tile" onClick={onLogout}>
+            <span className="tile__ic"><Icon name="user" size={20} /></span>
+            <span><span className="tile__t">{authed ? '로그아웃' : '로그인하기'}</span>
+              <span className="tile__d">{authed ? '계정에서 나가기' : '진도를 저장하려면 로그인'}</span></span>
+            <Icon name="chev" size={18} />
+          </button>
         </div>
       </div>
     </>

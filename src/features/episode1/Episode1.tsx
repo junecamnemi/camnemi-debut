@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Episode } from '../../types/game';
+import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer } from '../../services/game';
 import { MEMBERS } from '../../content/members';
 import { Hud } from '../../components/Hud';
 import { DialogueScene } from './scenes/DialogueScene';
@@ -24,7 +25,7 @@ function progressFor(phase: Phase, dlgIdx: number, dlgLen: number, jamoStage: 'c
   }
 }
 
-export function Episode1({ ep }: { ep: Episode }) {
+export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }) {
   const member = MEMBERS[ep.member];
 
   const [phase, setPhase] = useState<Phase>('dlg');
@@ -76,6 +77,15 @@ export function Episode1({ ep }: { ep: Episode }) {
       if (charIdx >= task.word.length - 1) setPhase('name');
       else { setCharIdx(charIdx + 1); setWriteDone(false); }
     } else if (phase === 'name') {
+      const name = stageName.trim() || member.ko;
+      if (userId) {
+        // 백엔드 저장 (실패해도 게임은 계속)
+        void saveStageName(userId, name);
+        void setSkill(userId, 'hangul_write', 'mastered');
+        void unlock(userId, 'pc0', 'photocard');
+        void setCareer(userId, '연습생', 42);
+        void logEvent(userId, 'episode', ep.id, true, { stageName: name });
+      }
       setPhase('reward');
     }
   }

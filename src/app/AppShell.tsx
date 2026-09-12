@@ -8,22 +8,40 @@ import { MyScreen } from '../features/my/MyScreen';
 import { Episode1 } from '../features/episode1/Episode1';
 import { LoginScreen } from '../features/auth/LoginScreen';
 import { EPISODE1 } from '../content/episode1';
+import { useAuth } from '../hooks/useAuth';
+import { signOut } from '../services/auth';
 import './shell.css';
 
-/** 앱 메인 프레임 — 로그인 + 탭 네비게이션 + 화면 + 에피소드 실행 */
+const GUEST_KEY = 'camnemi_debut_guest';
+
+/** 앱 메인 프레임 — 로그인(Supabase) + 탭 네비게이션 + 화면 + 에피소드 실행 */
 export function AppShell() {
-  const [loggedIn, setLoggedIn] = useState(() => {
-    try { return localStorage.getItem('camnemi_debut_auth') === '1'; } catch { return false; }
+  const { userId, loading } = useAuth();
+  const [guest, setGuest] = useState(() => {
+    try { return localStorage.getItem(GUEST_KEY) === '1'; } catch { return false; }
   });
   const [tab, setTab] = useState<TabKey>('home');
   const [playing, setPlaying] = useState(false);
 
-  function login() {
-    try { localStorage.setItem('camnemi_debut_auth', '1'); } catch { /* noop */ }
-    setLoggedIn(true);
+  const authed = !!userId || guest;
+
+  // 로딩 스플래시
+  if (loading && !guest) {
+    return (
+      <div className="splash">
+        <div className="splash__brand">GLOWSIS</div>
+        <div className="splash__dot" />
+      </div>
+    );
   }
 
-  if (!loggedIn) return <LoginScreen onLogin={login} />;
+  if (!authed) {
+    return (
+      <LoginScreen
+        onGuest={() => { try { localStorage.setItem(GUEST_KEY, '1'); } catch { /* noop */ } setGuest(true); }}
+      />
+    );
+  }
 
   // 에피소드 플레이 중 → 전체화면 (탭바 숨김)
   if (playing) {
@@ -33,9 +51,15 @@ export function AppShell() {
           <button className="btn btn--ghost" style={{ flex: '0 0 auto', padding: '10px 16px', fontSize: 13 }}
                   onClick={() => setPlaying(false)}>← 나가기</button>
         </div>
-        <Episode1 ep={EPISODE1} />
+        <Episode1 ep={EPISODE1} userId={userId} />
       </div>
     );
+  }
+
+  async function logout() {
+    await signOut();
+    try { localStorage.removeItem(GUEST_KEY); } catch { /* noop */ }
+    setGuest(false);
   }
 
   return (
@@ -51,7 +75,7 @@ export function AppShell() {
         </>
       )}
       {tab === 'cards' && <CollectionScreen />}
-      {tab === 'my' && <MyScreen />}
+      {tab === 'my' && <MyScreen onLogout={guest ? logout : logout} authed={!!userId} />}
 
       <TabBar active={tab} onTab={setTab} />
     </div>

@@ -225,6 +225,18 @@
 .login__sent-d b{color:var(--ink)}
 .login__link{display:block;margin:14px auto 0;font-size:12.5px;font-weight:700;color:var(--ink-3);text-decoration:underline}
 .login__foot{font-size:10.5px;color:var(--ink-3);text-align:center;margin-top:22px;line-height:1.5}
+.login__err{font-size:11.5px;color:var(--no);text-align:center;margin-top:9px;font-weight:600}
+.login__guest{display:block;margin:14px auto 0;font-size:13px;font-weight:800;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--line);padding:12px 22px;border-radius:99px}
+.login__guest:hover{border-color:var(--line-strong);color:var(--ink)}
+
+/* 로딩 스플래시 */
+.splash{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:100%}
+.splash__brand{font-size:30px;font-weight:900;letter-spacing:-.03em;
+  background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:float 2.4s ease-in-out infinite}
+.splash__dot{width:34px;height:6px;border-radius:99px;background:var(--brand);
+  animation:pulseGlow 1.2s ease-in-out infinite}
 
 /* ══ GAME FEEL ══ */
 
