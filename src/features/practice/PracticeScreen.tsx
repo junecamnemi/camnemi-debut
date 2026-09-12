@@ -28,6 +28,11 @@ export function PracticeScreen() {
 
   return (
     <>
+      <div className="appbar">
+        <span className="appbar__brand">{t('train')}</span>
+        <span className="appbar__right">TOPIK I</span>
+      </div>
+
       <HeroCarousel
         small={mode === 'textbook'}
         badge={mode === 'practice' ? 'TOPIK I' : t('train_textbook')}
@@ -35,10 +40,7 @@ export function PracticeScreen() {
         subtitle={mode === 'practice' ? t('train_hero_sub') : t('train_tb_sub')}
       />
 
-      <div className="appbar">
-        <span className="appbar__brand">{t('train')}</span>
-        <span className="appbar__right">TOPIK I</span>
-      </div>
+      
 
       <div className="segbar">
         <button className={`seg${mode === 'practice' ? ' on' : ''}`} onClick={() => setMode('practice')}>{t('train_practice')}</button>

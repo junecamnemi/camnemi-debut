@@ -11,13 +11,13 @@ export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' |
 
   return (
     <>
-      <HeroCarousel badge={t('home_today')} title={t('home_hero_title')} subtitle={t('home_hero_sub')} />
-
-      {/* 투명 헤더 — 히어로 위에 오버레이 */}
       <div className="appbar">
         <span className="appbar__brand">GLOWSIS</span>
         <span className="appbar__right">🔥 {t('streak')(PLAYER.streakDays)}</span>
       </div>
+
+      <HeroCarousel badge={t('home_today')} title={t('home_hero_title')} subtitle={t('home_hero_sub')} />
+      
 
       <div className="screen">
         <button className="btn btn--primary" onClick={() => onGo('story')}>{t('continue')}</button>

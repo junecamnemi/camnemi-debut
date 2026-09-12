@@ -10,13 +10,15 @@ export function CollectionScreen() {
 
   return (
     <>
-      <HeroCarousel small badge={t('collected')(owned, PLAYER.cards.length)}
-                    title={t('collection_hero')} subtitle={t('collection_sub')} />
-
       <div className="appbar">
         <span className="appbar__brand">{t('collection')}</span>
         <span className="appbar__right">{owned} / {PLAYER.cards.length}</span>
       </div>
+
+      <HeroCarousel small badge={t('collected')(owned, PLAYER.cards.length)}
+                    title={t('collection_hero')} subtitle={t('collection_sub')} />
+
+      
 
       <div className="screen">
         <div className="cardgrid">

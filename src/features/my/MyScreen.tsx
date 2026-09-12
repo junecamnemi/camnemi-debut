@@ -4,7 +4,6 @@ import { Icon } from '../../components/Icon';
 import { HeroCarousel } from '../../components/HeroCarousel';
 import { useI18n, type Lang } from '../../i18n';
 
-
 /** My — idol profile · career · stats · skills · language · account */
 export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?: boolean }) {
   const { t, lang, setLang } = useI18n();
@@ -19,13 +18,15 @@ export function MyScreen({ onLogout, authed }: { onLogout?: () => void; authed?:
 
   return (
     <>
-      <HeroCarousel small badge={t('my_profile')} title={`‘${p.stageName}’`}
-                    subtitle={`${m.ko} · ${t(CAREER[curIdx].labelKey)}`} />
-
       <div className="appbar">
         <span className="appbar__brand">GLOWSIS</span>
         <span className="appbar__right"><Icon name="gear" size={19} /></span>
       </div>
+
+      <HeroCarousel small badge={t('my_profile')} title={`‘${p.stageName}’`}
+                    subtitle={`${m.ko} · ${t(CAREER[curIdx].labelKey)}`} />
+
+      
 
       <div className="screen">
         {/* profile */}

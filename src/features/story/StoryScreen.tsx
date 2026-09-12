@@ -30,12 +30,14 @@ export function StoryScreen() {
 
   return (
     <>
-      <HeroCarousel badge={t('story_hero_badge')} title={t('story_hero_title')} subtitle={t('story_hero_sub')} />
-
       <div className="appbar">
         <span className="appbar__brand">{t('story')}</span>
         <span className="appbar__right">EP.{done}/{EPISODES.length}</span>
       </div>
+
+      <HeroCarousel badge={t('story_hero_badge')} title={t('story_hero_title')} subtitle={t('story_hero_sub')} />
+
+      
 
       <div className="screen">
         <div className="block">
