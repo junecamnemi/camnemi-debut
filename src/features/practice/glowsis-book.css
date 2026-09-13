@@ -7,11 +7,12 @@
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 .book__page{
+  color: var(--ink);
   --bg: #F7F4FF;
   --card: #ffffff;
   --card2: #F0EBFB;
   --ink: #3D3561;
-  --ink2: #9A92C4;
+  --ink2: #6F679E;
   --line: rgba(61,53,97,.10);
   --violet: #7B6CF6;
   --violet2: #A78BFA;
