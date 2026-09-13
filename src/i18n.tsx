@@ -38,6 +38,8 @@ const DICT = {
     train_tb_sub: '1A – 6B · grammar, vocab, dialogue by unit',
     kind_read: 'Reading', kind_listen: 'Listening', kind_vocab: 'Vocabulary',
     play_audio: 'Play audio', check: 'Check', correct: 'Correct!', incorrect: 'Not quite',
+    audio_failed: "Couldn't play audio. Please try again.",
+    audio_fallback: 'Could not load the premium voice — played with the device voice instead.',
     // story
     story: 'Story',
     story_hero_title: 'Debut Project',
@@ -140,6 +142,8 @@ const DICT = {
     train_tb_sub: '1A~6B · 단원별 문법·어휘·회화',
     kind_read: '읽기', kind_listen: '듣기', kind_vocab: '어휘',
     play_audio: '음성 재생', check: '확인', correct: '정답!', incorrect: '다시 볼까요',
+    audio_failed: '음성을 재생하지 못했어요. 잠시 후 다시 시도해 주세요.',
+    audio_fallback: '고품질 음성을 불러오지 못해 기기 음성으로 재생했어요.',
     story: '스토리',
     story_hero_title: '데뷔 프로젝트',
     story_hero_badge: '기획사 글로시스',

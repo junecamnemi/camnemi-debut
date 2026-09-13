@@ -52,7 +52,7 @@ input{font-family:inherit}
 /* app shell — mobile-first, centered */
 .app{position:relative; height:100%; max-width:440px; margin:0 auto; overflow:hidden;
   display:flex; flex-direction:column; background:var(--bg)}
-.app__stage{position:fixed; inset:0; z-index:0; pointer-events:none;
+.app__stage{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
   background:
     radial-gradient(90% 55% at 50% -8%, rgba(139,92,246,.42), transparent 62%),
     radial-gradient(70% 45% at 88% 12%, rgba(236,72,153,.24), transparent 66%),

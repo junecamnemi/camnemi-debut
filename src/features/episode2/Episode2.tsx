@@ -113,7 +113,7 @@ export function Episode2({ ep, userId }: { ep: Episode; userId?: string }) {
       </div>
 
       <div className="ctl">
-        {phase !== 'reward' && (
+        {phase !== 'reward' && !(phase === 'write' && !writeDone) && (
           <button
             className="btn btn--primary"
             disabled={(phase === 'manners' && !mannersOk) || (phase === 'write' && !writeDone)}
