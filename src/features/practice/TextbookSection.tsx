@@ -68,11 +68,13 @@ const LABELS: Record<string, string> = {
 export function TextbookSection() {
   const [levelIdx, setLevelIdx] = useState(0);
   const [units, setUnits] = useState<BookUnit[]>([]);
+  const [loading, setLoading] = useState(true);
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const [page, setPage] = useState(0);
   const lvl = TEXTBOOK[levelIdx];
 
-  useBook(lvl.file, (u) => { setUnits(u); setOpenIdx(null); });
+  useBook(lvl.file, (u) => { setUnits(u); setOpenIdx(null); setLoading(false); });
+  useEffect(() => { setLoading(true); }, [lvl.file]);
 
   // ── 단원 뷰어 (플립북) ──
   if (openIdx !== null && units[openIdx]) {
@@ -148,7 +150,17 @@ export function TextbookSection() {
       </div>
 
       <div className="tblist">
-        {lvl.units.map((u, i) => (
+        {loading ? (
+          <div className="skelwrap">
+            {Array.from({ length: 5 }).map((_, i) => <div key={i} className="skel skel--card" />)}
+          </div>
+        ) : lvl.units.length === 0 ? (
+          <div className="state">
+            <span className="state__ic"><Icon name="book" size={24} /></span>
+            <span className="state__t">No units yet</span>
+            <span className="state__d">This level is being prepared. Try another level above.</span>
+          </div>
+        ) : lvl.units.map((u, i) => (
           <button key={i} className="tbrow" onClick={() => { setOpenIdx(i); setPage(0); }}>
             <span className="tbrow__no">{u.no}</span>
             <span className="tbrow__tx">

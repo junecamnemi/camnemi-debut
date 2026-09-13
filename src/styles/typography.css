@@ -1,0 +1,307 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   글로시스: 데뷔 — 문자 정렬 UX 시스템 (Typography & alignment system)
+   ──────────────────────────────────────────────────────────────────────────
+   한/영 혼용 앱에서 "정렬이 흔들리지 않는" 타이포 규칙을 토큰 + 유틸리티로.
+   전 화면 공용. 임의 px 금지 — 여기 토큰(--fs-*, --lh-*, --measure)만 사용.
+
+   설계 원칙
+   1. 정렬:  제목·히어로 = 중앙 / 본문·리스트·폼·읽기 = 좌측(동일 거터)
+            / 숫자·통계 = tabular-nums·우측정렬.  justify 금지, 여러 줄 중앙 금지.
+   2. 줄바꿈: 한국어 keep-all(단어중간 안 잘림) + 긴 라틴 토큰 anywhere.
+   3. 줄간격: 한글 본문 1.55 / 라틴 1.45 — :lang() 자동 적용.
+   4. measure: 읽기 텍스트 최대 38ch (모바일 100%).
+   5. 혼용: 폰트 fallback 통일 + letter-spacing 규칙으로 baseline 흔들림 방지.
+   6. 말줄임: 한 줄 .ellipsis / 여러 줄 .clamp-2 .clamp-3.
+   7. 광학정렬: 아이콘+제목 optical baseline 일치, 버튼 라벨 중앙+좌우 동일 패딩.
+   8. 반응형: clamp() 폰트. 고정 폭 금지(i18n EN↔KO 전환에도 안 깨지게 flex/min).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* ── 폰트 스케일 (clamp = 반응형, 고정 px 금지) ──────────────────────────
+     min은 소형 기기 최소치, 선호값은 vw 기반 유동, max는 상한.               */
+  --fs-hero:  clamp(22px, 6.2vw, 27px);   /* 히어로 타이틀 (배경영상 위)      */
+  --fs-title: clamp(19px, 5.4vw, 23px);   /* 화면 제목                        */
+  --fs-h2:    clamp(16px, 4.4vw, 18px);   /* 섹션/카드 제목                   */
+  --fs-h3:    clamp(14px, 3.9vw, 15.5px); /* 소제목/리스트 제목               */
+  --fs-body:  clamp(13.5px, 3.7vw, 15px); /* 본문·읽기                        */
+  --fs-label: clamp(12.5px, 3.4vw, 14px); /* 라벨·버튼                        */
+  --fs-sm:    clamp(11px, 3vw, 12.5px);   /* 보조 설명                        */
+  --fs-xs:    clamp(9.5px, 2.7vw, 11px);  /* 캡션·배지·탭                     */
+  --fs-num:   clamp(19px, 5.6vw, 24px);   /* 통계 숫자                        */
+
+  /* ── 줄간격 (언어별 :lang() 로 자동 스왑) ── */
+  --lh-tight: 1.2;    /* 큰 제목                     */
+  --lh-snug:  1.35;   /* 소제목                      */
+  --lh-body:  1.55;   /* 한글 본문 기본              */
+  --lh-latin: 1.45;   /* 라틴 본문                   */
+
+  /* ── 자간 (혼용 시 baseline·리듬 안정) ── */
+  --ls-hero:  -.03em;
+  --ls-title: -.02em;
+  --ls-body:  -.01em;
+  --ls-num:    0;      /* 숫자는 자간 0 (tabular 리듬 유지) */
+
+  /* ── 행 길이(measure): 읽기 텍스트 최대 폭 ── */
+  --measure: 38ch;
+
+  /* ── 공통 텍스트 거터: 좌측 정렬 요소들이 공유하는 시작선 ── */
+  --gutter: var(--sp-4);
+}
+
+/* 언어별 본문 줄간격 자동 적용 (html[lang] / [lang] 어디에 걸리든) */
+:root:lang(en){ --lh-doc: var(--lh-latin); }
+:root:lang(ko){ --lh-doc: var(--lh-body);  }
+:where(:lang(en)){ --lh-doc: var(--lh-latin); }
+:where(:lang(ko)){ --lh-doc: var(--lh-body);  }
+
+/* ══ 기본 문자 렌더링 (혼용 baseline 안정화) ══════════════════════════════ */
+/* 폰트 fallback을 한 벌로 통일 → 한글·라틴이 같은 metric family에서 렌더 →
+   숫자·영문 섞여도 baseline/자간 흔들림 최소화. */
+html, body, button, input, select, textarea{
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+    "Apple SD Gothic Neo","Malgun Gothic","Segoe UI",Roboto,system-ui,sans-serif;
+  font-variant-numeric: proportional-nums;   /* 본문 숫자는 자연스러운 폭 */
+  text-rendering: optimizeLegibility;
+}
+body{
+  font-size: var(--fs-body);
+  line-height: var(--lh-doc, var(--lh-body));
+  letter-spacing: var(--ls-body);
+  word-break: keep-all;          /* 한국어 단어 중간 잘림 방지 (앱 전역 기본) */
+  overflow-wrap: anywhere;       /* 그러나 긴 URL/영문 토큰은 강제 줄바꿈 허용 */
+}
+
+/* ══ 정렬 정책 유틸리티 ════════════════════════════════════════════════════ */
+.t-center{ text-align:center }
+.t-left  { text-align:left  }
+.t-right { text-align:right }
+/* justify 금지 정책: 실수로 들어와도 강제로 되돌림 */
+[align="justify"], .t-justify{ text-align:left !important }
+
+/* 히어로/제목 = 중앙 정렬 세트 (짧은 1~2줄 전제) */
+.t-hero{
+  font-size: var(--fs-hero); font-weight:900;
+  line-height: var(--lh-tight); letter-spacing: var(--ls-hero);
+  text-align:center; text-wrap:balance;
+}
+.t-title{
+  font-size: var(--fs-title); font-weight:900;
+  line-height: var(--lh-tight); letter-spacing: var(--ls-title);
+  text-align:center; text-wrap:balance;
+}
+/* 좌측 정렬 섹션/카드 제목 */
+.t-h2{
+  font-size: var(--fs-h2); font-weight:900;
+  line-height: var(--lh-snug); letter-spacing: var(--ls-title); text-align:left;
+}
+.t-h3{
+  font-size: var(--fs-h3); font-weight:800;
+  line-height: var(--lh-snug); letter-spacing: var(--ls-body); text-align:left;
+}
+
+/* ══ 본문/읽기 텍스트 ══════════════════════════════════════════════════════ */
+.txt{
+  font-size: var(--fs-body);
+  line-height: var(--lh-doc, var(--lh-body));
+  letter-spacing: var(--ls-body);
+  text-align:left;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.txt--sm{ font-size: var(--fs-sm) }
+/* 무슨 일이 있어도 한 단어를 통째로 유지(줄바꿈 절대 안 함) */
+.txt--keep{ word-break: keep-all; overflow-wrap: normal; white-space:normal }
+/* 여러 줄 본문은 중앙정렬 금지 — 좌측 강제 (실수 방지) */
+.txt.t-center{ text-align:center }          /* 짧은 1줄 캡션 예외만 허용 */
+
+/* 읽기 폭 제한: 최대 38ch, 모바일에선 100% (좌측 거터에 붙임) */
+.measure{ max-width: var(--measure); width:100% }
+.measure--center{ max-width: var(--measure); width:100%; margin-inline:auto }
+
+/* ══ 숫자·통계 ════════════════════════════════════════════════════════════ */
+/* tabular-nums = 자리수 폭 고정 → 세로로 자리 맞음. 통계/카운터 전용. */
+.num{
+  font-variant-numeric: tabular-nums;
+  font-feature-settings:"tnum" 1,"lnum" 1;
+  letter-spacing: var(--ls-num);
+}
+.num--stat{
+  font-size: var(--fs-num); font-weight:900; line-height:1;
+  font-variant-numeric: tabular-nums; letter-spacing:-.02em;
+}
+.num--right{ text-align:right; font-variant-numeric: tabular-nums }
+
+/* ══ 말줄임 ════════════════════════════════════════════════════════════════ */
+.ellipsis{
+  min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+}
+.clamp-1,.clamp-2,.clamp-3{
+  display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden;
+  word-break: keep-all; overflow-wrap:anywhere;
+}
+.clamp-1{ -webkit-line-clamp:1 }
+.clamp-2{ -webkit-line-clamp:2 }
+.clamp-3{ -webkit-line-clamp:3 }
+
+/* ══ 광학 정렬 (아이콘 + 텍스트) ═══════════════════════════════════════════ */
+/* 제목 앞 아이콘/불릿을 텍스트 첫 줄의 광학 중심에 맞춤.
+   align-items:center 대신 첫 줄 기준으로 정렬해 여러 줄일 때도 안정. */
+.optic{
+  display:flex; align-items:center; gap: var(--sp-2); min-width:0;
+}
+.optic > svg, .optic > .optic__ic{
+  flex:none; display:block;          /* 아이콘이 baseline 위로 뜨지 않게 block */
+  position:relative; top:.02em;      /* 한글 x-height 보정(광학 baseline) */
+}
+.optic__t{ min-width:0 }             /* 텍스트가 줄어들 수 있게 (ellipsis 협조) */
+
+/* ══ 라벨/버튼 텍스트 ══════════════════════════════════════════════════════ */
+/* 버튼 라벨: 중앙 정렬 + 좌우 패딩 동일(토큰) + 줄바꿈 방지(짧은 라벨 전제).
+   고정 width 금지 → 라벨 길이에 따라 늘어나되 flex로 배치. */
+.lbl{
+  font-size: var(--fs-label); font-weight:800; letter-spacing: var(--ls-body);
+  text-align:center; white-space:nowrap; line-height:1.2;
+}
+/* 버튼류에 공통으로: 좌우 패딩 동일 + 내용 중앙 + 아이콘 광학정렬 */
+.btn, .seg, .langbtn, .lvchip, .sbtn, .tb-back, .tb2__back{
+  display:inline-flex; align-items:center; justify-content:center;
+  gap: var(--sp-2); text-align:center;
+}
+.btn > svg, .seg > svg, .sbtn > svg{ flex:none }
+
+/* ══ 반응형 안전장치: 고정 폭 금지, i18n 전환에도 안 깨지게 ═══════════════ */
+/* 텍스트를 담는 유연 컨테이너: 최소폭 0이라 flex 안에서 ellipsis 가능 */
+.flex-txt{ flex:1; min-width:0 }
+
+/* ══ 빈 상태 / 로딩 / 잠금 상태 (전 화면 공용 프레임) ═══════════════════════ */
+.state{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap: var(--sp-3); text-align:center;
+  padding: var(--sp-8) var(--sp-5);
+  min-height: 180px;
+}
+.state__ic{
+  width:56px; height:56px; border-radius:50%; display:grid; place-items:center;
+  color:var(--ink-2); background:var(--surface); border:1px solid var(--line);
+}
+.state__t{
+  font-size: var(--fs-h3); font-weight:900; letter-spacing:var(--ls-title);
+  color:var(--ink); text-align:center;
+}
+.state__d{
+  font-size: var(--fs-sm); font-weight:600; color:var(--ink-3);
+  line-height: var(--lh-doc, var(--lh-body)); text-align:center;
+  max-width: 30ch; word-break:keep-all; overflow-wrap:anywhere;
+}
+.state__cta{ margin-top: var(--sp-2) }
+
+/* 스켈레톤 로딩 (콘텐츠 자리 유지 → 레이아웃 점프 방지) */
+.skel{
+  position:relative; overflow:hidden;
+  background:var(--surface); border:1px solid var(--line);
+  border-radius: var(--r-md);
+}
+.skel::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.08) 50%,transparent 70%);
+  background-size:220% 100%; animation:skelShine 1.3s ease-in-out infinite;
+}
+.skel--line{ height:14px; border-radius:99px }
+.skel--title{ height:20px; width:60%; border-radius:99px }
+.skel--card{ height:72px }
+@keyframes skelShine{ to{ background-position:-160% 0 } }
+
+.skelwrap{ display:flex; flex-direction:column; gap:var(--sp-3) }
+
+/* 잠금 오버레이 (카드/패널 공용) */
+.lockbadge{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size: var(--fs-xs); font-weight:800; color:var(--ink-2);
+  background:var(--surface-2); border:1px solid var(--line);
+  padding:4px 10px; border-radius:99px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   컴포넌트 바인딩 — 기존 화면 클래스를 타이포 시스템에 연결
+   (JSX를 전부 고치지 않고 전 화면에 규칙을 일괄 적용하는 단일 소스)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 제목류: 토큰 폰트 + keep-all + balance (히어로/제목) ── */
+.home__title, .scr__title, .hero__title{
+  font-size: var(--fs-hero); line-height: var(--lh-tight);
+  letter-spacing: var(--ls-hero); word-break: keep-all; text-wrap: balance;
+}
+.screen__title{
+  font-size: var(--fs-title); line-height: var(--lh-tight);
+  letter-spacing: var(--ls-title); word-break: keep-all; text-wrap: balance;
+}
+.tb2__ti, .tb-reader__t{
+  font-size: var(--fs-title); line-height: var(--lh-snug);
+  letter-spacing: var(--ls-title); word-break: keep-all;
+}
+
+/* ── 섹션/카드 제목 (좌측, keep-all) ── */
+.block__t, .block__h, .homehero__t, .login__sent-t{
+  word-break: keep-all; text-wrap: balance;
+}
+
+/* ── 본문·읽기: 언어별 줄간격 + keep-all + 라틴 토큰 anywhere ── */
+.home__sub, .scr__sub, .hero__sub, .screen__sub, .homehero__d,
+.qprompt, .qpassage, .qexplain, .qfb, .tb-sec, .login__sub, .login__sent-d,
+.state__d{
+  line-height: var(--lh-doc, var(--lh-body));
+  word-break: keep-all; overflow-wrap: anywhere;
+}
+
+/* 읽기 지문은 measure 폭으로 (긴 줄 방지, 모바일 100%) */
+.qpassage, .qprompt{ max-width: var(--measure) }
+
+/* ── 리스트 제목: 한 줄 말줄임 (넘치면 …) ── */
+.epi__t, .tile__t, .tbrow__ti, .profile__name, .kind__t, .skill__label{
+  min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
+}
+/* ── 리스트 설명: 두 줄 클램프 ── */
+.epi__d, .tile__d, .profile__meta{
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2;
+  overflow:hidden; word-break:keep-all; overflow-wrap:anywhere; white-space:normal;
+}
+/* 미니 프로필 메타는 한 줄 (좁은 행) */
+.profile--mini .profile__meta{ -webkit-line-clamp:1 }
+
+/* ── 숫자·통계·카운터: tabular-nums (자리수 폭 고정) ── */
+.stat b, .stat__v, .hearts__n, .appbar__right, .qprog, .career__pct,
+.book__num, .homehero__k, .tabbar__lb{
+  font-variant-numeric: tabular-nums;
+  font-feature-settings:"tnum" 1,"lnum" 1;
+}
+
+/* ── 광학 정렬: 아이콘 + 텍스트가 함께 오는 슬롯들 ── */
+.epi, .tile, .skill, .tbrow, .kind, .sbtn, .qaudio, .speak,
+.block__h, .lockbadge{ min-width:0 }
+.epi svg, .tile svg, .skill svg, .tbrow svg,
+.sbtn svg, .qaudio svg, .speak svg{ flex:none; display:block }
+
+/* 텍스트를 담는 유연 슬롯: flex 안에서 ellipsis 되게 min-width:0 */
+.epi__txt, .epi__meta, .tile > span:not(.tile__ic), .profile__txt,
+.tbrow__tx, .skill__txt, .flex-txt{ min-width:0 }
+
+/* ── 버튼 라벨: 중앙 + 좌우 패딩 동일 + 줄바꿈 방지 ── */
+.btn, .langbtn, .lvchip, .seg{
+  white-space:nowrap;
+  padding-left: var(--sp-5); padding-right: var(--sp-5);
+}
+.lvchip{ padding-left: var(--sp-3); padding-right: var(--sp-3) }
+.seg{ padding-left: var(--sp-3); padding-right: var(--sp-3) }
+/* i18n EN↔KO 전환에도 안 깨지게: 고정폭 대신 유연 배치 */
+.langbar, .segbar, .kinds, .stats{ min-width:0 }
+.langbtn, .seg{ min-width:0 }
+
+/* ── 배지/탭/캡션 등 소형 라벨: 자간 살짝 넓혀 판독성 (혼용 안정) ── */
+.scr__badge, .home__badge, .hero__badge, .qtag, .profile__badge,
+.lockbadge, .tabbar__lb, .epi__state{ letter-spacing: var(--ls-body) }
+
+/* ══ 접근성: 모션 최소화 선호 시 애니 정지 ════════════════════════════════ */
+@media (prefers-reduced-motion: reduce){
+  .skel::after{ animation:none }
+  .app__stage::after{ animation:none }
+}

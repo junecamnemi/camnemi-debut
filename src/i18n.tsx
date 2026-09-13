@@ -215,7 +215,11 @@ export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>(() => {
     try { return localStorage.getItem(LS_KEY) === 'ko' ? 'ko' : 'en'; } catch { return 'en'; }
   });
-  useEffect(() => { try { localStorage.setItem(LS_KEY, lang); } catch { /* noop */ } }, [lang]);
+  useEffect(() => {
+    try { localStorage.setItem(LS_KEY, lang); } catch { /* noop */ }
+    // <html lang> 을 실제 언어로 → typography.css 의 :lang() 줄간격 규칙 자동 적용
+    try { document.documentElement.lang = lang; } catch { /* noop */ }
+  }, [lang]);
 
   const t = ((k: TKey) => (DICT[lang] as Record<string, unknown>)[k] ?? (DICT.en as Record<string, unknown>)[k]) as Ctx['t'];
   return <LangCtx.Provider value={{ lang, setLang, t }}>{children}</LangCtx.Provider>;

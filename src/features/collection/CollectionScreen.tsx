@@ -27,14 +27,22 @@ export function CollectionScreen() {
       }
     >
       <div className="screen">
-        <div className="cardgrid">
-          {PLAYER.cards.map((c, i) => (
-            <div key={c.id} className={`pcard${c.owned ? '' : ' is-locked'}`}>
-              <img src={c.img} alt={`photocard ${i + 1}`} loading="lazy" />
-              {!c.owned && <div className="pcard__lock"><Icon name="lock" size={18} /></div>}
-            </div>
-          ))}
-        </div>
+        {PLAYER.cards.length === 0 ? (
+          <div className="state">
+            <span className="state__ic"><Icon name="cards" size={24} /></span>
+            <span className="state__t">{t('collection_hero')}</span>
+            <span className="state__d">{t('collection_sub')}</span>
+          </div>
+        ) : (
+          <div className="cardgrid">
+            {PLAYER.cards.map((c, i) => (
+              <div key={c.id} className={`pcard${c.owned ? '' : ' is-locked'}`}>
+                <img src={c.img} alt={`photocard ${i + 1}`} loading="lazy" />
+                {!c.owned && <div className="pcard__lock"><Icon name="lock" size={18} /></div>}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </ScreenBg>
   );
