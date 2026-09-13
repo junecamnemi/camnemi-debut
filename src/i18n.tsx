@@ -105,7 +105,7 @@ const DICT = {
     // hero carousel scene labels
     scene_home: 'Home', scene_song: 'Song', scene_stage: 'Stage', scene_rank: 'Rank', scene_set: 'Settings',
     scene_c_song: 'Concert · Song', scene_c_stage: 'Concert · Stage', scene_c_rank: 'Concert · Rank', scene_c_set: 'Concert · Settings',
-    questions_n: (n: number) => `${n} question${n === 1 ? '' : 's'}`, back_menu: 'Back to menu',
+    questions_n: (n: number) => `${n} question${n === 1 ? '' : 's'}`, daily_title: "Today's TOPIK", daily_empty: 'No problems yet — check back soon.', back_menu: 'Back to menu',
     replay_ep: (n: number) => `Replay EP.${n} →`,
     // career stages
     career_entry: 'Trainee', career_rookie: 'Rookie', career_team: 'Team project',
@@ -197,7 +197,7 @@ const DICT = {
     reward_title: '해금',
     scene_home: '홈', scene_song: '노래', scene_stage: '무대', scene_rank: '랭크', scene_set: '설정',
     scene_c_song: '콘서트 · 노래', scene_c_stage: '콘서트 · 무대', scene_c_rank: '콘서트 · 랭크', scene_c_set: '콘서트 · 설정',
-    questions_n: (n: number) => `${n}문제`, back_menu: '메뉴로', replay_ep: (n: number) => `EP.${n} 다시 보기 →`,
+    questions_n: (n: number) => `${n}문제`, daily_title: '오늘의 문제', daily_empty: '아직 문제가 없어요 — 곧 올라옵니다.', back_menu: '메뉴로', replay_ep: (n: number) => `EP.${n} 다시 보기 →`,
     career_entry: '입문', career_rookie: '연습생', career_team: '팀프로젝트',
     career_debut_ready: '데뷔준비', career_debut: '데뷔',
   },
