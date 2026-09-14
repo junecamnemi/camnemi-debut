@@ -5,6 +5,8 @@ import { useI18n } from '../../../i18n';
 interface Props {
   member: Member;
   line: DialogueLine;
+  /** 스토리 컷씬 오버라이드 — 제공되면 line.scene/sceneVideo 대신 이 이미지를 9:16 포트레이트로 표시 */
+  sceneImage?: string;
 }
 
 /** 크로스페이드 전환 시간(ms) — episode1.css .sceneframe__layer transition 과 일치시킬 것 */
@@ -68,7 +70,7 @@ function SceneMedia({ videoSrc, imgSrc }: { videoSrc?: string; imgSrc?: string }
             />
           ) : layer.imgSrc ? (
             <>
-              <img className="sceneframe__img" src={layer.imgSrc} alt="" onLoad={() => reveal(layer.id)} />
+              <img className="sceneframe__img" src={layer.imgSrc} alt="" loading="lazy" onLoad={() => reveal(layer.id)} />
               <div className="sceneframe__light" />
               <span className="p p1" /><span className="p p2" /><span className="p p3" /><span className="p p4" />
             </>
@@ -84,11 +86,14 @@ function SceneMedia({ videoSrc, imgSrc }: { videoSrc?: string; imgSrc?: string }
  * 대화 씬 — EP.1 장면 영상(있으면) 또는 장면 이미지(켄번즈) 또는 캐릭터 루프 영상.
  * 미디어 레이어는 대사 진행과 분리되어 안정적으로 유지되고, 장면이 바뀔 때만 크로스페이드된다.
  */
-export function DialogueScene({ member, line }: Props) {
+export function DialogueScene({ member, line, sceneImage }: Props) {
   const { lang } = useI18n();
   const mname = lang === 'ko' ? member.ko : member.en;
   const halo = `var(${member.color})`;
-  const hasScene = !!(line.sceneVideo || line.scene);
+  // 컷씬(sceneImage)이 주어지면 이를 장면 이미지로 사용 (line.scene/sceneVideo 는 무시)
+  const videoSrc = sceneImage ? undefined : line.sceneVideo;
+  const imgSrc = sceneImage ?? line.scene;
+  const hasScene = !!(videoSrc || imgSrc);
 
   // 대사 버블: 재마운트(key) 대신 내용이 바뀔 때 짧게 페이드 인
   const [bubbleOp, setBubbleOp] = useState(1);
@@ -108,8 +113,8 @@ export function DialogueScene({ member, line }: Props) {
         <div className="char__halo" />
 
         {hasScene ? (
-          <div className="sceneframe">
-            <SceneMedia videoSrc={line.sceneVideo} imgSrc={line.scene} />
+          <div className={`sceneframe${sceneImage ? ' sceneframe--portrait' : ''}`}>
+            <SceneMedia videoSrc={videoSrc} imgSrc={imgSrc} />
           </div>
         ) : member.loop ? (
           <video className="char__vid" src={member.loop} poster={member.portrait}

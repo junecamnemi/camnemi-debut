@@ -175,6 +175,8 @@
 .sceneframe{position:relative;z-index:1;width:100%;max-width:330px;aspect-ratio:3/4;
   border-radius:20px;overflow:hidden;border:1px solid var(--line-strong);
   box-shadow:0 22px 48px rgba(0,0,0,.62);background:var(--bg-2)}
+/* 스토리 컷씬(9:16 포트레이트) — 대화 씬 배경 장면으로 표시될 때 */
+.sceneframe--portrait{aspect-ratio:9/16;max-width:320px}
 /* 크로스페이드 레이어 — 장면 교체 시 이전/새 레이어를 겹쳐두고 opacity 로 전환(검은 프레임 방지).
    transition 시간은 DialogueScene.tsx 의 XFADE_MS(420) 와 일치해야 함. */
 .sceneframe__layer{position:absolute;inset:0;opacity:1;transition:opacity .42s ease}

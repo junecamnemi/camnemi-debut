@@ -10,7 +10,7 @@ import { RewardScene } from '../episode1/scenes/RewardScene';
 import { PhraseLesson } from './scenes/PhraseLesson';
 import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../../services/game';
 import { applyGuestProgress } from '../../services/localProgress';
-import { StoryIntro } from '../../components/StoryIntro';
+import { cutFor } from '../../content/cuts';
 import '../episode1/episode1.css';
 import './episode2.css';
 
@@ -19,7 +19,6 @@ type Phase = 'dlg' | 'phrase' | 'manners' | 'write' | 'reward';
 /** EP.2 플레이어 — 대화 → 자기소개 표현 → 매너 미니게임 → 쓰기 → 보상 */
 export function Episode2({ ep, userId }: { ep: Episode; userId?: string }) {
   const [phase, setPhase] = useState<Phase>('dlg');
-  const [introDone, setIntroDone] = useState(false);
   const [dlgIdx, setDlgIdx] = useState(0);
   const [mannersIdx, setMannersIdx] = useState(0);
   const [mannersOk, setMannersOk] = useState(false);
@@ -88,23 +87,13 @@ export function Episode2({ ep, userId }: { ep: Episode; userId?: string }) {
   const cur = ep.dialogue[dlgIdx];
   const wtask = writing[taskIdx];
 
-  // 인트로 — 4컷 컷씬 스토리보드를 먼저 보여준 뒤 레슨(dlg) 진입
-  if (!introDone) {
-    return (
-      <div className="ep">
-        <Hud epLabel={`EP.${ep.no} ${ep.title}`} careerLabel="Story" progress={0} />
-        <StoryIntro no={ep.no} onDone={() => setIntroDone(true)} />
-      </div>
-    );
-  }
-
   return (
     <div className="ep">
       <Hud epLabel={`EP.${ep.no} ${ep.title}`} careerLabel={label} progress={pct} />
 
       <div className="ep__body">
         <div className="scene" key={phase} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
-          {phase === 'dlg' && <DialogueScene member={member} line={cur} />}
+          {phase === 'dlg' && <DialogueScene member={member} line={cur} sceneImage={cutFor(ep.no, dlgIdx, ep.dialogue.length)} />}
           {phase === 'phrase' && <PhraseLesson phrases={phrases} grammar={grammar} />}
           {phase === 'manners' && manners[mannersIdx] && (
             <CombineGame question={manners[mannersIdx]} onAnswered={(c) => { setMannersOk(c); addEvent('ep02-manners-' + mannersIdx, c); }} />
