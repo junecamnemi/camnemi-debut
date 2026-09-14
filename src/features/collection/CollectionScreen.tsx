@@ -1,15 +1,9 @@
 import { useEffect, useState } from 'react';
-import { PLAYER } from '../../content/player';
+import { PLAYER, isOwned } from '../../content/player';
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n } from '../../i18n';
-import { loadUnlocks } from '../../services/game';
-import { loadLocalProgress } from '../../services/localProgress';
-
-/** 포토카드 소유 판정 — unlock item_id('pcN')와 카드 id('pcN') 매칭 */
-function isOwned(cardId: string, unlocked: Set<string>): boolean {
-  return unlocked.has(cardId);
-}
+import { loadUnlockedCardIds } from '../../services/game';
 
 /** Collection — photocard grid (세로 영상 배경 위 콘텐츠). 실제 저장된 해금 기준으로 표시 */
 export function CollectionScreen({ userId }: { userId?: string }) {
@@ -18,16 +12,7 @@ export function CollectionScreen({ userId }: { userId?: string }) {
 
   useEffect(() => {
     let alive = true;
-    (async () => {
-      let ids: string[] = [];
-      if (userId) {
-        const rows = await loadUnlocks(userId);
-        ids = rows.filter((r) => r.kind === 'photocard').map((r) => r.item_id);
-      } else {
-        ids = loadLocalProgress().unlocks;
-      }
-      if (alive) setUnlocked(new Set(ids));
-    })();
+    void loadUnlockedCardIds(userId).then((ids) => { if (alive) setUnlocked(ids); });
     return () => { alive = false; };
   }, [userId]);
 

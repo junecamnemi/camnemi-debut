@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { MEMBERS } from '../../content/members';
-import { PLAYER, STATE_KEY, CAREER, normalizeCareerKey } from '../../content/player';
+import { PLAYER, STATE_KEY, CAREER, normalizeCareerKey, isOwned } from '../../content/player';
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n, type Lang } from '../../i18n';
-import { loadGameState } from '../../services/game';
+import { loadGameState, loadUnlockedCardIds } from '../../services/game';
 import { loadLocalProgress } from '../../services/localProgress';
 
 interface Profile {
@@ -20,6 +20,8 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
   const name = (lang === 'ko' ? m.ko : m.en);
   const p = PLAYER;
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [unlocked, setUnlocked] = useState<Set<string> | null>(null);
+  const ownedCount = unlocked ? p.cards.filter((c) => isOwned(c.id, unlocked)).length : 0;
 
   // 예명 + 커리어 복원 (계정: game_state / 게스트: 로컬) — 나머지는 데모값 유지
   useEffect(() => {
@@ -44,6 +46,13 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
         }
       }
     })();
+    return () => { alive = false; };
+  }, [userId]);
+
+  // 해금된 포토카드 id 로드 (계정/게스트 동일 기준) — 컬렉션 탭과 일치
+  useEffect(() => {
+    let alive = true;
+    void loadUnlockedCardIds(userId).then((ids) => { if (alive) setUnlocked(ids); });
     return () => { alive = false; };
   }, [userId]);
 
@@ -127,14 +136,23 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
 
             {/* cards preview */}
             <div className="block">
-              <div className="block__h">{t('my_cards')}</div>
-              <div className="cardrow">
-                {p.cards.slice(0, 4).map((c) => (
-                  <div key={c.id} className={`pcard pcard--sm${c.owned ? '' : ' is-locked'}`}>
-                    <img src={c.img} alt="" loading="lazy" />
-                  </div>
-                ))}
-              </div>
+              <div className="block__h">{t('my_cards')}{unlocked ? ` · ${ownedCount} / ${p.cards.length}` : ''}</div>
+              {!unlocked ? (
+                <div className="screen-loading screen-loading--sm" role="status" aria-label="loading">
+                  <span className="screen-loading__spinner" />
+                </div>
+              ) : (
+                <div className="cardrow">
+                  {p.cards.slice(0, 4).map((c) => {
+                    const owned = isOwned(c.id, unlocked);
+                    return (
+                      <div key={c.id} className={`pcard pcard--sm${owned ? '' : ' is-locked'}`}>
+                        <img src={c.img} alt="" loading="lazy" />
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* language */}

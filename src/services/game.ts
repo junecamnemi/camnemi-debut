@@ -1,6 +1,7 @@
 import { supabase } from './supabase';
 import type { MemberId } from '../types/game';
 import type { CareerKey } from '../content/player';
+import { loadLocalProgress } from './localProgress';
 
 export interface GameState {
   user_id: string;
@@ -84,6 +85,15 @@ export async function loadSkills(userId: string): Promise<SkillRow[]> {
 export async function loadUnlocks(userId: string): Promise<UnlockRow[]> {
   const { data } = await supabase.from('game_unlocks').select('item_id,kind').eq('user_id', userId);
   return (data as UnlockRow[]) || [];
+}
+
+/** 해금된 포토카드 id 집합 — 계정(game_unlocks) / 게스트(로컬) 동일 기준. 컬렉션·My 탭 공용. */
+export async function loadUnlockedCardIds(userId?: string): Promise<Set<string>> {
+  if (userId) {
+    const rows = await loadUnlocks(userId);
+    return new Set(rows.filter((r) => r.kind === 'photocard').map((r) => r.item_id));
+  }
+  return new Set(loadLocalProgress().unlocks);
 }
 
 /** 오늘의 AI 문제 (공용) */
