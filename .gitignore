@@ -31,3 +31,7 @@ pnpm-debug.log*
 _*.py
 _*.txt
 *.tsbuildinfo
+
+# QA probes (local only)
+_shots/
+_probe/

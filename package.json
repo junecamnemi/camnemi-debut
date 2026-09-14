@@ -8,8 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "deploy": "vite build && wrangler deploy",
-    "preview:cf": "vite build && wrangler dev"
+    "deploy": "vite build && npx wrangler deploy",
+    "preview:cf": "vite build && npx wrangler dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
