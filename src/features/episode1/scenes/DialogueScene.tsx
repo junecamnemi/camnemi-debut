@@ -7,6 +7,8 @@ interface Props {
   line: DialogueLine;
   /** 스토리 컷씬 오버라이드 — 제공되면 line.scene/sceneVideo 대신 이 이미지를 9:16 포트레이트로 표시 */
   sceneImage?: string;
+  /** 스토리 컷씬 영상(mp4) — 존재하면 재생하고, 없으면(404) sceneImage 스틸로 폴백 */
+  sceneVideo?: string;
 }
 
 /** 크로스페이드 전환 시간(ms) — episode1.css .sceneframe__layer transition 과 일치시킬 것 */
@@ -55,16 +57,30 @@ function SceneMedia({ videoSrc, imgSrc }: { videoSrc?: string; imgSrc?: string }
     }, XFADE_MS + 40);
   }
 
+  // 영상 로드 실패(아직 생성 전 mp4 등) → 해당 레이어를 스틸 이미지(켄번즈)로 폴백
+  function fallbackToImage(id: number) {
+    setLayers((prev) => prev.map((l) => (l.id === id && l.videoSrc ? { ...l, videoSrc: undefined } : l)));
+  }
+
   return (
     <>
       {layers.map((layer) => (
         <div className="sceneframe__layer" key={layer.id} style={{ opacity: layer.shown ? 1 : 0 }}>
           {layer.videoSrc ? (
             <video
+              ref={(el) => {
+                // React 합성 onError 는 <video> 에서 신뢰성 있게 발화하지 않고, src 를
+                // prop 으로 세팅하면 로드가 먼저 시작돼 에러를 놓칠 수 있다. 리스너를
+                // 먼저 붙인 뒤 src 를 세팅해 404/디코드 실패 시 스틸 폴백을 보장한다.
+                if (!el) return;
+                const onErr = () => fallbackToImage(layer.id);
+                el.addEventListener('error', onErr);
+                if (!el.src) el.src = layer.videoSrc!;
+                return () => el.removeEventListener('error', onErr);
+              }}
               className="sceneframe__vid"
-              src={layer.videoSrc}
               poster={layer.imgSrc}
-              autoPlay loop muted playsInline preload="auto"
+              autoPlay loop muted playsInline preload="metadata"
               onCanPlay={() => reveal(layer.id)}
               onLoadedData={() => reveal(layer.id)}
             />
@@ -86,12 +102,13 @@ function SceneMedia({ videoSrc, imgSrc }: { videoSrc?: string; imgSrc?: string }
  * 대화 씬 — EP.1 장면 영상(있으면) 또는 장면 이미지(켄번즈) 또는 캐릭터 루프 영상.
  * 미디어 레이어는 대사 진행과 분리되어 안정적으로 유지되고, 장면이 바뀔 때만 크로스페이드된다.
  */
-export function DialogueScene({ member, line, sceneImage }: Props) {
+export function DialogueScene({ member, line, sceneImage, sceneVideo }: Props) {
   const { lang } = useI18n();
   const mname = lang === 'ko' ? member.ko : member.en;
   const halo = `var(${member.color})`;
-  // 컷씬(sceneImage)이 주어지면 이를 장면 이미지로 사용 (line.scene/sceneVideo 는 무시)
-  const videoSrc = sceneImage ? undefined : line.sceneVideo;
+  // 컷씬 영상(sceneVideo)이 있으면 재생(없으면 스틸 폴백), 그게 아니면 line.scene/sceneVideo 를 사용.
+  // sceneImage/sceneVideo 가 주어지면 line.scene/sceneVideo 는 무시.
+  const videoSrc = sceneVideo ?? (sceneImage ? undefined : line.sceneVideo);
   const imgSrc = sceneImage ?? line.scene;
   const hasScene = !!(videoSrc || imgSrc);
 
@@ -108,7 +125,7 @@ export function DialogueScene({ member, line, sceneImage }: Props) {
   }, [line]);
 
   return (
-    <div className="scene" style={{ '--halo': halo } as React.CSSProperties}>
+    <div className="scene dlg-scene" style={{ '--halo': halo } as React.CSSProperties}>
       <div className="char char--scene">
         <div className="char__halo" />
 
@@ -130,7 +147,7 @@ export function DialogueScene({ member, line, sceneImage }: Props) {
         </div>
       </div>
 
-      <div className="card dlg dlg--fade" style={{ marginTop: 'var(--sp-4)', opacity: bubbleOp }}>
+      <div className="card dlg dlg--fade" style={{ opacity: bubbleOp }}>
         <div className="dlg__who"><i />{line.who}</div>
         <div className="dlg__ko">{line.ko}</div>
         {line.en && <div className="dlg__en">{line.en}</div>}
