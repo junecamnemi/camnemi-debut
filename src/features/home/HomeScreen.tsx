@@ -9,15 +9,14 @@ import { usePlayerProfile } from '../../hooks/usePlayerProfile';
  * Home — 배경(노래하는 아란 세로 영상)은 스크롤에 고정, 콘텐츠만 위로 흐름.
  * 영상은 계속 재생됨(autoplay/loop).
  */
-export function HomeScreen({ onGo, userId }: {
+export function HomeScreen({ onGo }: {
   onGo: (tab: 'train' | 'story' | 'cards' | 'my') => void;
-  userId?: string;
 }) {
   const { t, lang } = useI18n();
   const m = MEMBERS[PLAYER.memberId];
   const name = lang === 'ko' ? m.ko : m.en;
   const hearts = useHearts(PLAYER.hearts);
-  const { profile } = usePlayerProfile(userId);
+  const { profile } = usePlayerProfile();
   const stageName = profile?.stageName ?? null;
 
   return (
@@ -54,10 +53,19 @@ export function HomeScreen({ onGo, userId }: {
         <div className="home__body">
           <div className="block">
             <div className="block__h">{t('home_my_idol')}</div>
-            {!stageName ? (
+            {!profile ? (
               <div className="screen-loading screen-loading--sm" role="status" aria-label="loading">
                 <span className="screen-loading__spinner" />
               </div>
+            ) : !stageName ? (
+              <button className="tile" onClick={() => onGo('my')}>
+                <span className="tile__ic"><Icon name="pencil" size={20} /></span>
+                <span>
+                  <span className="tile__t">{t('home_set_name')}</span>
+                  <span className="tile__d">{t('home_set_name_d')}</span>
+                </span>
+                <Icon name="chev" size={18} />
+              </button>
             ) : (
               <div className="profile profile--mini">
                 <img className="profile__av" src={m.portrait} alt={stageName} />

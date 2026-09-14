@@ -11,6 +11,7 @@ import { EPISODE4 } from '../content/episode4';
 import { EPISODE_LOADERS } from '../content/episodes';
 import type { Episode, EpisodeNo } from '../types/game';
 import { useAuth } from '../hooks/useAuth';
+import { PlayerProfileProvider } from '../hooks/usePlayerProfile';
 import { signOut } from '../services/auth';
 import { loadGameState, setEpisodeDone, setStageName, setCareer, unlock } from '../services/game';
 import { normalizeCareerKey } from '../content/player';
@@ -70,6 +71,8 @@ export function AppShell() {
     try { return localStorage.getItem(GUEST_KEY) === '1'; } catch { return false; }
   });
   const [route, setRoute] = useState<Route>(INITIAL_ROUTE);
+  // 프로필 재조회 트리거 — 게스트→계정 병합 등 외부에서 저장소가 바뀐 뒤 bump 한다.
+  const [profileVersion, setProfileVersion] = useState(0);
 
   const authed = !!userId || guest;
   const { tab, playing } = route;
@@ -133,6 +136,8 @@ export function AppShell() {
       if (!cancelled) {
         clearLocalProgress();
         setGuest(false);
+        // 병합으로 계정 저장소가 갱신됐으므로 공유 프로필을 다시 읽는다.
+        setProfileVersion((v) => v + 1);
       }
     })();
     return () => { cancelled = true; };
@@ -195,16 +200,18 @@ export function AppShell() {
   }
 
   return (
-    <div className="shell">
-      <Suspense fallback={<ScreenFallback />}>
-        {tab === 'home' && <HomeScreen onGo={goTab} userId={userId ?? undefined} />}
-        {tab === 'train' && <PracticeScreen userId={userId ?? undefined} />}
-        {tab === 'story' && <StoryScreen onPlay={playEp} userId={userId ?? undefined} />}
-        {tab === 'cards' && <CollectionScreen userId={userId ?? undefined} />}
-        {tab === 'my' && <MyScreen onLogout={logout} authed={!!userId} userId={userId ?? undefined} />}
-      </Suspense>
+    <PlayerProfileProvider userId={userId ?? undefined} refreshKey={profileVersion}>
+      <div className="shell">
+        <Suspense fallback={<ScreenFallback />}>
+          {tab === 'home' && <HomeScreen onGo={goTab} />}
+          {tab === 'train' && <PracticeScreen userId={userId ?? undefined} />}
+          {tab === 'story' && <StoryScreen onPlay={playEp} userId={userId ?? undefined} />}
+          {tab === 'cards' && <CollectionScreen userId={userId ?? undefined} />}
+          {tab === 'my' && <MyScreen onLogout={logout} authed={!!userId} userId={userId ?? undefined} />}
+        </Suspense>
 
-      <TabBar active={tab} onTab={goTab} />
-    </div>
+        <TabBar active={tab} onTab={goTab} />
+      </div>
+    </PlayerProfileProvider>
   );
 }

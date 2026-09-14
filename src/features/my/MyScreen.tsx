@@ -13,7 +13,7 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
   const m = MEMBERS[PLAYER.memberId];
   const name = (lang === 'ko' ? m.ko : m.en);
   const p = PLAYER;
-  const { profile, saveStageName } = usePlayerProfile(userId);
+  const { profile, saveStageName } = usePlayerProfile();
   const [unlocked, setUnlocked] = useState<Set<string> | null>(null);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
