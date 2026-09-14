@@ -10,6 +10,7 @@ import { RewardScene } from '../episode1/scenes/RewardScene';
 import { PhraseLesson } from './scenes/PhraseLesson';
 import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../../services/game';
 import { applyGuestProgress } from '../../services/localProgress';
+import '../episode1/episode1.css';
 import './episode2.css';
 
 type Phase = 'dlg' | 'phrase' | 'manners' | 'write' | 'reward';
