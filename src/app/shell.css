@@ -223,12 +223,17 @@
 .speak:hover{border-color:var(--line-strong)}
 
 /* ── 세그먼트 전환 ── */
-.segbar{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 var(--sp-4) var(--sp-3);
+/* 좌측 정렬: 전체 폭을 채우는 1fr 1fr 대신, 세그먼트를 자동 폭으로 왼쪽에 붙인다 */
+.segbar{display:flex;justify-content:flex-start;align-items:stretch;gap:6px;width:max-content;max-width:100%;
+  margin:0 var(--sp-4) var(--sp-3);
   background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:5px}
-.seg{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:10px;
-  font-size:13.5px;font-weight:800;color:var(--ink-3);transition:.16s}
+.seg{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 14px;border-radius:10px;
+  font-size:13.5px;font-weight:800;color:var(--ink-3);transition:.16s;white-space:nowrap}
 .seg.on{background:var(--brand);color:#fff;box-shadow:var(--sh-brand)}
 .seg svg{width:17px}
+/* 세그먼트 안 문항 수 (우측 부가 카운트) */
+.seg__n{font-size:10.5px;font-weight:800;opacity:.6;font-variant-numeric:tabular-nums}
+.seg.on .seg__n{opacity:.85}
 
 /* ── 교재 레벨 칩 ── */
 .lvbar{display:flex;gap:6px;overflow-x:auto;padding:2px 0 4px;margin-bottom:var(--sp-3);scrollbar-width:none}

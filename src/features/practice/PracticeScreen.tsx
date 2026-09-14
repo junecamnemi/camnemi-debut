@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { PRACTICE, KIND_ICON, type PracticeKind } from '../../content/practice';
+import { KIND_ICON, type PracticeKind, type PracticeQ } from '../../content/practice';
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { TextbookSection } from './TextbookSection';
 import { FanExpressions } from './FanExpressions';
 import { speakScript } from '../../services/tts';
 import { loadDailyQuestions, loadPracticeEvents, logEvent } from '../../services/game';
+import { buildDailyQuestions, accumulateDailyPool, poolFor } from './practicePool';
 import { useI18n, type TKey } from '../../i18n';
 
 type Source = PracticeKind | 'daily';
@@ -24,18 +25,21 @@ export function PracticeScreen({ userId }: { userId?: string }) {
   const [qi, setQi] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [audioMsg, setAudioMsg] = useState<'fallback' | 'error' | null>(null);
-  const [daily, setDaily] = useState<{ loading: boolean; qs: unknown[] }>({ loading: true, qs: [] });
+  const [daily, setDaily] = useState<{ loading: boolean; qs: PracticeQ[] }>({ loading: true, qs: [] });
   /** 문항 id → 마지막 시도 정답 여부 (원장 game_events 에서 로드) */
   const [answered, setAnswered] = useState<Record<string, boolean>>({});
-  const day = useMemo(todayISO, []);
+  const day = useMemo(() => todayISO(), []);
 
   useEffect(() => {
     let alive = true;
     loadDailyQuestions(day)
-      .then((qs) => { if (alive) setDaily({ loading: false, qs }); })
-      .catch(() => { if (alive) setDaily({ loading: false, qs: [] }); });
+      .then((qs) => { if (alive) setDaily({ loading: false, qs: buildDailyQuestions(day, qs) }); })
+      .catch(() => { if (alive) setDaily({ loading: false, qs: buildDailyQuestions(day, []) }); });
     return () => { alive = false; };
   }, [day]);
+
+  /** 오늘 생성된 일일 문항을 로컬 풀에 누적 → read/listen 풀이 시간이 지나며 커진다 */
+  const accumulated = useMemo(() => accumulateDailyPool(daily.qs), [daily.qs]);
 
   // 이미 푼 문제 표시 — 로그인 사용자만 (게스트는 기록 없음)
   useEffect(() => {
@@ -53,14 +57,13 @@ export function PracticeScreen({ userId }: { userId?: string }) {
   }, [userId]);
 
   const list = kind === 'daily'
-    ? (daily.qs as typeof PRACTICE)
-    : kind ? PRACTICE.filter((q) => q.kind === kind) : [];
+    ? daily.qs
+    : kind ? poolFor(kind, accumulated) : [];
   const q = list[qi];
 
   /** 오늘의 문제 진행도 — 푼 문항 수 */
   const dailyDone = useMemo(() => {
-    const qs = daily.qs as typeof PRACTICE;
-    return qs.filter((x) => x?.id && answered[x.id] !== undefined).length;
+    return daily.qs.filter((x) => x?.id && answered[x.id] !== undefined).length;
   }, [daily.qs, answered]);
 
   function pick(i: number) {
@@ -124,17 +127,18 @@ export function PracticeScreen({ userId }: { userId?: string }) {
                 </span></span>
               <Icon name="chev" size={18} />
             </button>
-            {(['read', 'listen', 'vocab'] as PracticeKind[]).map((k) => {
-              const n = PRACTICE.filter((x) => x.kind === k).length;
-              return (
-                <button key={k} className="tile" onClick={() => { setKind(k); setQi(0); setPicked(null); }}>
-                  <span className="tile__ic"><Icon name={KIND_ICON[k]} size={20} /></span>
-                  <span><span className="tile__t">{t(kindKey[k])}</span>
-                    <span className="tile__d">{t('questions_n')(n)}</span></span>
-                  <Icon name="chev" size={18} />
-                </button>
-              );
-            })}
+            <div className="segbar segbar--kinds">
+              {(['read', 'listen', 'vocab'] as PracticeKind[]).map((k) => {
+                const n = poolFor(k, accumulated).length;
+                return (
+                  <button key={k} className={`seg${kind === k ? ' on' : ''}`} onClick={() => { setKind(k); setQi(0); setPicked(null); }}>
+                    <Icon name={KIND_ICON[k]} size={17} />
+                    <span>{t(kindKey[k])}</span>
+                    <span className="seg__n">{n}</span>
+                  </button>
+                );
+              })}
+            </div>
             <FanExpressions />
           </>
         ) : (
