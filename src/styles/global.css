@@ -7,6 +7,7 @@
   /* brand */
   --violet:#7c3aed; --pink:#ec4899;
   --brand:linear-gradient(135deg,#8b5cf6 0%,#ec4899 100%);
+  --brand2:#ec4899;                       /* brand accent (pink) — solid for text/border/gradient stops */
   --brand-soft:linear-gradient(135deg,rgba(124,58,237,.22),rgba(236,72,153,.18));
   --violet-deep:#5b21b6; --pink-deep:#db2777;
 

@@ -1,6 +1,13 @@
 /* ══ App shell — tab bar + screens ══ */
 .shell{display:flex;flex-direction:column;flex:1;min-height:0;position:relative}
 
+/* lazy-screen loading fallback (중앙 스피너) */
+.screen-loading{flex:1;display:flex;align-items:center;justify-content:center;min-height:180px}
+.screen-loading__spinner{width:34px;height:34px;border-radius:50%;
+  border:3px solid var(--line-strong);border-top-color:var(--pink);
+  animation:screenSpin .8s linear infinite}
+@keyframes screenSpin{to{transform:rotate(360deg)}}
+
 /* tab bar */
 .tabbar{position:sticky;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);
   background:rgba(12,8,22,.92);backdrop-filter:blur(18px);border-top:1px solid var(--line);
@@ -12,7 +19,7 @@
 .tabbar__ic{display:grid;place-items:center;width:44px;height:28px;border-radius:99px;
   transition:background .22s cubic-bezier(.34,1.4,.5,1),transform .22s cubic-bezier(.34,1.4,.5,1),box-shadow .22s}
 .tabbar__item.is-active .tabbar__ic{color:#fff;transform:translateY(-1px);
-  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  background:linear-gradient(135deg,var(--violet),var(--brand2));
   box-shadow:0 6px 18px rgba(124,58,237,.45),inset 0 1px 0 rgba(255,255,255,.35)}
 .tabbar__item.is-active .tabbar__lb{color:var(--brand2)}
 

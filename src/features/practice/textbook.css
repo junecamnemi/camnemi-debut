@@ -35,7 +35,7 @@
 .book__arrow:not(:disabled):active{transform:scale(.93)}
 .book__dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;flex:1}
 .book__dot{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.24);transition:.2s}
-.book__dot.on{width:20px;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.book__dot.on{width:20px;background:linear-gradient(90deg,var(--violet),var(--brand2))}
 
 .book__foot{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:800;color:var(--ink-3)}
 .book__lb{color:var(--brand2);letter-spacing:.06em;text-transform:uppercase}
@@ -48,7 +48,7 @@
 .tbrow:hover{border-color:var(--line-strong);transform:translateY(-2px)}
 .tbrow:active{transform:scale(.985)}
 .tbrow__no{flex:none;width:26px;height:26px;display:grid;place-items:center;border-radius:9px;
-  font-size:11px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand2))}
+  font-size:11px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--violet),var(--brand2))}
 .tbrow__tx{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
 .tbrow__ti{font-size:13.5px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
 .tbrow__en{font-size:11px;font-weight:600;color:var(--ink-3);

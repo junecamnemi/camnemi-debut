@@ -1,21 +1,33 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { TabBar, type TabKey } from '../components/TabBar';
 import { useI18n } from '../i18n';
 import { HomeScreen } from '../features/home/HomeScreen';
-import { PracticeScreen } from '../features/practice/PracticeScreen';
-import { StoryScreen } from '../features/story/StoryScreen';
-import { CollectionScreen } from '../features/collection/CollectionScreen';
 import { MyScreen } from '../features/my/MyScreen';
-import { Episode1 } from '../features/episode1/Episode1';
 import { LoginScreen } from '../features/auth/LoginScreen';
 import { EPISODE1 } from '../content/episode1';
 import { EPISODE2 } from '../content/episode2';
-import { Episode2 } from '../features/episode2/Episode2';
 import { EPISODE3 } from '../content/episode3';
-import { Episode3 } from '../features/episode3/Episode3';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../services/auth';
 import './shell.css';
+
+// ── code-split: 무거운/드물게 쓰는 화면은 필요할 때만 로드 ──
+// (named export → default 로 매핑해 React.lazy 에 맞춤)
+const Episode1 = lazy(() => import('../features/episode1/Episode1').then((m) => ({ default: m.Episode1 })));
+const Episode2 = lazy(() => import('../features/episode2/Episode2').then((m) => ({ default: m.Episode2 })));
+const Episode3 = lazy(() => import('../features/episode3/Episode3').then((m) => ({ default: m.Episode3 })));
+const PracticeScreen = lazy(() => import('../features/practice/PracticeScreen').then((m) => ({ default: m.PracticeScreen })));
+const CollectionScreen = lazy(() => import('../features/collection/CollectionScreen').then((m) => ({ default: m.CollectionScreen })));
+const StoryScreen = lazy(() => import('../features/story/StoryScreen').then((m) => ({ default: m.StoryScreen })));
+
+/** 화면 로딩 중 공용 fallback (중앙 스피너) */
+function ScreenFallback() {
+  return (
+    <div className="screen-loading" role="status" aria-label="loading">
+      <span className="screen-loading__spinner" />
+    </div>
+  );
+}
 
 const GUEST_KEY = 'camnemi_debut_guest';
 
@@ -99,11 +111,13 @@ export function AppShell() {
           <button className="btn btn--ghost" style={{ flex: '0 0 auto', padding: '10px 16px', fontSize: 13 }}
                   onClick={() => goTab('story')}>← {t('back')}</button>
         </div>
-        {playing === 1
-          ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} />
-          : playing === 2
-            ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} />
-            : <Episode3 ep={EPISODE3} userId={userId ?? undefined} />}
+        <Suspense fallback={<ScreenFallback />}>
+          {playing === 1
+            ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} />
+            : playing === 2
+              ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} />
+              : <Episode3 ep={EPISODE3} userId={userId ?? undefined} />}
+        </Suspense>
       </div>
     );
   }
@@ -116,11 +130,13 @@ export function AppShell() {
 
   return (
     <div className="shell">
-      {tab === 'home' && <HomeScreen onGo={goTab} />}
-      {tab === 'train' && <PracticeScreen userId={userId ?? undefined} />}
-      {tab === 'story' && <StoryScreen onPlay={playEp} />}
-      {tab === 'cards' && <CollectionScreen />}
-      {tab === 'my' && <MyScreen onLogout={guest ? logout : logout} authed={!!userId} />}
+      <Suspense fallback={<ScreenFallback />}>
+        {tab === 'home' && <HomeScreen onGo={goTab} />}
+        {tab === 'train' && <PracticeScreen userId={userId ?? undefined} />}
+        {tab === 'story' && <StoryScreen onPlay={playEp} />}
+        {tab === 'cards' && <CollectionScreen />}
+        {tab === 'my' && <MyScreen onLogout={logout} authed={!!userId} />}
+      </Suspense>
 
       <TabBar active={tab} onTab={goTab} />
     </div>
