@@ -112,7 +112,7 @@ export function AppShell() {
   return (
     <div className="shell">
       {tab === 'home' && <HomeScreen onGo={goTab} />}
-      {tab === 'train' && <PracticeScreen />}
+      {tab === 'train' && <PracticeScreen userId={userId ?? undefined} />}
       {tab === 'story' && <StoryScreen onPlay={playEp} />}
       {tab === 'cards' && <CollectionScreen />}
       {tab === 'my' && <MyScreen onLogout={guest ? logout : logout} authed={!!userId} />}

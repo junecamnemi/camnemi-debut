@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PRACTICE, KIND_ICON, type PracticeKind } from '../../content/practice';
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { TextbookSection } from './TextbookSection';
 import { speakScript } from '../../services/tts';
-import { loadDailyQuestions } from '../../services/game';
+import { loadDailyQuestions, loadPracticeEvents, logEvent } from '../../services/game';
 import { useI18n, type TKey } from '../../i18n';
 
 type Source = PracticeKind | 'daily';
@@ -12,8 +12,11 @@ type Source = PracticeKind | 'daily';
 /** 문제풀이 모드의 레벨 라벨 — 헤더/배지가 항상 이 값으로 일치해야 함 */
 const PRACTICE_LEVEL = 'TOPIK I';
 
+/** 오늘 날짜(YYYY-MM-DD) — 일일 문제 조회·기록 키 */
+const todayISO = () => new Date().toISOString().slice(0, 10);
+
 /** Train — practice problems + textbook (세로 영상 배경 위 콘텐츠) */
-export function PracticeScreen() {
+export function PracticeScreen({ userId }: { userId?: string }) {
   const { t } = useI18n();
   const [mode, setMode] = useState<'practice' | 'textbook'>('practice');
   const [kind, setKind] = useState<Source | null>(null);
@@ -21,22 +24,51 @@ export function PracticeScreen() {
   const [picked, setPicked] = useState<number | null>(null);
   const [audioMsg, setAudioMsg] = useState<'fallback' | 'error' | null>(null);
   const [daily, setDaily] = useState<{ loading: boolean; qs: unknown[] }>({ loading: true, qs: [] });
+  /** 문항 id → 마지막 시도 정답 여부 (원장 game_events 에서 로드) */
+  const [answered, setAnswered] = useState<Record<string, boolean>>({});
+  const day = useMemo(todayISO, []);
 
   useEffect(() => {
     let alive = true;
-    const day = new Date().toISOString().slice(0, 10);
     loadDailyQuestions(day)
       .then((qs) => { if (alive) setDaily({ loading: false, qs }); })
       .catch(() => { if (alive) setDaily({ loading: false, qs: [] }); });
     return () => { alive = false; };
-  }, []);
+  }, [day]);
+
+  // 이미 푼 문제 표시 — 로그인 사용자만 (게스트는 기록 없음)
+  useEffect(() => {
+    if (!userId) return;
+    let alive = true;
+    loadPracticeEvents(userId)
+      .then((rows) => {
+        if (!alive) return;
+        const m: Record<string, boolean> = {};
+        for (const r of rows) if (r.ref && !(r.ref in m)) m[r.ref] = r.correct === true;  // 최신순 → 첫 값이 최종
+        setAnswered(m);
+      })
+      .catch(() => { /* 기록 없으면 표시 안 함 */ });
+    return () => { alive = false; };
+  }, [userId]);
 
   const list = kind === 'daily'
     ? (daily.qs as typeof PRACTICE)
     : kind ? PRACTICE.filter((q) => q.kind === kind) : [];
   const q = list[qi];
 
-  function pick(i: number) { if (picked === null) setPicked(i); }
+  /** 오늘의 문제 진행도 — 푼 문항 수 */
+  const dailyDone = useMemo(() => {
+    const qs = daily.qs as typeof PRACTICE;
+    return qs.filter((x) => x?.id && answered[x.id] !== undefined).length;
+  }, [daily.qs, answered]);
+
+  function pick(i: number) {
+    if (picked !== null || !q) return;
+    setPicked(i);
+    const correct = i === q.answer;
+    setAnswered((m) => ({ ...m, [q.id]: correct }));
+    if (userId) void logEvent(userId, 'practice', q.id, correct, { kind: q.kind, level: q.level, day });
+  }
   function nextQ() {
     if (qi + 1 < list.length) { setQi(qi + 1); setPicked(null); }
     else { setKind(null); setQi(0); setPicked(null); }
@@ -48,6 +80,7 @@ export function PracticeScreen() {
   }
 
   const kindKey: Record<PracticeKind, TKey> = { read: 'kind_read', listen: 'kind_listen', vocab: 'kind_vocab' };
+  const prev = q?.id ? answered[q.id] : undefined;
 
   return (
     <ScreenBg
@@ -83,7 +116,11 @@ export function PracticeScreen() {
             <button className="tile" onClick={() => { setKind('daily'); setQi(0); setPicked(null); }}>
               <span className="tile__ic"><Icon name="story" size={20} /></span>
               <span><span className="tile__t">{t('daily_title')}</span>
-                <span className="tile__d">{daily.loading ? t('loading') : t('questions_n')(daily.qs.length)}</span></span>
+                <span className="tile__d">
+                  {daily.loading ? t('loading')
+                    : dailyDone > 0 ? `${daily.qs.length}${t('q_of')} ${dailyDone}${t('q_done')}`
+                    : t('questions_n')(daily.qs.length)}
+                </span></span>
               <Icon name="chev" size={18} />
             </button>
             {(['read', 'listen', 'vocab'] as PracticeKind[]).map((k) => {
@@ -103,6 +140,11 @@ export function PracticeScreen() {
             <div className="qmeta">
               <span className="qtag">{t(kindKey[q.kind])}</span>
               <span className={`qtag qtag--lv${q.level === 'TOPIK II' ? ' is-ii' : ''}`}>{q.level}</span>
+              {prev !== undefined && (
+                <span className={`qtag qtag--done${prev ? ' is-ok' : ' is-no'}`}>
+                  {prev ? `✓ ${t('q_seen_ok')}` : `↻ ${t('q_seen_no')}`}
+                </span>
+              )}
               <span className="qprog">{qi + 1} / {list.length}</span>
             </div>
             <div className="card">

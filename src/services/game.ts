@@ -79,3 +79,16 @@ export async function loadDailyQuestions(day: string) {
   const { data } = await supabase.from('game_daily_questions').select('questions').eq('day', day).maybeSingle();
   return (data?.questions as unknown[]) || [];
 }
+
+export interface PracticeEvent { ref: string; correct: boolean | null }
+
+/**
+ * 문제풀이 기록(원장) 로드 — 최신순. 같은 문항을 여러 번 풀면 첫(=최신) 값이 최종 결과.
+ * game_events 는 "어느 화면에서 공부해도 같은 성장"의 공통 원장 (설계 원칙 #2).
+ */
+export async function loadPracticeEvents(userId: string): Promise<PracticeEvent[]> {
+  const { data } = await supabase.from('game_events')
+    .select('ref,correct').eq('user_id', userId).eq('kind', 'practice')
+    .order('created_at', { ascending: false }).limit(1000);
+  return (data as PracticeEvent[]) || [];
+}
