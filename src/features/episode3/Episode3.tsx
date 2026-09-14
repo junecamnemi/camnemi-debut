@@ -8,6 +8,7 @@ import { CombineGame } from '../episode1/scenes/CombineGame';
 import { WritingPractice } from '../episode1/scenes/WritingPractice';
 import { RewardScene } from '../episode1/scenes/RewardScene';
 import { PhraseLesson } from '../episode2/scenes/PhraseLesson';
+import { EpisodeCelebration } from '../../components/EpisodeCelebration';
 import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../../services/game';
 import { applyGuestProgress } from '../../services/localProgress';
 import { cutFor } from '../../content/cuts';
@@ -16,8 +17,15 @@ import '../episode2/episode2.css';
 
 type Phase = 'dlg' | 'phrase' | 'manners' | 'write' | 'reward';
 
+interface Props {
+  ep: Episode;
+  userId?: string;
+  onNext?: () => void;
+  onExit?: () => void;
+}
+
 /** EP.3 플레이어 — 대화 → 시간·날짜 표현 → 일정 미니게임 → 쓰기 → 보상 */
-export function Episode3({ ep, userId }: { ep: Episode; userId?: string }) {
+export function Episode3({ ep, userId, onNext, onExit }: Props) {
   const [phase, setPhase] = useState<Phase>('dlg');
   const [dlgIdx, setDlgIdx] = useState(0);
   const [mannersIdx, setMannersIdx] = useState(0);
@@ -27,6 +35,7 @@ export function Episode3({ ep, userId }: { ep: Episode; userId?: string }) {
   const [writeDone, setWriteDone] = useState(false);
   const [stageName, setName] = useState('');
   const [named, setNamed] = useState(false);
+  const [celebrated, setCelebrated] = useState(false);
 
   const member = MEMBERS[ep.member];
   const manners = ep.manners ?? [];
@@ -81,6 +90,7 @@ export function Episode3({ ep, userId }: { ep: Episode; userId?: string }) {
     }
     addEvent('ep03-reward');
     setPhase('reward');
+    setCelebrated(true);
   }
 
   const { pct, label } = progressFor();
@@ -114,7 +124,7 @@ export function Episode3({ ep, userId }: { ep: Episode; userId?: string }) {
                   <input className="naming__in" value={stageName} onChange={(e) => setName(e.target.value)} placeholder={'e.g. Stella'} />
                 </div>
               )}
-              {named && <RewardScene stageName={stageName} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
+              {named && !celebrated && <RewardScene stageName={stageName} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
             </>
           )}
         </div>
@@ -137,6 +147,16 @@ export function Episode3({ ep, userId }: { ep: Episode; userId?: string }) {
           <button className="btn btn--primary" disabled={!stageName.trim()} onClick={finishNaming}>Debut!</button>
         )}
       </div>
+
+      {celebrated && (
+        <EpisodeCelebration
+          no={ep.no}
+          stageName={stageName}
+          onRewards={() => setCelebrated(false)}
+          onNext={onNext}
+          onStory={onExit}
+        />
+      )}
     </div>
   );
 }

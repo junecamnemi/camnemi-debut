@@ -13,6 +13,7 @@ import { CombineGame } from './scenes/CombineGame';
 import { WritingPractice } from './scenes/WritingPractice';
 import { NamingScene } from './scenes/NamingScene';
 import { RewardScene } from './scenes/RewardScene';
+import { EpisodeCelebration } from '../../components/EpisodeCelebration';
 import { cutFor } from '../../content/cuts';
 import './episode1.css';
 
@@ -45,7 +46,14 @@ function progressFor(phase: Phase, dlgIdx: number, dlgLen: number, jamoStage: Ja
   }
 }
 
-export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }) {
+interface Props {
+  ep: Episode;
+  userId?: string | null;
+  onNext?: () => void;
+  onExit?: () => void;
+}
+
+export function Episode1({ ep, userId, onNext, onExit }: Props) {
   const { t } = useI18n();
   const member = MEMBERS[ep.member];
 
@@ -58,6 +66,7 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
   const [charIdx, setCharIdx] = useState(0);
   const [writeDone, setWriteDone] = useState(false);
   const [stageName, setStageName] = useState('');
+  const [celebrated, setCelebrated] = useState(false);
 
   const task = ep.writing[taskIdx];
   const { pct, label } = progressFor(
@@ -118,11 +127,14 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
         applyGuestProgress({ stageName: name, careerStage: careerKeyForPct(EP1_CAREER_PCT), careerPct: EP1_CAREER_PCT, episode: ep.no, unlockId: photocardId(ep.no) });
       }
       setPhase('reward');
+      setCelebrated(true);
     }
   }
 
   const backVisible = phase === 'dlg' && dlgIdx > 0;
   function back() { if (phase === 'dlg' && dlgIdx > 0) setDlgIdx(dlgIdx - 1); }
+
+  const displayName = stageName.trim() || member.ko;
 
   return (
     <div className="ep">
@@ -143,7 +155,7 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
           {phase === 'combine' && <CombineGame question={ep.combine[combineIdx]} onAnswered={setCombineOk} />}
           {phase === 'write' && <WritingPractice task={task} charIdx={charIdx} onCharDone={() => setWriteDone(true)} />}
           {phase === 'name' && <NamingScene member={member} value={stageName} onChange={setStageName} />}
-          {phase === 'reward' && <RewardScene stageName={stageName.trim() || member.ko} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
+          {phase === 'reward' && !celebrated && <RewardScene stageName={displayName} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
         </div>
       </div>
 
@@ -153,6 +165,16 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
           {nextLabel}
         </button>
       </div>
+
+      {celebrated && (
+        <EpisodeCelebration
+          no={ep.no}
+          stageName={displayName}
+          onRewards={() => setCelebrated(false)}
+          onNext={onNext}
+          onStory={onExit}
+        />
+      )}
     </div>
   );
 }

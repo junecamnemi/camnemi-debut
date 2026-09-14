@@ -7,7 +7,7 @@ const LS_KEY = 'camnemi_debut_lang';
 const DICT = {
   en: {
     // tabs
-    tab_home: 'Home', tab_train: 'Lesson', tab_story: 'Story', tab_cards: 'Cards', tab_my: 'My',
+    tab_home: 'Home', tab_train: 'Lesson', tab_story: 'Story', tab_cards: 'Collection', tab_my: 'My',
     // common
     streak: (n: number) => `${n}-day streak`,
     continue: 'Continue',
@@ -109,6 +109,14 @@ const DICT = {
     write_done: 'You did it!',
     write_retry: 'Almost! Trace the letter more closely ✍️',
     reward_title: 'Unlocked',
+    // episode completion celebration
+    celebrate_badge: (n: number) => `EP.${n} Complete!`,
+    celebrate_title: (title: string) => `${title} complete!`,
+    celebrate_line: 'One step closer to debut!',
+    celebrate_line_final: 'Glowsis debuted — TOPIK I level 2 reached!',
+    celebrate_rewards: 'View rewards',
+    celebrate_next: (n: number) => `Next episode · EP.${n} →`,
+    celebrate_back: 'Back to story',
     self_intro: 'Self-introduction phrases',
     tap_to_hear: 'Tap a card to hear it',
     grammar: 'Grammar',
@@ -216,6 +224,13 @@ const DICT = {
     write_done: '다 했어요!',
     write_retry: '아직이에요 — 글자를 조금 더 정확히 따라 써보세요 ✍️',
     reward_title: '해금',
+    celebrate_badge: (n: number) => `EP.${n} 완료!`,
+    celebrate_title: (title: string) => `${title} 완료!`,
+    celebrate_line: '데뷔를 향해 한 걸음 더!',
+    celebrate_line_final: '글로시스가 드디어 데뷔했어요 — TOPIK I 2급 달성!',
+    celebrate_rewards: '보상 보기',
+    celebrate_next: (n: number) => `다음 에피소드 · EP.${n} →`,
+    celebrate_back: '스토리로 돌아가기',
     scene_home: '홈', scene_song: '노래', scene_stage: '무대', scene_rank: '랭크', scene_set: '설정',
     scene_c_song: '콘서트 · 노래', scene_c_stage: '콘서트 · 무대', scene_c_rank: '콘서트 · 랭크', scene_c_set: '콘서트 · 설정',
     questions_n: (n: number) => `${n}문제`, daily_title: '오늘의 문제', daily_empty: '아직 문제가 없어요 — 곧 올라옵니다.', back_menu: '메뉴로', replay_ep: (n: number) => `EP.${n} 다시 보기 →`,

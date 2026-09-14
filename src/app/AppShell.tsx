@@ -38,7 +38,7 @@ function ScreenFallback() {
 }
 
 /** EP.5~16 공용 플레이어 로더 — 에피소드 데이터를 지연 로드해 EpisodePlayer 로 넘긴다 */
-function EpisodeLoader({ no, userId }: { no: number; userId?: string }) {
+function EpisodeLoader({ no, userId, onNext, onExit }: { no: number; userId?: string; onNext?: () => void; onExit?: () => void }) {
   const [ep, setEp] = useState<Episode | null>(null);
   useEffect(() => {
     let alive = true;
@@ -47,7 +47,7 @@ function EpisodeLoader({ no, userId }: { no: number; userId?: string }) {
     return () => { alive = false; };
   }, [no]);
   if (!ep) return <ScreenFallback />;
-  return <EpisodePlayer ep={ep} userId={userId} />;
+  return <EpisodePlayer ep={ep} userId={userId} onNext={onNext} onExit={onExit} />;
 }
 
 const GUEST_KEY = 'camnemi_debut_guest';
@@ -144,6 +144,8 @@ export function AppShell() {
   }
   function goTab(t: TabKey) { navigate({ tab: t, playing: 0 }); }
   function playEp(n: EpisodeNo) { navigate({ tab: 'story', playing: n }); }
+  function playNextEp() { if (playing < 16) playEp((playing + 1) as EpisodeNo); }
+  function exitToStory() { goTab('story'); }
 
   // 로딩 스플래시 — 세션 확인 전까지 메인/로그인 화면 대신 스피너를 보여 깜빡임 방지
   if (loading) {
@@ -173,14 +175,14 @@ export function AppShell() {
         </div>
         <Suspense fallback={<ScreenFallback />}>
           {playing === 1
-            ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} />
+            ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
             : playing === 2
-              ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} />
+              ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
               : playing === 3
-                ? <Episode3 ep={EPISODE3} userId={userId ?? undefined} />
+                ? <Episode3 ep={EPISODE3} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
                 : playing === 4
-                  ? <Episode4 ep={EPISODE4} userId={userId ?? undefined} />
-                  : <EpisodeLoader key={playing} no={playing} userId={userId ?? undefined} />}
+                  ? <Episode4 ep={EPISODE4} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
+                  : <EpisodeLoader key={playing} no={playing} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />}
         </Suspense>
       </div>
     );

@@ -7,6 +7,7 @@ import { CombineGame } from '../features/episode1/scenes/CombineGame';
 import { WritingPractice } from '../features/episode1/scenes/WritingPractice';
 import { RewardScene } from '../features/episode1/scenes/RewardScene';
 import { PhraseLesson } from '../features/episode2/scenes/PhraseLesson';
+import { EpisodeCelebration } from './EpisodeCelebration';
 import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../services/game';
 import { applyGuestProgress } from '../services/localProgress';
 import { photocardId, careerKeyForPct } from '../content/player';
@@ -16,8 +17,17 @@ import '../features/episode2/episode2.css';
 
 type Phase = 'dlg' | 'phrase' | 'manners' | 'write' | 'reward';
 
+interface Props {
+  ep: Episode;
+  userId?: string;
+  /** 완료 축하 후 "다음 에피소드" — AppShell 이 전달 */
+  onNext?: () => void;
+  /** 완료 축하 후 "스토리로 돌아가기" (마지막 화) — AppShell 이 전달 */
+  onExit?: () => void;
+}
+
 /** EP.5~16 공용 플레이어 — 대화 → 표현 → 매너 미니게임 → 쓰기 → 보상 (데이터로 구동) */
-export function EpisodePlayer({ ep, userId }: { ep: Episode; userId?: string }) {
+export function EpisodePlayer({ ep, userId, onNext, onExit }: Props) {
   const [phase, setPhase] = useState<Phase>('dlg');
   const [dlgIdx, setDlgIdx] = useState(0);
   const [mannersIdx, setMannersIdx] = useState(0);
@@ -40,7 +50,6 @@ export function EpisodePlayer({ ep, userId }: { ep: Episode; userId?: string }) 
   const pcId = photocardId(ep.no); // pc4 … pc15
   const skillId = ep.skill ?? ep.title;
   const careerPct = ep.careerPct ?? Math.min(100, 20 * (ep.no - 1));
-  const isFinale = ep.no === 16;
 
   function addEvent(ref: string, correct?: boolean) {
     if (userId) void logEvent(userId, 'episode', ref, correct);
@@ -88,6 +97,7 @@ export function EpisodePlayer({ ep, userId }: { ep: Episode; userId?: string }) 
     }
     addEvent(`${epTag}-reward`);
     setPhase('reward');
+    setCelebrated(true);
   }
 
   const { pct, label } = progressFor();
@@ -122,12 +132,6 @@ export function EpisodePlayer({ ep, userId }: { ep: Episode; userId?: string }) 
                 </div>
               )}
               {named && !celebrated && <RewardScene stageName={stageName} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
-              {named && celebrated && (
-                <div className="card reward">
-                  <div className="reward__h">데뷔 완료! 🎉</div>
-                  <div className="reward__sub">Glowsis debuted — TOPIK I level 2 reached</div>
-                </div>
-              )}
             </>
           )}
         </div>
@@ -149,10 +153,17 @@ export function EpisodePlayer({ ep, userId }: { ep: Episode; userId?: string }) 
         {phase === 'reward' && !named && (
           <button className="btn btn--primary" disabled={!stageName.trim()} onClick={finishNaming}>Debut!</button>
         )}
-        {phase === 'reward' && named && isFinale && !celebrated && (
-          <button className="btn btn--primary" onClick={() => setCelebrated(true)}>데뷔 완료! 🎉</button>
-        )}
       </div>
+
+      {celebrated && (
+        <EpisodeCelebration
+          no={ep.no}
+          stageName={stageName}
+          onRewards={() => setCelebrated(false)}
+          onNext={onNext}
+          onStory={onExit}
+        />
+      )}
     </div>
   );
 }
