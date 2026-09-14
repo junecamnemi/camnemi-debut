@@ -195,7 +195,7 @@ export function AppShell() {
   return (
     <div className="shell">
       <Suspense fallback={<ScreenFallback />}>
-        {tab === 'home' && <HomeScreen onGo={goTab} />}
+        {tab === 'home' && <HomeScreen onGo={goTab} userId={userId ?? undefined} />}
         {tab === 'train' && <PracticeScreen userId={userId ?? undefined} />}
         {tab === 'story' && <StoryScreen onPlay={playEp} userId={userId ?? undefined} />}
         {tab === 'cards' && <CollectionScreen userId={userId ?? undefined} />}

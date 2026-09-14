@@ -67,6 +67,7 @@ const DICT = {
     my_settings: 'Settings',
     logout: 'Log out', login: 'Sign in',
     logout_d: 'Leave this account', login_d: 'Sign in to save progress',
+    edit_name: 'Edit stage name', save_name: 'Save', cancel: 'Cancel',
     // skill states
     sk_mastered: 'Mastered', sk_review: 'Needs review', sk_learning: 'Learning',
     // auth
@@ -173,6 +174,7 @@ const DICT = {
     my_settings: '설정',
     logout: '로그아웃', login: '로그인하기',
     logout_d: '계정에서 나가기', login_d: '진도를 저장하려면 로그인',
+    edit_name: '예명 바꾸기', save_name: '저장', cancel: '취소',
     sk_mastered: '숙련', sk_review: '복습 필요', sk_learning: '학습중',
     auth_start: '이메일로 시작하기',
     auth_send: '매직링크 받기',

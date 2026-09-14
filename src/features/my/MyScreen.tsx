@@ -4,14 +4,8 @@ import { PLAYER, STATE_KEY, CAREER, normalizeCareerKey, isOwned } from '../../co
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n, type Lang } from '../../i18n';
-import { loadGameState, loadUnlockedCardIds } from '../../services/game';
-import { loadLocalProgress } from '../../services/localProgress';
-
-interface Profile {
-  stageName: string;
-  careerStage: string;
-  careerPct: number;
-}
+import { loadUnlockedCardIds } from '../../services/game';
+import { usePlayerProfile } from '../../hooks/usePlayerProfile';
 
 /** My — idol profile · career · stats · skills · language · account (세로 영상 배경 위 콘텐츠) */
 export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; authed?: boolean; userId?: string }) {
@@ -19,35 +13,11 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
   const m = MEMBERS[PLAYER.memberId];
   const name = (lang === 'ko' ? m.ko : m.en);
   const p = PLAYER;
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const { profile, saveStageName } = usePlayerProfile(userId);
   const [unlocked, setUnlocked] = useState<Set<string> | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
   const ownedCount = unlocked ? p.cards.filter((c) => isOwned(c.id, unlocked)).length : 0;
-
-  // 예명 + 커리어 복원 (계정: game_state / 게스트: 로컬) — 나머지는 데모값 유지
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      if (userId) {
-        const st = await loadGameState(userId);
-        if (!alive) return;
-        setProfile({
-          stageName: st?.stage_name ?? PLAYER.stageName,
-          careerStage: st?.career_stage ?? PLAYER.careerKey,
-          careerPct: st?.career_pct ?? PLAYER.careerPct,
-        });
-      } else {
-        const lp = loadLocalProgress();
-        if (alive) {
-          setProfile({
-            stageName: lp.stageName ?? PLAYER.stageName,
-            careerStage: lp.careerStage ?? PLAYER.careerKey,
-            careerPct: lp.careerPct,
-          });
-        }
-      }
-    })();
-    return () => { alive = false; };
-  }, [userId]);
 
   // 해금된 포토카드 id 로드 (계정/게스트 동일 기준) — 컬렉션 탭과 일치
   useEffect(() => {
@@ -61,6 +31,22 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
   const careerPct = profile?.careerPct ?? 0;
   const curIdx = Math.max(0, CAREER.findIndex((c) => c.key === careerKey));
   const cur = CAREER[curIdx];
+
+  function startEdit() {
+    setDraft(stageName);
+    setEditing(true);
+  }
+  function cancelEdit() {
+    setEditing(false);
+    setDraft('');
+  }
+  async function commitEdit() {
+    const trimmed = draft.trim();
+    if (trimmed.length < 2) return;
+    await saveStageName(trimmed);
+    setEditing(false);
+    setDraft('');
+  }
 
   const LANGS: { id: Lang; label: string }[] = [
     { id: 'en', label: 'English' },
@@ -80,7 +66,7 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
       head={
         <>
           <span className="scr__badge">{t('my_profile')}</span>
-          <h1 className="scr__title">‘{profile ? stageName : '…'}’</h1>
+          <h1 className="scr__title">‘{stageName || '…'}’</h1>
           <p className="scr__sub">{name} · {t(cur.labelKey)} · {careerPct}%</p>
         </>
       }
@@ -96,10 +82,43 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
             <div className="profile">
               <img className="profile__av" src={m.portrait} alt={stageName} />
               <div className="profile__txt">
-                <div className="profile__name">{stageName}</div>
+                {editing ? (
+                  <div className="profile__editrow">
+                    <input
+                      className="profile__editin"
+                      value={draft}
+                      maxLength={12}
+                      autoFocus
+                      placeholder={PLAYER.stageName}
+                      onChange={(e) => setDraft(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') void commitEdit();
+                        else if (e.key === 'Escape') cancelEdit();
+                      }}
+                    />
+                    <button
+                      className="btn btn--primary"
+                      disabled={draft.trim().length < 2}
+                      onClick={() => void commitEdit()}
+                      aria-label={t('save_name')}
+                    >
+                      <Icon name="check" size={16} />
+                    </button>
+                    <button className="btn btn--ghost" onClick={cancelEdit} aria-label={t('cancel')}>
+                      <Icon name="x" size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="profile__name">{stageName}</div>
+                )}
                 <div className="profile__meta">{name} · {m.roleEn ?? m.role}</div>
                 <div className="profile__badge">{t(cur.labelKey)}</div>
               </div>
+              {!editing && (
+                <button className="profile__edit" onClick={startEdit} aria-label={t('edit_name')}>
+                  <Icon name="pencil" size={13} />
+                </button>
+              )}
             </div>
 
             {/* stats */}

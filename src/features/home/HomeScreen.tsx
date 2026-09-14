@@ -3,16 +3,22 @@ import { PLAYER, CAREER } from '../../content/player';
 import { Icon } from '../../components/Icon';
 import { useI18n } from '../../i18n';
 import { useHearts, fmtNum } from '../../hooks/useHearts';
+import { usePlayerProfile } from '../../hooks/usePlayerProfile';
 
 /**
  * Home — 배경(노래하는 아란 세로 영상)은 스크롤에 고정, 콘텐츠만 위로 흐름.
  * 영상은 계속 재생됨(autoplay/loop).
  */
-export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' | 'my') => void }) {
+export function HomeScreen({ onGo, userId }: {
+  onGo: (tab: 'train' | 'story' | 'cards' | 'my') => void;
+  userId?: string;
+}) {
   const { t, lang } = useI18n();
   const m = MEMBERS[PLAYER.memberId];
   const name = lang === 'ko' ? m.ko : m.en;
   const hearts = useHearts(PLAYER.hearts);
+  const { profile } = usePlayerProfile(userId);
+  const stageName = profile?.stageName ?? null;
 
   return (
     <div className="home">
@@ -48,19 +54,25 @@ export function HomeScreen({ onGo }: { onGo: (tab: 'train' | 'story' | 'cards' |
         <div className="home__body">
           <div className="block">
             <div className="block__h">{t('home_my_idol')}</div>
-            <div className="profile profile--mini">
-              <img className="profile__av" src={m.portrait} alt={PLAYER.stageName} />
-              <div className="profile__txt">
-                <div className="profile__name">{PLAYER.stageName}</div>
-                <div className="profile__meta">
-                  {name} · {t(CAREER.find((c) => c.key === PLAYER.careerKey)!.labelKey)} · {PLAYER.careerPct}%
+            {!stageName ? (
+              <div className="screen-loading screen-loading--sm" role="status" aria-label="loading">
+                <span className="screen-loading__spinner" />
+              </div>
+            ) : (
+              <div className="profile profile--mini">
+                <img className="profile__av" src={m.portrait} alt={stageName} />
+                <div className="profile__txt">
+                  <div className="profile__name">{stageName}</div>
+                  <div className="profile__meta">
+                    {name} · {t(CAREER.find((c) => c.key === PLAYER.careerKey)!.labelKey)} · {PLAYER.careerPct}%
+                  </div>
+                </div>
+                <div className="hearts" title="fans sending love">
+                  <Icon name="heart" size={15} />
+                  <span className="hearts__n">{fmtNum(hearts)}</span>
                 </div>
               </div>
-              <div className="hearts" title="fans sending love">
-                <Icon name="heart" size={15} />
-                <span className="hearts__n">{fmtNum(hearts)}</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

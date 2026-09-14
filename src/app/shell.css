@@ -87,6 +87,13 @@
   color:#fff;background:var(--brand);padding:4px 11px;border-radius:99px}
 .profile__edit{margin-left:auto;align-self:flex-start;font-size:11px;font-weight:800;color:var(--ink-2);
   border:1px solid var(--line);background:var(--surface);padding:6px 11px;border-radius:99px}
+.profile__editrow{display:flex;align-items:center;gap:6px;margin-bottom:2px}
+.profile__editin{flex:1;min-width:0;height:40px;padding:0 12px;border-radius:12px;background:var(--surface);
+  border:1px solid var(--line);color:var(--ink);font-size:16px;font-weight:800;letter-spacing:-.02em;outline:none}
+.profile__editin::placeholder{color:var(--ink-3);font-weight:600}
+.profile__editin:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(124,58,237,.16)}
+.profile__editrow .btn{flex:0 0 auto;width:40px;height:40px;padding:0;border-radius:12px;
+  display:inline-flex;align-items:center;justify-content:center}
 
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2)}
 .stat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;overflow:hidden;
