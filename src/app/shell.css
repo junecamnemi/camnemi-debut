@@ -160,6 +160,12 @@
   font-size:16px;line-height:1.7;font-weight:600;margin-bottom:var(--sp-4)}
 .qpassage em{font-style:normal;color:var(--gold);font-weight:800}
 .qprompt{font-size:15.5px;font-weight:800;margin-bottom:var(--sp-4);line-height:1.5}
+/* 영어 기반 학습자용 — 한국어 아래 영어 병기 (EP 대화 .dlg__en 과 동일 톤) */
+.qprompt__en{margin:-9px 0 var(--sp-4);font-size:13px;font-weight:500;line-height:1.55;color:var(--ink-2)}
+.qpassage__en{margin:-9px 0 var(--sp-4);padding:0 4px;font-size:12.5px;font-weight:500;line-height:1.6;color:var(--ink-3)}
+.qaudio__en{margin-top:9px;font-size:12.5px;font-weight:500;line-height:1.6;color:var(--ink-2)}
+.qtag--lv.is-ii{background:linear-gradient(135deg,rgba(236,72,153,.22),rgba(124,58,237,.18));
+  border-color:rgba(236,72,153,.42);color:#f9a8d4}
 .qopts{display:grid;gap:var(--sp-2)}
 .qopt{display:flex;align-items:center;gap:var(--sp-3);padding:15px;border-radius:var(--r-md);
   background:rgba(255,255,255,.045);border:1px solid var(--line);text-align:left;transition:.15s;font-size:15.5px;font-weight:700}

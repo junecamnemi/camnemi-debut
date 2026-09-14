@@ -102,15 +102,18 @@ export function PracticeScreen() {
           <>
             <div className="qmeta">
               <span className="qtag">{t(kindKey[q.kind])}</span>
-              <span className="qtag qtag--lv">{PRACTICE_LEVEL}</span>
+              <span className={`qtag qtag--lv${q.level === 'TOPIK II' ? ' is-ii' : ''}`}>{q.level}</span>
               <span className="qprog">{qi + 1} / {list.length}</span>
             </div>
             <div className="card">
               <div className="qprompt">{q.prompt}</div>
+              {q.promptEn && <div className="qprompt__en">{q.promptEn}</div>}
               {q.passage && <div className="qpassage">{q.passage}</div>}
+              {q.passageEn && <div className="qpassage__en">{q.passageEn}</div>}
               {q.kind === 'listen' && q.audio && (
                 <button className="qaudio" onClick={playAudio}><Icon name="play" size={18} /> {t('play_audio')}</button>
               )}
+              {q.kind === 'listen' && q.audioEn && <div className="qaudio__en">{q.audioEn}</div>}
               {audioMsg === 'fallback' && <div className="qfb no">ℹ️ {t('audio_fallback')}</div>}
               {audioMsg === 'error' && <div className="qfb no">⚠️ {t('audio_failed')}</div>}
             </div>
