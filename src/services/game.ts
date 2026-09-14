@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import type { MemberId } from '../types/game';
+import type { CareerKey } from '../content/player';
 
 export interface GameState {
   user_id: string;
@@ -41,7 +42,7 @@ export async function setMember(userId: string, memberId: MemberId) {
 }
 
 /** 커리어 진행 저장 */
-export async function setCareer(userId: string, careerStage: string, careerPct: number) {
+export async function setCareer(userId: string, careerStage: CareerKey, careerPct: number) {
   return supabase.from('game_state')
     .update({ career_stage: careerStage, career_pct: careerPct, updated_at: new Date().toISOString() })
     .eq('user_id', userId);

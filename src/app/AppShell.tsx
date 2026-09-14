@@ -13,6 +13,7 @@ import type { Episode, EpisodeNo } from '../types/game';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../services/auth';
 import { loadGameState, setEpisodeDone, setStageName, setCareer, unlock } from '../services/game';
+import { normalizeCareerKey } from '../content/player';
 import { loadLocalProgress, clearLocalProgress } from '../services/localProgress';
 import './shell.css';
 
@@ -124,7 +125,7 @@ export function AppShell() {
         await setStageName(userId, local.stageName);
       }
       if (local.careerPct > (st.career_pct ?? 0)) {
-        await setCareer(userId, local.careerStage ?? st.career_stage, local.careerPct);
+        await setCareer(userId, normalizeCareerKey(local.careerStage ?? st.career_stage), local.careerPct);
       }
       for (const id of local.unlocks) {
         await unlock(userId, id, 'photocard');

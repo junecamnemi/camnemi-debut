@@ -1,20 +1,11 @@
 import { useEffect, useState } from 'react';
 import { MEMBERS } from '../../content/members';
-import { PLAYER, STATE_KEY, CAREER, type CareerKey } from '../../content/player';
+import { PLAYER, STATE_KEY, CAREER, normalizeCareerKey } from '../../content/player';
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n, type Lang } from '../../i18n';
 import { loadGameState } from '../../services/game';
 import { loadLocalProgress } from '../../services/localProgress';
-
-/** 저장된 career_stage 문자열 → CAREER 단계 키 매핑 (EP.1은 '연습생'으로 저장됨) */
-function careerKeyOf(stage: string | null | undefined): CareerKey {
-  if (stage === 'entry' || stage === 'rookie' || stage === 'team' || stage === 'debut_ready' || stage === 'debut') {
-    return stage;
-  }
-  if (stage === '연습생') return 'rookie';
-  return PLAYER.careerKey;
-}
 
 interface Profile {
   stageName: string;
@@ -57,7 +48,7 @@ export function MyScreen({ onLogout, authed, userId }: { onLogout?: () => void; 
   }, [userId]);
 
   const stageName = profile?.stageName ?? '';
-  const careerKey = careerKeyOf(profile?.careerStage);
+  const careerKey = normalizeCareerKey(profile?.careerStage);
   const careerPct = profile?.careerPct ?? 0;
   const curIdx = Math.max(0, CAREER.findIndex((c) => c.key === careerKey));
   const cur = CAREER[curIdx];

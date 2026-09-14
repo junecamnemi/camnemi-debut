@@ -6,13 +6,9 @@ import { useI18n } from '../../i18n';
 import { loadUnlocks } from '../../services/game';
 import { loadLocalProgress } from '../../services/localProgress';
 
-/** 포토카드 소유 판정 — unlock item_id('pc0'·'photocard-00N')와 카드 id('pcN') 매칭 */
+/** 포토카드 소유 판정 — unlock item_id('pcN')와 카드 id('pcN') 매칭 */
 function isOwned(cardId: string, unlocked: Set<string>): boolean {
-  if (unlocked.has(cardId)) return true;
-  const m = /^pc(\d+)$/.exec(cardId);
-  if (!m) return false;
-  const n = m[1];
-  return unlocked.has(`photocard-${String(parseInt(n, 10)).padStart(3, '0')}`) || unlocked.has(`photocard-${n}`);
+  return unlocked.has(cardId);
 }
 
 /** Collection — photocard grid (세로 영상 배경 위 콘텐츠). 실제 저장된 해금 기준으로 표시 */
@@ -72,7 +68,16 @@ export function CollectionScreen({ userId }: { userId?: string }) {
               const owned = isOwned(c.id, unlocked);
               return (
                 <div key={c.id} className={`pcard${owned ? '' : ' is-locked'}`}>
-                  <img src={c.img} alt={`photocard ${i + 1}`} loading="lazy" />
+                  <img
+                    src={c.img}
+                    alt={`photocard ${i + 1}`}
+                    loading="lazy"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (img.src.endsWith('/pc0.webp')) return;
+                      img.src = 'assets/photocards/pc0.webp';
+                    }}
+                  />
                   {!owned && <div className="pcard__lock"><Icon name="lock" size={18} /></div>}
                 </div>
               );

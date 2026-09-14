@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Episode } from '../../types/game';
 import { MEMBERS } from '../../content/members';
+import { photocardId, careerKeyForPct } from '../../content/player';
 import { Hud } from '../../components/Hud';
 import { DialogueScene } from '../episode1/scenes/DialogueScene';
 import { CombineGame } from '../episode1/scenes/CombineGame';
@@ -31,6 +32,7 @@ export function Episode4({ ep, userId }: { ep: Episode; userId?: string }) {
   const writing = ep.writing ?? [];
   const phrases = ep.phrases ?? [];
   const grammar = ep.grammar ?? [];
+  const careerPct = 60;
 
   function addEvent(ref: string, correct?: boolean) {
     if (userId) void logEvent(userId, 'episode', ref, correct);
@@ -70,11 +72,11 @@ export function Episode4({ ep, userId }: { ep: Episode; userId?: string }) {
     setNamed(true);
     if (userId) {
       void saveStageName(userId, stageName.trim());
-      void unlock(userId, 'photocard-004', 'photocard');
-      void setCareer(userId, 'rookie', 60);
+      void unlock(userId, photocardId(ep.no), 'photocard');
+      void setCareer(userId, careerKeyForPct(careerPct), careerPct);
       void setEpisodeDone(userId, ep.no);
     } else {
-      applyGuestProgress({ stageName: stageName.trim(), careerStage: 'rookie', careerPct: 60, episode: ep.no, unlockId: 'photocard-004' });
+      applyGuestProgress({ stageName: stageName.trim(), careerStage: careerKeyForPct(careerPct), careerPct, episode: ep.no, unlockId: photocardId(ep.no) });
     }
     addEvent('ep04-reward');
     setPhase('reward');

@@ -39,11 +39,21 @@ export const PLAYER: PlayerState = {
   ],
   cards: [
     { id: 'pc0', img: 'assets/photocards/pc0.webp', owned: true },
-    { id: 'pc1', img: 'assets/photocards/pc1.webp', owned: true },
+    { id: 'pc1', img: 'assets/photocards/pc1.webp', owned: false },
     { id: 'pc2', img: 'assets/photocards/pc2.webp', owned: false },
     { id: 'pc3', img: 'assets/photocards/pc3.webp', owned: false },
     { id: 'pc4', img: 'assets/photocards/pc4.webp', owned: false },
     { id: 'pc5', img: 'assets/photocards/pc5.webp', owned: false },
+    { id: 'pc6', img: 'assets/photocards/pc6.webp', owned: false },
+    { id: 'pc7', img: 'assets/photocards/pc7.webp', owned: false },
+    { id: 'pc8', img: 'assets/photocards/pc8.webp', owned: false },
+    { id: 'pc9', img: 'assets/photocards/pc9.webp', owned: false },
+    { id: 'pc10', img: 'assets/photocards/pc10.webp', owned: false },
+    { id: 'pc11', img: 'assets/photocards/pc11.webp', owned: false },
+    { id: 'pc12', img: 'assets/photocards/pc12.webp', owned: false },
+    { id: 'pc13', img: 'assets/photocards/pc13.webp', owned: false },
+    { id: 'pc14', img: 'assets/photocards/pc14.webp', owned: false },
+    { id: 'pc15', img: 'assets/photocards/pc15.webp', owned: false },
   ],
 };
 
@@ -62,3 +72,24 @@ export const CAREER: { key: CareerKey; labelKey: 'career_entry' | 'career_rookie
   { key: 'debut_ready', labelKey: 'career_debut_ready' },
   { key: 'debut', labelKey: 'career_debut' },
 ];
+
+/** EP.N → 포토카드 id ('pc0'~'pc15', 0-based) */
+export function photocardId(epNo: number): string {
+  return 'pc' + (epNo - 1);
+}
+
+/** careerPct(0~100) → 커리어 단계 키 (entry<21, rookie<51, team<76, debut_ready<96, debut>=96) */
+export function careerKeyForPct(pct: number): CareerKey {
+  if (pct >= 96) return 'debut';
+  if (pct >= 76) return 'debut_ready';
+  if (pct >= 51) return 'team';
+  if (pct >= 21) return 'rookie';
+  return 'entry';
+}
+
+/** 저장된 career_stage 문자열 → CareerKey (레거시 '연습생' → 'entry' 호환) */
+export function normalizeCareerKey(stage: string | null | undefined): CareerKey {
+  if (stage === 'entry' || stage === 'rookie' || stage === 'team' || stage === 'debut_ready' || stage === 'debut') return stage;
+  if (stage === '연습생') return 'entry';
+  return PLAYER.careerKey;
+}

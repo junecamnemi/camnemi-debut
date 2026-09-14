@@ -3,6 +3,7 @@ import type { Episode, JamoStage } from '../../types/game';
 import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../../services/game';
 import { applyGuestProgress } from '../../services/localProgress';
 import { MEMBERS } from '../../content/members';
+import { photocardId, careerKeyForPct } from '../../content/player';
 import { useI18n, type TKey } from '../../i18n';
 import { Hud } from '../../components/Hud';
 import { DialogueScene } from './scenes/DialogueScene';
@@ -18,6 +19,9 @@ type Phase = 'dlg' | 'jamo' | 'final' | 'combine' | 'write' | 'name' | 'reward';
 
 /** 자모 단계 순서 */
 const JAMO_ORDER: JamoStage[] = ['cons', 'vow', 'dcons', 'dvow'];
+
+/** EP.1 완료 시 커리어 진행 % (entry 단계) */
+const EP1_CAREER_PCT = 10;
 
 const JAMO_UI: Record<JamoStage, { key: TKey; en: string }> = {
   cons:  { key: 'jamo_cons',  en: 'Consonants' },
@@ -105,12 +109,12 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
         void saveStageName(userId, name);
         void setSkill(userId, 'hangul_write', 'mastered');
         void setSkill(userId, 'hangul_read', 'mastered');
-        void unlock(userId, 'pc0', 'photocard');
-        void setCareer(userId, '연습생', 42);
+        void unlock(userId, photocardId(ep.no), 'photocard');
+        void setCareer(userId, careerKeyForPct(EP1_CAREER_PCT), EP1_CAREER_PCT);
         void logEvent(userId, 'episode', ep.id, true, { stageName: name });
         void setEpisodeDone(userId, ep.no);
       } else {
-        applyGuestProgress({ stageName: name, careerStage: '연습생', careerPct: 42, episode: ep.no, unlockId: 'pc0' });
+        applyGuestProgress({ stageName: name, careerStage: careerKeyForPct(EP1_CAREER_PCT), careerPct: EP1_CAREER_PCT, episode: ep.no, unlockId: photocardId(ep.no) });
       }
       setPhase('reward');
     }

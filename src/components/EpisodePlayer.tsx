@@ -9,6 +9,7 @@ import { RewardScene } from '../features/episode1/scenes/RewardScene';
 import { PhraseLesson } from '../features/episode2/scenes/PhraseLesson';
 import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../services/game';
 import { applyGuestProgress } from '../services/localProgress';
+import { photocardId, careerKeyForPct } from '../content/player';
 import '../features/episode1/episode1.css';
 import '../features/episode2/episode2.css';
 
@@ -35,7 +36,7 @@ export function EpisodePlayer({ ep, userId }: { ep: Episode; userId?: string }) 
 
   // 에피소드별 명명/보상 식별자
   const epTag = `ep${String(ep.no).padStart(2, '0')}`;        // ep05 … ep16
-  const pcId = `photocard-${String(ep.no).padStart(3, '0')}`; // photocard-005 … -016
+  const pcId = photocardId(ep.no); // pc4 … pc15
   const skillId = ep.skill ?? ep.title;
   const careerPct = ep.careerPct ?? Math.min(100, 20 * (ep.no - 1));
   const isFinale = ep.no === 16;
@@ -79,10 +80,10 @@ export function EpisodePlayer({ ep, userId }: { ep: Episode; userId?: string }) 
     if (userId) {
       void saveStageName(userId, stageName.trim());
       void unlock(userId, pcId, 'photocard');
-      void setCareer(userId, 'rookie', careerPct);
+      void setCareer(userId, careerKeyForPct(careerPct), careerPct);
       void setEpisodeDone(userId, ep.no);
     } else {
-      applyGuestProgress({ stageName: stageName.trim(), careerStage: 'rookie', careerPct, episode: ep.no, unlockId: pcId });
+      applyGuestProgress({ stageName: stageName.trim(), careerStage: careerKeyForPct(careerPct), careerPct, episode: ep.no, unlockId: pcId });
     }
     addEvent(`${epTag}-reward`);
     setPhase('reward');
