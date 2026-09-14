@@ -14,7 +14,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '기획사를 열고, 아란이 첫 연습생으로 합류해요',
     descEn: 'The agency opens · Aran joins as the first trainee',
     focusKo: '한글 자음·모음 · 글자 조합', focusEn: 'Hangul consonants & vowels',
-    scene: 'assets/ep1/ep1_arrival.jpg', sceneVideo: 'assets/ep1/video/arrival.mp4',
+    scene: 'assets/ep1/ep1_arrival.jpg',
     face: 'assets/glowsis/aran.webp',
     lines: [
       { who: 'Aran', ko: '…여기가 글로시스 기획사예요?', en: '…Is this the Glowsis agency?' },
@@ -44,7 +44,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '하루 일정을 세우며 시간과 날짜를 배워요',
     descEn: 'Planning the day · time & dates',
     focusKo: '시간·날짜 · -에 · -(으)ㄹ 거예요', focusEn: 'Time & dates · -에 · will',
-    scene: 'assets/carousel/aran_daily.jpg', sceneVideo: 'assets/carousel/aran_daily.mp4',
+    scene: 'assets/carousel/aran_daily.jpg',
     face: 'assets/glowsis/aran.webp',
     lines: [
       { who: 'Aran', ko: '대표님, 오늘 연습은 몇 시예요?', en: 'CEO, what time is practice today?' },
@@ -59,7 +59,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '선배 아이돌을 만나 인사와 매너를 배워요',
     descEn: 'Meeting a senior idol · greetings & manners',
     focusKo: '높임말 · -님 · 인사 표현', focusEn: 'Polite speech · -님 · greetings',
-    scene: 'assets/bg/train.jpg', sceneVideo: 'assets/bg/train.mp4',
+    scene: 'assets/bg/train.jpg',
     face: 'assets/glowsis/chaea.webp',
     lines: [
       { who: 'Senior', ko: '안녕하세요, 선배예요.', en: "Hello, I'm your sunbae." },
@@ -74,7 +74,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '댄서 다희가 합류, 무대 의상을 고르러 가요',
     descEn: 'Dancer Dahee joins · shopping for stage outfits',
     focusKo: '옷·색 어휘 · -고 싶어요', focusEn: 'Clothes & colors · want to',
-    scene: 'assets/carousel/aran_c_my.jpg', sceneVideo: 'assets/carousel/aran_c_my.mp4',
+    scene: 'assets/carousel/aran_c_my.jpg',
     face: 'assets/glowsis/dahee.webp',
     lines: [
       { who: 'Dahee', ko: '안녕하세요! 댄서 다희입니다.', en: "Hi! I'm Dahee, your dancer." },
@@ -89,7 +89,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '연습이 끝나고 다 같이 저녁을 먹어요',
     descEn: 'Dinner together after practice',
     focusKo: '음식 어휘 · -(으)ㄹ래요? · -아/어 주세요', focusEn: 'Food · shall we? · please do',
-    scene: 'assets/carousel/aran_c_daily.jpg', sceneVideo: 'assets/carousel/aran_c_daily.mp4',
+    scene: 'assets/carousel/aran_c_daily.jpg',
     face: 'assets/glowsis/dahee.webp',
     lines: [
       { who: 'Dahee', ko: '다들 뭐 먹을래요?', en: 'What does everyone want to eat?' },
@@ -134,7 +134,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '새 무대를 함께 기획하며 제안해요',
     descEn: 'Planning a new stage together · suggestions',
     focusKo: '-(으)ㄹ까요? · -는 게 어때요?', focusEn: 'Shall we? · how about',
-    scene: 'assets/carousel/aran_home.jpg', sceneVideo: 'assets/carousel/aran_home.mp4',
+    scene: 'assets/carousel/aran_home.jpg',
     face: 'assets/glowsis/aran.webp',
     lines: [
       { who: 'Aran', ko: '새 곡 컨셉을 정할까요?', en: 'Shall we decide the concept for the new song?' },
@@ -149,7 +149,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '녹음실에서 능력과 가능을 말해요',
     descEn: 'At the studio · ability & possibility',
     focusKo: '-(으)ㄹ 수 있다/없다', focusEn: 'Can / cannot',
-    scene: 'assets/carousel/aran_book.jpg', sceneVideo: 'assets/carousel/aran_book.mp4',
+    scene: 'assets/carousel/aran_book.jpg',
     face: 'assets/glowsis/chaea.webp',
     lines: [
       { who: 'Chaea', ko: '이번 파트는 제가 부를 수 있어요!', en: 'I can sing this part!' },
@@ -164,7 +164,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '무대 콘셉트와 스타일을 정해요',
     descEn: 'Choosing the stage concept & styling',
     focusKo: '색·외모 형용사 · -아/어요', focusEn: 'Colors & looks · descriptive verbs',
-    scene: 'assets/carousel/aran_profile_v.jpg', sceneVideo: 'assets/carousel/aran_profile_v.mp4',
+    scene: 'assets/carousel/aran_profile_v.jpg',
     face: 'assets/glowsis/dahee.webp',
     lines: [
       { who: 'Dahee', ko: '이번 콘셉트는 어때요?', en: 'What do you think of this concept?' },
@@ -179,7 +179,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '선배와 콜라보 곡으로 음악방송에 나가요',
     descEn: 'A collab song · on the music show',
     focusKo: '-는데 · -지만 (배경·반대)', focusEn: 'Background & contrast',
-    scene: 'assets/hero/group_stage.webp', sceneVideo: 'assets/hero/stage.mp4',
+    scene: 'assets/hero/group_stage.webp',
     face: 'assets/glowsis/roy.webp',
     lines: [
       { who: 'Roy', ko: '무대가 긴장되는데 재미있어요.', en: "I'm nervous on stage, but it's fun." },
@@ -194,7 +194,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '데뷔를 준비하며 이유와 원인을 말해요',
     descEn: 'Preparing for debut · reasons & causes',
     focusKo: '-아/어서 · -기 때문에', focusEn: 'Because / so',
-    scene: 'assets/carousel/aran_rank.jpg', sceneVideo: 'assets/carousel/aran_rank.mp4',
+    scene: 'assets/carousel/aran_rank.jpg',
     face: 'assets/glowsis/aran.webp',
     lines: [
       { who: 'Aran', ko: '오늘 열심히 연습해서 피곤해요.', en: "I practiced hard, so I'm tired." },
@@ -209,7 +209,7 @@ export const STORY: StoryEpisode[] = [
     descKo: '마지막 리허설에서 배운 것을 복습해요',
     descEn: 'Final rehearsal · reviewing what we learned',
     focusKo: '관형사형 -(으)ㄴ/는 · 복습', focusEn: 'Modifiers · review',
-    scene: 'assets/carousel/aran_c_rank.jpg', sceneVideo: 'assets/carousel/aran_c_rank.mp4',
+    scene: 'assets/carousel/aran_c_rank.jpg',
     face: 'assets/glowsis/chaea.webp',
     lines: [
       { who: 'Chaea', ko: '어제 배운 노래를 다시 해요.', en: "Let's do the song we learned yesterday again." },
@@ -252,7 +252,3 @@ export const STORY: StoryEpisode[] = [
 
 /** 특정 화 데이터 */
 export const storyByNo = (no: number): StoryEpisode | undefined => STORY.find((e) => e.no === no);
-
-/** 화별 컷씬 4장(9:16 포트레이트) 경로 — EP.{no} 스토리를 4컷 만화로 미리보기 */
-export const cutsFor = (no: number): string[] =>
-  Array.from({ length: 4 }, (_, i) => `assets/story/cuts/ep${no}/ep${no}_cut${i + 1}.webp`);

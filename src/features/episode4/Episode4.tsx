@@ -10,6 +10,7 @@ import { RewardScene } from '../episode1/scenes/RewardScene';
 import { PhraseLesson } from '../episode2/scenes/PhraseLesson';
 import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../../services/game';
 import { applyGuestProgress } from '../../services/localProgress';
+import { StoryIntro } from '../../components/StoryIntro';
 import '../episode1/episode1.css';
 import '../episode2/episode2.css';
 
@@ -18,6 +19,7 @@ type Phase = 'dlg' | 'phrase' | 'manners' | 'write' | 'reward';
 /** EP.4 플레이어 — 대화 → 인사·매너 표현 → 매너 미니게임 → 쓰기 → 보상 */
 export function Episode4({ ep, userId }: { ep: Episode; userId?: string }) {
   const [phase, setPhase] = useState<Phase>('dlg');
+  const [introDone, setIntroDone] = useState(false);
   const [dlgIdx, setDlgIdx] = useState(0);
   const [mannersIdx, setMannersIdx] = useState(0);
   const [mannersOk, setMannersOk] = useState(false);
@@ -85,6 +87,16 @@ export function Episode4({ ep, userId }: { ep: Episode; userId?: string }) {
   const { pct, label } = progressFor();
   const cur = ep.dialogue[dlgIdx];
   const wtask = writing[taskIdx];
+
+  // 인트로 — 4컷 컷씬 스토리보드를 먼저 보여준 뒤 레슨(dlg) 진입
+  if (!introDone) {
+    return (
+      <div className="ep">
+        <Hud epLabel={`EP.${ep.no} ${ep.title}`} careerLabel="Story" progress={0} />
+        <StoryIntro no={ep.no} onDone={() => setIntroDone(true)} />
+      </div>
+    );
+  }
 
   return (
     <div className="ep">

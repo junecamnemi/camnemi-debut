@@ -123,7 +123,6 @@ export interface StoryEpisode {
   focusKo: string;   // 학습 포인트 (한국어)
   focusEn: string;   // 학습 포인트 (영어)
   scene?: string;      // 장면 이미지 (기존 자산 재사용)
-  sceneVideo?: string; // 장면 영상 (기존 자산 재사용)
   face?: string;       // 멤버 초상 (프리뷰용)
   lines: StoryLine[];  // 주요 대화
 }

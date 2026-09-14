@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState, type TouchEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n } from '../../i18n';
-import { STORY, cutsFor } from '../../content/story';
+import { STORY } from '../../content/story';
 import { loadGameState } from '../../services/game';
 import { loadLocalProgress } from '../../services/localProgress';
 import type { StoryEpisode, EpisodeNo } from '../../types/game';
@@ -42,24 +42,8 @@ export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => voi
   const openRef = useRef(open);
   useEffect(() => { openRef.current = open; }, [open]);
 
-  // ── 컷씬 캐러셀(4컷 포트레이트) 상태 — 에피소드가 바뀌면 1번 컷으로 리셋 ──
-  const [cutIdx, setCutIdx] = useState(0);
-  const touchX = useRef<number | null>(null);
-  const cuts = open ? cutsFor(open.no) : [];
-
-  const onCutTouchStart = (e: TouchEvent<HTMLDivElement>) => { touchX.current = e.touches[0].clientX; };
-  const onCutTouchEnd = (e: TouchEvent<HTMLDivElement>) => {
-    if (touchX.current == null) return;
-    const dx = e.changedTouches[0].clientX - touchX.current;
-    touchX.current = null;
-    if (Math.abs(dx) < 40) return; // 탭 — onClick 이 처리
-    setCutIdx((i) => (dx < 0 ? Math.min(cuts.length - 1, i + 1) : Math.max(0, i - 1)));
-  };
-  const tapAdvance = () => setCutIdx((i) => Math.min(cuts.length - 1, i + 1));
-
   // 프리뷰 열기 — 히스토리 엔트리를 하나 더 쌓아 브라우저 '뒤로'로 시트를 닫을 수 있게 함
   function openPreview(e: StoryEpisode) {
-    setCutIdx(0);
     setOpen(e);
     try {
       const cur = window.history.state && typeof window.history.state === 'object' ? window.history.state : {};
@@ -158,50 +142,19 @@ export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => voi
           <button className="stsheet__bd" aria-label={t('story_close')} onClick={closePreview} />
           <div className="stsheet__panel">
             <div className="stsheet__media">
-              <div
-                className="stcuts"
-                onTouchStart={onCutTouchStart}
-                onTouchEnd={onCutTouchEnd}
-                onClick={tapAdvance}
-                role="group"
-                aria-label={`EP.${open.no} ${lang === 'ko' ? open.titleKo : open.titleEn}`}
-              >
-                <div className="stcuts__track" style={{ transform: `translateX(-${cutIdx * 100}%)` }}>
-                  {cuts.map((src, i) => (
-                    <img
-                      key={src}
-                      className="stcuts__slide"
-                      src={src}
-                      alt={`EP.${open.no} cut ${i + 1}`}
-                      loading="lazy"
-                      draggable={false}
-                    />
-                  ))}
-                </div>
-                <div className="stcuts__dots">
-                  {cuts.map((_, i) => (
-                    <button
-                      key={i}
-                      className={`stcuts__dot${i === cutIdx ? ' on' : ''}`}
-                      aria-label={`Cut ${i + 1}`}
-                      onClick={(e) => { e.stopPropagation(); setCutIdx(i); }}
-                    />
-                  ))}
-                </div>
-                <span className="stcuts__count">{cutIdx + 1}/{cuts.length}</span>
-              </div>
+              {open.scene && <img src={open.scene} alt={`EP.${open.no} ${lang === 'ko' ? open.titleKo : open.titleEn}`} />}
+              <div className="stsheet__scrim" />
               <button className="stsheet__x" aria-label={t('story_close')} onClick={closePreview}>
                 <Icon name="x" size={18} />
               </button>
-            </div>
-
-            <div className="stsheet__body">
               <div className="stsheet__head">
                 <span className="stsheet__no">EP.{open.no}</span>
                 <h2 className="stsheet__title">{lang === 'ko' ? open.titleKo : open.titleEn}</h2>
                 <p className="stsheet__sub">{lang === 'ko' ? open.descKo : open.descEn}</p>
               </div>
+            </div>
 
+            <div className="stsheet__body">
               <span className="stsheet__focus">
                 <b>{t('story_focus')}</b>
                 {lang === 'ko' ? open.focusKo : open.focusEn}

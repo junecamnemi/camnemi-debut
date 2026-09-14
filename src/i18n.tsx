@@ -88,6 +88,7 @@ const DICT = {
     // episode 1
     ep1_title: 'First Step: Hangul',
     ep1_start: 'Start training',
+    intro_start: 'Start',
     ep1_learn: (w: string) => `Learn ${w}`,
     ep1_combine: 'Combine game',
     ep1_writing: 'Writing practice',
@@ -194,6 +195,7 @@ const DICT = {
     auth_guest: '로그인 없이 둘러보기 →',
     ep1_title: '첫 걸음, 한글',
     ep1_start: '트레이닝 시작',
+    intro_start: '시작',
     ep1_learn: (w: string) => `${w} 배우기`,
     ep1_combine: '조합 게임',
     ep1_writing: '쓰기 연습',

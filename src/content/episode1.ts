@@ -10,14 +10,14 @@ export const EPISODE1: Episode = {
 
   dialogue: [
     { who: 'Aran', ko: '…여기가 글로시스 기획사예요?', en: '…Is this the Glowsis agency?',
-      scene: 'assets/ep1/ep1_arrival.jpg', sceneVideo: 'assets/ep1/video/arrival.mp4' },
+      scene: 'assets/ep1/ep1_arrival.jpg' },
     { who: 'Me · CEO', ko: '네, 맞아요. 오늘부터 우리 같이 시작해요!', en: "Yes. Let's start together from today!",
-      scene: 'assets/ep1/ep1_arrival.jpg', sceneVideo: 'assets/ep1/video/arrival.mp4' },
+      scene: 'assets/ep1/ep1_arrival.jpg' },
     { who: 'Aran', ko: '저, 한국어를 잘 못해요… 괜찮아요?', en: "I'm not good at Korean… is that okay?",
-      scene: 'assets/ep1/ep1_intro.jpg', sceneVideo: 'assets/ep1/video/intro.mp4' },
+      scene: 'assets/ep1/ep1_intro.jpg' },
     { who: 'Me · CEO', ko: '괜찮아요. 첫 걸음은 한글이에요. 같이 배워요!', en: "It's okay. The first step is Hangul. Let's learn together!",
       tip: "Today's training — Hangul letters → combine → writing → stage name",
-      scene: 'assets/ep1/ep1_study.jpg', sceneVideo: 'assets/ep1/video/study.mp4' },
+      scene: 'assets/ep1/ep1_study.jpg' },
   ],
 
   // 기본 자음 14자 (훈민정음 순)

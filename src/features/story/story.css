@@ -12,37 +12,23 @@
   box-shadow:0 -18px 60px rgba(0,0,0,.72);animation:stUp .34s cubic-bezier(.34,1.3,.5,1) both}
 .stsheet__panel::-webkit-scrollbar{display:none}
 
-.stsheet__media{position:relative;height:min(46vh,340px);padding:var(--sp-4) var(--sp-4) 0;
-  display:flex;justify-content:center}
-
-/* 컷씬 4컷 포트레이트 캐러셀 (탭/스와이프로 1→4컷 전환) */
-.stcuts{position:relative;height:100%;aspect-ratio:9/16;overflow:hidden;
-  border-radius:var(--r-lg);border:1px solid var(--line-strong);
-  background:var(--surface);box-shadow:var(--sh-lg);touch-action:pan-y}
-.stcuts__track{display:flex;height:100%;transition:transform .32s cubic-bezier(.3,1.2,.4,1)}
-.stcuts__slide{flex:0 0 100%;width:100%;height:100%;object-fit:cover;display:block;
-  -webkit-user-drag:none;user-select:none}
-.stcuts__dots{position:absolute;left:0;right:0;bottom:10px;z-index:2;display:flex;
-  justify-content:center;gap:5px}
-.stcuts__dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.42);
-  transition:.2s;padding:0}
-.stcuts__dot.on{width:17px;border-radius:99px;background:#fff}
-.stcuts__count{position:absolute;top:10px;left:10px;z-index:2;font-size:10.5px;font-weight:900;
-  letter-spacing:.04em;color:#fff;background:rgba(10,6,18,.55);border:1px solid rgba(255,255,255,.22);
-  padding:3px 8px;border-radius:99px;backdrop-filter:blur(8px)}
-
+.stsheet__media{position:relative;height:236px;overflow:hidden;
+  border-top-left-radius:var(--r-xl);border-top-right-radius:var(--r-xl)}
+.stsheet__media img,.stsheet__media video{width:100%;height:100%;object-fit:cover;
+  object-position:center 22%;display:block}
+.stsheet__scrim{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,6,18,.1) 0%,rgba(10,6,18,.05) 40%,rgba(22,14,37,.96) 100%)}
 .stsheet__x{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;
   display:grid;place-items:center;color:#fff;background:rgba(10,6,18,.55);
-  border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);transition:.16s;z-index:3}
+  border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);transition:.16s}
 .stsheet__x:hover{background:rgba(10,6,18,.8)}
-
-/* 헤더(제목·설명) — 본문 상단으로 이동 */
-.stsheet__head{display:flex;flex-direction:column;gap:4px}
-.stsheet__no{align-self:flex-start;display:inline-block;font-size:10.5px;font-weight:900;
-  letter-spacing:.06em;color:#fff;background:linear-gradient(135deg,#7c3aed,#ec4899);
-  padding:3px 10px;border-radius:99px}
-.stsheet__title{font-size:21px;font-weight:900;letter-spacing:-.03em;line-height:1.2;color:var(--ink)}
-.stsheet__sub{font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.stsheet__head{position:absolute;left:0;right:0;bottom:0;padding:0 var(--sp-4) 14px}
+.stsheet__no{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.06em;color:#fff;
+  background:linear-gradient(135deg,#7c3aed,#ec4899);padding:3px 10px;border-radius:99px;margin-bottom:8px}
+.stsheet__title{font-size:21px;font-weight:900;letter-spacing:-.03em;line-height:1.2;color:#fff;
+  text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.stsheet__sub{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.86);margin-top:5px;
+  text-shadow:0 1px 10px rgba(0,0,0,.55)}
 
 .stsheet__body{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4) var(--sp-4) var(--sp-5)}
 .stsheet__focus{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;

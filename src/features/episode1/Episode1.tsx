@@ -13,6 +13,7 @@ import { CombineGame } from './scenes/CombineGame';
 import { WritingPractice } from './scenes/WritingPractice';
 import { NamingScene } from './scenes/NamingScene';
 import { RewardScene } from './scenes/RewardScene';
+import { StoryIntro } from '../../components/StoryIntro';
 import './episode1.css';
 
 type Phase = 'dlg' | 'jamo' | 'final' | 'combine' | 'write' | 'name' | 'reward';
@@ -49,6 +50,7 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
   const member = MEMBERS[ep.member];
 
   const [phase, setPhase] = useState<Phase>('dlg');
+  const [introDone, setIntroDone] = useState(false);
   const [dlgIdx, setDlgIdx] = useState(0);
   const [jamoStage, setJamoStage] = useState<JamoStage>('cons');
   const [combineIdx, setCombineIdx] = useState(0);
@@ -122,6 +124,16 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
 
   const backVisible = phase === 'dlg' && dlgIdx > 0;
   function back() { if (phase === 'dlg' && dlgIdx > 0) setDlgIdx(dlgIdx - 1); }
+
+  // 인트로 — 4컷 컷씬 스토리보드를 먼저 보여준 뒤 레슨(dlg) 진입
+  if (!introDone) {
+    return (
+      <div className="ep">
+        <Hud epLabel={`EP.${ep.no} ${t('ep1_title')}`} careerLabel={t('story')} progress={0} />
+        <StoryIntro no={ep.no} onDone={() => setIntroDone(true)} />
+      </div>
+    );
+  }
 
   return (
     <div className="ep">
