@@ -3,21 +3,24 @@ import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n } from '../../i18n';
 import { STORY } from '../../content/story';
-import type { StoryEpisode } from '../../types/game';
+import type { StoryEpisode, EpisodeNo } from '../../types/game';
 import './story.css';
 
-/** 화별 진행 상태 — 현재는 EP.1~3 완료 · EP.4 진행 중, 나머지는 성장하면 열림 */
+/** 화별 진행 상태 — EP.1~15 완료 · EP.16(데뷔) 진행 중 */
 function stateOf(no: number): 'done' | 'now' | 'locked' {
-  if (no <= 3) return 'done';
-  if (no === 4) return 'now';
+  if (no <= 15) return 'done';
+  if (no === 16) return 'now';
   return 'locked';
 }
 
 /** Story — EP.1~16 전체 스토리(제목·설명·대화·장면) + 장면 미리보기 시트 */
-export function StoryScreen({ onPlay }: { onPlay?: (n: 1 | 2 | 3 | 4) => void }) {
+export function StoryScreen({ onPlay }: { onPlay?: (n: EpisodeNo) => void }) {
   const { t, lang } = useI18n();
   const [open, setOpen] = useState<StoryEpisode | null>(null);
   const done = STORY.filter((e) => stateOf(e.no) === 'done').length;
+  const furthest = Math.max(0, ...STORY.filter((e) => stateOf(e.no) === 'done').map((e) => e.no));
+  const nextNo = Math.min(furthest + 1, STORY.length) as EpisodeNo;
+  const nextEp = STORY[nextNo - 1];
 
   // 프리뷰 시트 열림 시 배경 스크롤 잠금 + ESC 닫기
   useEffect(() => {
@@ -27,7 +30,7 @@ export function StoryScreen({ onPlay }: { onPlay?: (n: 1 | 2 | 3 | 4) => void })
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
-  const playable = (no: number): no is 1 | 2 | 3 | 4 => no >= 1 && no <= 4;
+  const playable = (no: number): no is EpisodeNo => no >= 1 && no <= 16;
 
   return (
     <ScreenBg
@@ -48,9 +51,9 @@ export function StoryScreen({ onPlay }: { onPlay?: (n: 1 | 2 | 3 | 4) => void })
       }
     >
       <div className="screen">
-        {onPlay && (
-          <button className="btn btn--primary" onClick={() => onPlay(4)}>
-            {lang === 'ko' ? STORY[3].titleKo : STORY[3].titleEn} · {t('story_play')}
+        {onPlay && nextEp && (
+          <button className="btn btn--primary" onClick={() => onPlay(nextNo)}>
+            {lang === 'ko' ? nextEp.titleKo : nextEp.titleEn} · {t('story_play')}
           </button>
         )}
         <div className="block">

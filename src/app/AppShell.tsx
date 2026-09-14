@@ -8,6 +8,8 @@ import { EPISODE1 } from '../content/episode1';
 import { EPISODE2 } from '../content/episode2';
 import { EPISODE3 } from '../content/episode3';
 import { EPISODE4 } from '../content/episode4';
+import { EPISODE_LOADERS } from '../content/episodes';
+import type { Episode, EpisodeNo } from '../types/game';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../services/auth';
 import './shell.css';
@@ -18,6 +20,7 @@ const Episode1 = lazy(() => import('../features/episode1/Episode1').then((m) => 
 const Episode2 = lazy(() => import('../features/episode2/Episode2').then((m) => ({ default: m.Episode2 })));
 const Episode3 = lazy(() => import('../features/episode3/Episode3').then((m) => ({ default: m.Episode3 })));
 const Episode4 = lazy(() => import('../features/episode4/Episode4').then((m) => ({ default: m.Episode4 })));
+const EpisodePlayer = lazy(() => import('../components/EpisodePlayer').then((m) => ({ default: m.EpisodePlayer })));
 const PracticeScreen = lazy(() => import('../features/practice/PracticeScreen').then((m) => ({ default: m.PracticeScreen })));
 const CollectionScreen = lazy(() => import('../features/collection/CollectionScreen').then((m) => ({ default: m.CollectionScreen })));
 const StoryScreen = lazy(() => import('../features/story/StoryScreen').then((m) => ({ default: m.StoryScreen })));
@@ -31,10 +34,23 @@ function ScreenFallback() {
   );
 }
 
+/** EP.5~16 공용 플레이어 로더 — 에피소드 데이터를 지연 로드해 EpisodePlayer 로 넘긴다 */
+function EpisodeLoader({ no, userId }: { no: number; userId?: string }) {
+  const [ep, setEp] = useState<Episode | null>(null);
+  useEffect(() => {
+    let alive = true;
+    const load = EPISODE_LOADERS[no];
+    if (load) void load().then((m) => { if (alive) setEp(m); });
+    return () => { alive = false; };
+  }, [no]);
+  if (!ep) return <ScreenFallback />;
+  return <EpisodePlayer ep={ep} userId={userId} />;
+}
+
 const GUEST_KEY = 'camnemi_debut_guest';
 
 /** 탭 + 에피소드 실행 상태 — History API state 로 저장/복원되는 라우트 */
-interface Route { tab: TabKey; playing: 0 | 1 | 2 | 3 | 4 }
+interface Route { tab: TabKey; playing: 0 | EpisodeNo }
 
 const INITIAL_ROUTE: Route = { tab: 'home', playing: 0 };
 
@@ -77,6 +93,7 @@ export function AppShell() {
       : playing === 2 ? `EP.2 ${EPISODE2.title}`
       : playing === 3 ? `EP.3 ${EPISODE3.title}`
       : playing === 4 ? `EP.4 ${EPISODE4.title}`
+      : playing >= 5 ? `EP.${playing}`
       : TITLE_BY_TAB[tab];
     document.title = `${label} · ${BRAND_TITLE}`;
   }, [tab, playing]);
@@ -86,7 +103,7 @@ export function AppShell() {
     try { window.history.pushState(next, ''); } catch { /* noop */ }
   }
   function goTab(t: TabKey) { navigate({ tab: t, playing: 0 }); }
-  function playEp(n: 1 | 2 | 3 | 4) { navigate({ tab: 'story', playing: n }); }
+  function playEp(n: EpisodeNo) { navigate({ tab: 'story', playing: n }); }
 
   // 로딩 스플래시
   if (loading && !guest) {
@@ -121,7 +138,9 @@ export function AppShell() {
               ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} />
               : playing === 3
                 ? <Episode3 ep={EPISODE3} userId={userId ?? undefined} />
-                : <Episode4 ep={EPISODE4} userId={userId ?? undefined} />}
+                : playing === 4
+                  ? <Episode4 ep={EPISODE4} userId={userId ?? undefined} />
+                  : <EpisodeLoader key={playing} no={playing} userId={userId ?? undefined} />}
         </Suspense>
       </div>
     );

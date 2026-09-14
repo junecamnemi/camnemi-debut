@@ -2,6 +2,9 @@
 
 export type MemberId = 'aran' | 'chaea' | 'dahee' | 'roy';
 
+/** 재생 가능한 에피소드 번호 (EP.1~16) */
+export type EpisodeNo = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16;
+
 export interface Member {
   roleEn?: string;   // English role
   id: MemberId;
@@ -85,6 +88,10 @@ export interface Episode {
   title: string;
   subtitle: string;
   member: MemberId;
+  /** 대화 완료 시 숙련 처리할 스킬 id (EP.5+ 공용 플레이어용) */
+  skill?: string;
+  /** 보상 시 기록할 커리어 진행 % (EP.5+ 공용 플레이어용) */
+  careerPct?: number;
   dialogue: DialogueLine[];
   consonants?: JamoItem[];     // 기본 자음 14 (EP.1)
   vowels?: JamoItem[];         // 기본 모음 10 (EP.1)

@@ -134,7 +134,7 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
           {phase === 'combine' && <CombineGame question={ep.combine[combineIdx]} onAnswered={setCombineOk} />}
           {phase === 'write' && <WritingPractice task={task} charIdx={charIdx} onCharDone={() => setWriteDone(true)} />}
           {phase === 'name' && <NamingScene member={member} value={stageName} onChange={setStageName} />}
-          {phase === 'reward' && <RewardScene stageName={stageName.trim() || member.ko} rewards={ep.rewards} />}
+          {phase === 'reward' && <RewardScene stageName={stageName.trim() || member.ko} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
         </div>
       </div>
 

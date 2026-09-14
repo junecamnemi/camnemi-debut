@@ -107,7 +107,7 @@ export function Episode3({ ep, userId }: { ep: Episode; userId?: string }) {
                   <input className="naming__in" value={stageName} onChange={(e) => setName(e.target.value)} placeholder={'e.g. Stella'} />
                 </div>
               )}
-              {named && <RewardScene stageName={stageName} rewards={ep.rewards} />}
+              {named && <RewardScene stageName={stageName} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
             </>
           )}
         </div>
