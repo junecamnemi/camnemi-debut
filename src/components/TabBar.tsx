@@ -5,7 +5,7 @@ export type TabKey = 'home' | 'train' | 'story' | 'cards' | 'my';
 
 const TABS: { key: TabKey; labelKey: TKey; icon: string }[] = [
   { key: 'home', labelKey: 'tab_home', icon: 'home' },
-  { key: 'train', labelKey: 'tab_train', icon: 'train' },
+  { key: 'train', labelKey: 'tab_train', icon: 'music' },
   { key: 'story', labelKey: 'tab_story', icon: 'story' },
   { key: 'cards', labelKey: 'tab_cards', icon: 'cards' },
   { key: 'my', labelKey: 'tab_my', icon: 'user' },

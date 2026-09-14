@@ -59,7 +59,7 @@ const INITIAL_ROUTE: Route = { tab: 'home', playing: 0 };
 
 const BRAND_TITLE = '글로시스: 데뷔 프로젝트';
 const TITLE_BY_TAB: Record<TabKey, string> = {
-  home: '홈', train: '훈련', story: '스토리', cards: '컬렉션', my: 'My',
+  home: '홈', train: '레슨', story: '스토리', cards: '컬렉션', my: 'My',
 };
 
 /** 앱 메인 프레임 — 로그인(Supabase) + 탭 네비게이션 + 화면 + 에피소드 실행 */

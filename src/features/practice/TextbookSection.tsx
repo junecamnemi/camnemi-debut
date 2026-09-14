@@ -8,20 +8,23 @@ interface Section { cls: string; html: string }
 interface BookUnit { id: number; sections: Section[] }
 interface Page { type: string; blocks: string[] }
 
-/** book data script(window.GLOWSIS_BOOK)를 로드 */
-function useBook(file: string, onLoad: (units: BookUnit[]) => void) {
+/** book data script 를 로드 — 1A 만 window.GLOWSIS_BOOK, 1B~6B 는 window.GLOWSIS_<LEVEL> (예: GLOWSIS_1B) 를 사용한다 */
+function useBook(level: string, file: string, onLoad: (units: BookUnit[]) => void) {
   useEffect(() => {
     let cancelled = false;
-    (window as unknown as { GLOWSIS_BOOK?: BookUnit[] }).GLOWSIS_BOOK = undefined;
+    const w = window as unknown as Record<string, BookUnit[] | undefined>;
+    const gname = `GLOWSIS_${level}`;
+    w.GLOWSIS_BOOK = undefined;
+    w[gname] = undefined;
     const s = document.createElement('script');
     s.src = file;
     s.onload = () => {
       if (cancelled) return;
-      onLoad((window as unknown as { GLOWSIS_BOOK?: BookUnit[] }).GLOWSIS_BOOK || []);
+      onLoad(w[gname] || w.GLOWSIS_BOOK || []);
     };
     document.body.appendChild(s);
     return () => { cancelled = true; s.remove(); };
-  }, [file]);
+  }, [level, file]);
 }
 
 /** 단원의 섹션을 책 페이지로 묶기 (원본 glowsis-view.js groupPages 이식) */
@@ -73,7 +76,7 @@ export function TextbookSection() {
   const [page, setPage] = useState(0);
   const lvl = TEXTBOOK[levelIdx];
 
-  useBook(lvl.file, (u) => { setUnits(u); setOpenIdx(null); setLoading(false); });
+  useBook(lvl.level, lvl.file, (u) => { setUnits(u); setOpenIdx(null); setLoading(false); });
   useEffect(() => { setLoading(true); }, [lvl.file]);
 
   // ── 단원 뷰어 (플립북) ──

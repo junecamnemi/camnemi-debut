@@ -3,6 +3,7 @@ import { PRACTICE, KIND_ICON, type PracticeKind } from '../../content/practice';
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { TextbookSection } from './TextbookSection';
+import { FanExpressions } from './FanExpressions';
 import { speakScript } from '../../services/tts';
 import { loadDailyQuestions, loadPracticeEvents, logEvent } from '../../services/game';
 import { useI18n, type TKey } from '../../i18n';
@@ -134,6 +135,7 @@ export function PracticeScreen({ userId }: { userId?: string }) {
                 </button>
               );
             })}
+            <FanExpressions />
           </>
         ) : (
           <>
