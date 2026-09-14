@@ -471,13 +471,12 @@
   text-shadow:0 1px 10px rgba(0,0,0,.55)}
 .scr__sheet{position:absolute;inset:0;z-index:5;overflow-y:auto;overflow-x:hidden;
   display:flex;flex-direction:column;-webkit-overflow-scrolling:touch;
-  scroll-behavior:smooth;overscroll-behavior:contain}
+  overscroll-behavior:contain}
 .scr__pad{flex:none;height:calc(100% - var(--peek))}
 .scr__panel{position:relative;flex:none;min-height:calc(100% - 74px);
   display:flex;flex-direction:column;gap:var(--sp-4);
   padding:var(--sp-5) var(--sp-4) var(--sp-6);
-  background:linear-gradient(180deg,rgba(17,11,29,.95) 0%,rgba(10,6,18,.99) 100%);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:linear-gradient(180deg,rgba(17,11,29,.96) 0%,rgba(10,6,18,.99) 100%);
   border-top-left-radius:var(--r-xl);border-top-right-radius:var(--r-xl);
   border:1px solid rgba(255,255,255,.08);border-bottom:none;
   box-shadow:0 -14px 44px rgba(0,0,0,.6)}

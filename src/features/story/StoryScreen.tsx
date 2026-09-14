@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n } from '../../i18n';
@@ -37,13 +38,41 @@ export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => voi
     return () => { alive = false; };
   }, [userId]);
 
-  // 프리뷰 시트 열림 시 배경 스크롤 잠금 + ESC 닫기
+  // open 상태 미러 — popstate 핸들러에서 항상 최신값을 참조
+  const openRef = useRef(open);
+  useEffect(() => { openRef.current = open; }, [open]);
+
+  // 프리뷰 열기 — 히스토리 엔트리를 하나 더 쌓아 브라우저 '뒤로'로 시트를 닫을 수 있게 함
+  function openPreview(e: StoryEpisode) {
+    setOpen(e);
+    try {
+      const cur = window.history.state && typeof window.history.state === 'object' ? window.history.state : {};
+      window.history.pushState({ ...cur, storyPreview: e.no }, '');
+    } catch { /* 샌드박스 등 pushState 불가 시 무시 */ }
+  }
+
+  // 프리뷰 닫기 (✕ / 백드롭 / 닫기 버튼 / ESC) — 쌓아둔 히스토리 엔트리 정리
+  function closePreview() {
+    setOpen(null);
+    try {
+      const st = window.history.state as { storyPreview?: number } | null;
+      if (st && typeof st === 'object' && st.storyPreview != null) {
+        window.history.back();
+      }
+    } catch { /* noop */ }
+  }
+
+  // ESC 키 + 브라우저 '뒤로'로 프리뷰 닫기 (백드롭/✕ 는 위 closePreview 사용)
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(null); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closePreview(); };
+    const onPop = () => { if (openRef.current) setOpen(null); };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open]);
+    window.addEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('popstate', onPop);
+    };
+  }, []);
 
   const playable = (no: number): no is EpisodeNo => no >= 1 && no <= 16;
 
@@ -90,7 +119,7 @@ export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => voi
                   <button
                     key={e.no}
                     className={`epi${st === 'locked' ? ' is-locked' : ''}`}
-                    onClick={() => setOpen(e)}
+                    onClick={() => openPreview(e)}
                   >
                     <span className={`epi__no${st === 'done' ? ' is-done' : st === 'now' ? ' is-now' : ' locked'}`}>{e.no}</span>
                     <span className="epi__txt">
@@ -108,16 +137,16 @@ export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => voi
         )}
       </div>
 
-      {open && (
+      {open && createPortal(
         <div className="stsheet" role="dialog" aria-modal="true">
-          <button className="stsheet__bd" aria-label={t('story_close')} onClick={() => setOpen(null)} />
+          <button className="stsheet__bd" aria-label={t('story_close')} onClick={closePreview} />
           <div className="stsheet__panel">
             <div className="stsheet__media">
               {open.sceneVideo
                 ? <video src={open.sceneVideo} poster={open.scene} autoPlay loop muted playsInline />
                 : open.scene && <img src={open.scene} alt="" />}
               <div className="stsheet__scrim" />
-              <button className="stsheet__x" aria-label={t('story_close')} onClick={() => setOpen(null)}>
+              <button className="stsheet__x" aria-label={t('story_close')} onClick={closePreview}>
                 <Icon name="x" size={18} />
               </button>
               <div className="stsheet__head">
@@ -153,10 +182,11 @@ export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => voi
               ) : (
                 <span className="stsheet__note">{t('story_locked_note')}</span>
               )}
-              <button className="btn btn--ghost" onClick={() => setOpen(null)}>{t('story_close')}</button>
+              <button className="btn btn--ghost" onClick={closePreview}>{t('story_close')}</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </ScreenBg>
   );
