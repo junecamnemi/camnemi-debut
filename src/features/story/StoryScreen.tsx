@@ -84,8 +84,8 @@ export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => voi
 
   return (
     <ScreenBg
-      video="assets/bg/story.mp4"
-      poster="assets/bg/story.jpg"
+      video="assets/bg/story_aran.mp4"
+      poster="assets/chars/aran.webp"
       appbar={
         <div className="appbar appbar--abs">
           <span className="appbar__brand">{t('story')}</span>
