@@ -98,3 +98,25 @@ export interface Episode {
   writing: WriteTask[];
   rewards: EpisodeReward[];
 }
+
+/* ── 스토리 화면(EP.1~16) 데이터 ── */
+export interface StoryLine {
+  who: string;   // 화자 표시명 (Aran / Me · CEO …)
+  ko: string;
+  en: string;
+}
+
+export interface StoryEpisode {
+  no: number;
+  member: MemberId | 'all';
+  titleKo: string;
+  titleEn: string;
+  descKo: string;
+  descEn: string;
+  focusKo: string;   // 학습 포인트 (한국어)
+  focusEn: string;   // 학습 포인트 (영어)
+  scene?: string;      // 장면 이미지 (기존 자산 재사용)
+  sceneVideo?: string; // 장면 영상 (기존 자산 재사용)
+  face?: string;       // 멤버 초상 (프리뷰용)
+  lines: StoryLine[];  // 주요 대화
+}
