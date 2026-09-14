@@ -252,3 +252,7 @@ export const STORY: StoryEpisode[] = [
 
 /** 특정 화 데이터 */
 export const storyByNo = (no: number): StoryEpisode | undefined => STORY.find((e) => e.no === no);
+
+/** 화별 컷씬 4장(9:16 포트레이트) 경로 — EP.{no} 스토리를 4컷 만화로 미리보기 */
+export const cutsFor = (no: number): string[] =>
+  Array.from({ length: 4 }, (_, i) => `assets/story/cuts/ep${no}/ep${no}_cut${i + 1}.webp`);
