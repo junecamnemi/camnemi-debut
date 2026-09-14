@@ -12,6 +12,8 @@ import { EPISODE_LOADERS } from '../content/episodes';
 import type { Episode, EpisodeNo } from '../types/game';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../services/auth';
+import { loadGameState, setEpisodeDone, setStageName, setCareer, unlock } from '../services/game';
+import { loadLocalProgress, clearLocalProgress } from '../services/localProgress';
 import './shell.css';
 
 // ── code-split: 무거운/드물게 쓰는 화면은 필요할 때만 로드 ──
@@ -98,6 +100,43 @@ export function AppShell() {
     document.title = `${label} · ${BRAND_TITLE}`;
   }, [tab, playing]);
 
+  // 게스트 → 계정 전환 시 로컬 진행을 계정으로 병합 (멱등).
+  // 참고: 게스트가 로그인 화면으로 가는 경로(logout 타일)가 guest 플래그를 먼저 지우므로,
+  // guest 여부 대신 "로그인 + 남아 있는 로컬 진행" 여부로 판단한다.
+  useEffect(() => {
+    if (!userId) return;
+    const local = loadLocalProgress();
+    const hasLocal =
+      local.furthestEpisode > 1 ||
+      !!local.stageName ||
+      local.careerPct > 0 ||
+      local.unlocks.length > 0;
+    if (!hasLocal) return;
+
+    let cancelled = false;
+    (async () => {
+      const st = await loadGameState(userId);
+      if (cancelled || !st) return;
+      if (local.furthestEpisode > (st.furthest_episode ?? 0)) {
+        await setEpisodeDone(userId, local.furthestEpisode);
+      }
+      if (local.stageName && !st.stage_name) {
+        await setStageName(userId, local.stageName);
+      }
+      if (local.careerPct > (st.career_pct ?? 0)) {
+        await setCareer(userId, local.careerStage ?? st.career_stage, local.careerPct);
+      }
+      for (const id of local.unlocks) {
+        await unlock(userId, id, 'photocard');
+      }
+      if (!cancelled) {
+        clearLocalProgress();
+        setGuest(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [userId]);
+
   function navigate(next: Route) {
     setRoute(next);
     try { window.history.pushState(next, ''); } catch { /* noop */ }
@@ -105,8 +144,8 @@ export function AppShell() {
   function goTab(t: TabKey) { navigate({ tab: t, playing: 0 }); }
   function playEp(n: EpisodeNo) { navigate({ tab: 'story', playing: n }); }
 
-  // 로딩 스플래시
-  if (loading && !guest) {
+  // 로딩 스플래시 — 세션 확인 전까지 메인/로그인 화면 대신 스피너를 보여 깜빡임 방지
+  if (loading) {
     return (
       <div className="splash">
         <div className="splash__brand">GLOWSIS</div>
@@ -157,9 +196,9 @@ export function AppShell() {
       <Suspense fallback={<ScreenFallback />}>
         {tab === 'home' && <HomeScreen onGo={goTab} />}
         {tab === 'train' && <PracticeScreen userId={userId ?? undefined} />}
-        {tab === 'story' && <StoryScreen onPlay={playEp} />}
-        {tab === 'cards' && <CollectionScreen />}
-        {tab === 'my' && <MyScreen onLogout={logout} authed={!!userId} />}
+        {tab === 'story' && <StoryScreen onPlay={playEp} userId={userId ?? undefined} />}
+        {tab === 'cards' && <CollectionScreen userId={userId ?? undefined} />}
+        {tab === 'my' && <MyScreen onLogout={logout} authed={!!userId} userId={userId ?? undefined} />}
       </Suspense>
 
       <TabBar active={tab} onTab={goTab} />

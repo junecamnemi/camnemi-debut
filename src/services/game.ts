@@ -7,6 +7,7 @@ export interface GameState {
   stage_name: string | null;
   career_stage: string;
   career_pct: number;
+  furthest_episode: number;
   streak_days: number;
   study_days: number;
 }
@@ -43,6 +44,16 @@ export async function setMember(userId: string, memberId: MemberId) {
 export async function setCareer(userId: string, careerStage: string, careerPct: number) {
   return supabase.from('game_state')
     .update({ career_stage: careerStage, career_pct: careerPct, updated_at: new Date().toISOString() })
+    .eq('user_id', userId);
+}
+
+/** 에피소드 완료 기록 — furthest_episode 를 greatest(current, no) 로 갱신 */
+export async function setEpisodeDone(userId: string, no: number) {
+  const cur = (await loadGameState(userId))?.furthest_episode ?? 0;
+  const next = Math.max(cur, no);
+  if (next === cur) return null;
+  return supabase.from('game_state')
+    .update({ furthest_episode: next, updated_at: new Date().toISOString() })
     .eq('user_id', userId);
 }
 

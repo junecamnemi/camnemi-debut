@@ -3,24 +3,39 @@ import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n } from '../../i18n';
 import { STORY } from '../../content/story';
+import { loadGameState } from '../../services/game';
+import { loadLocalProgress } from '../../services/localProgress';
 import type { StoryEpisode, EpisodeNo } from '../../types/game';
 import './story.css';
 
-/** 화별 진행 상태 — EP.1~15 완료 · EP.16(데뷔) 진행 중 */
-function stateOf(no: number): 'done' | 'now' | 'locked' {
-  if (no <= 15) return 'done';
-  if (no === 16) return 'now';
+/** 화별 진행 상태 — 실제 저장된 furthest_episode(계정)/로컬(게스트) 기준 */
+function stateOf(no: number, furthest: number): 'done' | 'now' | 'locked' {
+  if (no <= furthest) return 'done';
+  if (no === furthest + 1) return 'now';
   return 'locked';
 }
 
 /** Story — EP.1~16 전체 스토리(제목·설명·대화·장면) + 장면 미리보기 시트 */
-export function StoryScreen({ onPlay }: { onPlay?: (n: EpisodeNo) => void }) {
+export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => void; userId?: string }) {
   const { t, lang } = useI18n();
   const [open, setOpen] = useState<StoryEpisode | null>(null);
-  const done = STORY.filter((e) => stateOf(e.no) === 'done').length;
-  const furthest = Math.max(0, ...STORY.filter((e) => stateOf(e.no) === 'done').map((e) => e.no));
-  const nextNo = Math.min(furthest + 1, STORY.length) as EpisodeNo;
-  const nextEp = STORY[nextNo - 1];
+  const [furthest, setFurthest] = useState<number | null>(null);
+
+  // 실제 저장된 진행 로드 (계정: game_state.furthest_episode / 게스트: 로컬) — 기본 1
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      let f = 1;
+      if (userId) {
+        const st = await loadGameState(userId);
+        f = st?.furthest_episode ?? 1;
+      } else {
+        f = loadLocalProgress().furthestEpisode;
+      }
+      if (alive) setFurthest(f);
+    })();
+    return () => { alive = false; };
+  }, [userId]);
 
   // 프리뷰 시트 열림 시 배경 스크롤 잠금 + ESC 닫기
   useEffect(() => {
@@ -32,6 +47,12 @@ export function StoryScreen({ onPlay }: { onPlay?: (n: EpisodeNo) => void }) {
 
   const playable = (no: number): no is EpisodeNo => no >= 1 && no <= 16;
 
+  const loaded = furthest !== null;
+  const fv = furthest ?? 1;
+  const done = loaded ? STORY.filter((e) => e.no <= fv).length : 0;
+  const nextNo = Math.min(fv + 1, STORY.length) as EpisodeNo;
+  const nextEp = loaded && fv < STORY.length ? STORY[nextNo - 1] : null;
+
   return (
     <ScreenBg
       video="assets/bg/story.mp4"
@@ -39,7 +60,7 @@ export function StoryScreen({ onPlay }: { onPlay?: (n: EpisodeNo) => void }) {
       appbar={
         <div className="appbar appbar--abs">
           <span className="appbar__brand">{t('story')}</span>
-          <span className="appbar__right">EP.{done}/{STORY.length}</span>
+          <span className="appbar__right">{loaded ? `EP.${done}/${STORY.length}` : 'EP.…'}</span>
         </div>
       }
       head={
@@ -51,32 +72,40 @@ export function StoryScreen({ onPlay }: { onPlay?: (n: EpisodeNo) => void }) {
       }
     >
       <div className="screen">
-        {onPlay && nextEp && (
-          <button className="btn btn--primary" onClick={() => onPlay(nextNo)}>
-            {lang === 'ko' ? nextEp.titleKo : nextEp.titleEn} · {t('story_play')}
-          </button>
-        )}
-        <div className="block">
-          {STORY.map((e) => {
-            const st = stateOf(e.no);
-            return (
-              <button
-                key={e.no}
-                className={`epi${st === 'locked' ? ' is-locked' : ''}`}
-                onClick={() => setOpen(e)}
-              >
-                <span className={`epi__no${st === 'done' ? ' is-done' : st === 'now' ? ' is-now' : ' locked'}`}>{e.no}</span>
-                <span className="epi__txt">
-                  <span className="epi__t">{lang === 'ko' ? e.titleKo : e.titleEn}</span>
-                  <span className="epi__d">{lang === 'ko' ? e.descKo : e.descEn}</span>
-                </span>
-                {st === 'done' ? <span className="epi__st">✓</span>
-                  : st === 'now' ? <span className="epi__play"><Icon name="play" size={16} /></span>
-                  : <span className="epi__lock"><Icon name="lock" size={15} /></span>}
+        {!loaded ? (
+          <div className="screen-loading" role="status" aria-label="loading">
+            <span className="screen-loading__spinner" />
+          </div>
+        ) : (
+          <>
+            {onPlay && nextEp && (
+              <button className="btn btn--primary" onClick={() => onPlay(nextNo)}>
+                {lang === 'ko' ? nextEp.titleKo : nextEp.titleEn} · {t('story_play')}
               </button>
-            );
-          })}
-        </div>
+            )}
+            <div className="block">
+              {STORY.map((e) => {
+                const st = stateOf(e.no, fv);
+                return (
+                  <button
+                    key={e.no}
+                    className={`epi${st === 'locked' ? ' is-locked' : ''}`}
+                    onClick={() => setOpen(e)}
+                  >
+                    <span className={`epi__no${st === 'done' ? ' is-done' : st === 'now' ? ' is-now' : ' locked'}`}>{e.no}</span>
+                    <span className="epi__txt">
+                      <span className="epi__t">{lang === 'ko' ? e.titleKo : e.titleEn}</span>
+                      <span className="epi__d">{lang === 'ko' ? e.descKo : e.descEn}</span>
+                    </span>
+                    {st === 'done' ? <span className="epi__st">✓</span>
+                      : st === 'now' ? <span className="epi__play"><Icon name="play" size={16} /></span>
+                      : <span className="epi__lock"><Icon name="lock" size={15} /></span>}
+                  </button>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       {open && (

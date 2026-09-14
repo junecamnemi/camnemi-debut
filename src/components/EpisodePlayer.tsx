@@ -7,7 +7,8 @@ import { CombineGame } from '../features/episode1/scenes/CombineGame';
 import { WritingPractice } from '../features/episode1/scenes/WritingPractice';
 import { RewardScene } from '../features/episode1/scenes/RewardScene';
 import { PhraseLesson } from '../features/episode2/scenes/PhraseLesson';
-import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer } from '../services/game';
+import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../services/game';
+import { applyGuestProgress } from '../services/localProgress';
 import '../features/episode1/episode1.css';
 import '../features/episode2/episode2.css';
 
@@ -79,6 +80,9 @@ export function EpisodePlayer({ ep, userId }: { ep: Episode; userId?: string }) 
       void saveStageName(userId, stageName.trim());
       void unlock(userId, pcId, 'photocard');
       void setCareer(userId, 'rookie', careerPct);
+      void setEpisodeDone(userId, ep.no);
+    } else {
+      applyGuestProgress({ stageName: stageName.trim(), careerStage: 'rookie', careerPct, episode: ep.no, unlockId: pcId });
     }
     addEvent(`${epTag}-reward`);
     setPhase('reward');

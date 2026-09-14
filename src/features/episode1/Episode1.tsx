@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Episode, JamoStage } from '../../types/game';
-import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer } from '../../services/game';
+import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../../services/game';
+import { applyGuestProgress } from '../../services/localProgress';
 import { MEMBERS } from '../../content/members';
 import { useI18n, type TKey } from '../../i18n';
 import { Hud } from '../../components/Hud';
@@ -107,6 +108,9 @@ export function Episode1({ ep, userId }: { ep: Episode; userId?: string | null }
         void unlock(userId, 'pc0', 'photocard');
         void setCareer(userId, '연습생', 42);
         void logEvent(userId, 'episode', ep.id, true, { stageName: name });
+        void setEpisodeDone(userId, ep.no);
+      } else {
+        applyGuestProgress({ stageName: name, careerStage: '연습생', careerPct: 42, episode: ep.no, unlockId: 'pc0' });
       }
       setPhase('reward');
     }
