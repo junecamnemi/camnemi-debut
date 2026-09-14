@@ -12,9 +12,11 @@ interface Props {
 /** 잉크(찍힌 영역)를 나누는 거친 격자 크기 (가로×세로 동일) */
 const GRID = 48;
 /** 그린 셀 중 기준 글자와 겹친 비율 하한 — 낙서/엉뚱한 곳에 그리기 걸러냄 */
-const MIN_PRECISION = 0.5;
-/** 기준 글자 셀 중 그리기가 덮은 비율 하한 — 다른 글자(비슷한 모양) 걸러냄 */
-const MIN_COVERAGE = 0.75;
+const MIN_PRECISION = 0.25;
+/** 기준 글자 셀 중 그리기가 덮은 비율 하한 — 대충 비슷하면 OK */
+const MIN_COVERAGE = 0.35;
+/** IoU (intersection / union) 하한 — 정밀하지 않아도 전체적인 닮은꼴이면 통과 */
+const MIN_IOU = 0.25;
 
 /** 쓰기 연습 — 실제 아이돌 이름을 손으로 따라쓰고, 목표 글자(글리프)와의 격자 오버랩으로 인식 판정 */
 export function WritingPractice({ task, charIdx, onCharDone }: Props) {
@@ -138,8 +140,11 @@ export function WritingPractice({ task, charIdx, onCharDone }: Props) {
 
     const precision = inter / drawn.size; // 그린 셀 중 기준 글자와 겹친 비율
     const coverage = inter / ref.size;    // 기준 글자 셀 중 그리기가 덮은 비율
+    const iou = inter / (drawn.size + ref.size - inter); // intersection over union
 
-    if (precision >= MIN_PRECISION && coverage >= MIN_COVERAGE) {
+    const pass = (precision >= MIN_PRECISION && coverage >= MIN_COVERAGE) || iou >= MIN_IOU;
+
+    if (pass) {
       if (retryTimer.current !== undefined) {
         window.clearTimeout(retryTimer.current);
         retryTimer.current = undefined;
@@ -165,7 +170,7 @@ export function WritingPractice({ task, charIdx, onCharDone }: Props) {
   return (
     <div className="card dlg">
       <div className="write__label">✍️ {t('write_trace')}</div>
-      <div className="write__word">{task.word} ({task.roman}) — letter {charIdx + 1}/{chars.length}: “{target}”</div>
+      <div className="write__word">{task.word} ({task.roman}) — letter {charIdx + 1}/{chars.length}: "{target}"</div>
 
       <div className="write__pad">
         <div className="write__guide">
