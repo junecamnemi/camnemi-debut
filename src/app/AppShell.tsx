@@ -11,6 +11,8 @@ import { LoginScreen } from '../features/auth/LoginScreen';
 import { EPISODE1 } from '../content/episode1';
 import { EPISODE2 } from '../content/episode2';
 import { Episode2 } from '../features/episode2/Episode2';
+import { EPISODE3 } from '../content/episode3';
+import { Episode3 } from '../features/episode3/Episode3';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../services/auth';
 import './shell.css';
@@ -18,7 +20,7 @@ import './shell.css';
 const GUEST_KEY = 'camnemi_debut_guest';
 
 /** 탭 + 에피소드 실행 상태 — History API state 로 저장/복원되는 라우트 */
-interface Route { tab: TabKey; playing: 0 | 1 | 2 }
+interface Route { tab: TabKey; playing: 0 | 1 | 2 | 3 }
 
 const INITIAL_ROUTE: Route = { tab: 'home', playing: 0 };
 
@@ -59,6 +61,7 @@ export function AppShell() {
     const label =
       playing === 1 ? `EP.1 ${EPISODE1.title}`
       : playing === 2 ? `EP.2 ${EPISODE2.title}`
+      : playing === 3 ? `EP.3 ${EPISODE3.title}`
       : TITLE_BY_TAB[tab];
     document.title = `${label} · ${BRAND_TITLE}`;
   }, [tab, playing]);
@@ -68,7 +71,7 @@ export function AppShell() {
     try { window.history.pushState(next, ''); } catch { /* noop */ }
   }
   function goTab(t: TabKey) { navigate({ tab: t, playing: 0 }); }
-  function playEp(n: 1 | 2) { navigate({ tab: 'story', playing: n }); }
+  function playEp(n: 1 | 2 | 3) { navigate({ tab: 'story', playing: n }); }
 
   // 로딩 스플래시
   if (loading && !guest) {
@@ -98,7 +101,9 @@ export function AppShell() {
         </div>
         {playing === 1
           ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} />
-          : <Episode2 ep={EPISODE2} userId={userId ?? undefined} />}
+          : playing === 2
+            ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} />
+            : <Episode3 ep={EPISODE3} userId={userId ?? undefined} />}
       </div>
     );
   }
