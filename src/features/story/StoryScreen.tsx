@@ -6,15 +6,15 @@ import { STORY } from '../../content/story';
 import type { StoryEpisode } from '../../types/game';
 import './story.css';
 
-/** 화별 진행 상태 — 현재는 EP.1~2 완료 · EP.3 진행 중, 나머지는 성장하면 열림 */
+/** 화별 진행 상태 — 현재는 EP.1~3 완료 · EP.4 진행 중, 나머지는 성장하면 열림 */
 function stateOf(no: number): 'done' | 'now' | 'locked' {
-  if (no <= 2) return 'done';
-  if (no === 3) return 'now';
+  if (no <= 3) return 'done';
+  if (no === 4) return 'now';
   return 'locked';
 }
 
 /** Story — EP.1~16 전체 스토리(제목·설명·대화·장면) + 장면 미리보기 시트 */
-export function StoryScreen({ onPlay }: { onPlay?: (n: 1 | 2 | 3) => void }) {
+export function StoryScreen({ onPlay }: { onPlay?: (n: 1 | 2 | 3 | 4) => void }) {
   const { t, lang } = useI18n();
   const [open, setOpen] = useState<StoryEpisode | null>(null);
   const done = STORY.filter((e) => stateOf(e.no) === 'done').length;
@@ -27,7 +27,7 @@ export function StoryScreen({ onPlay }: { onPlay?: (n: 1 | 2 | 3) => void }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
 
-  const playable = (no: number): no is 1 | 2 | 3 => no >= 1 && no <= 3;
+  const playable = (no: number): no is 1 | 2 | 3 | 4 => no >= 1 && no <= 4;
 
   return (
     <ScreenBg
@@ -49,8 +49,8 @@ export function StoryScreen({ onPlay }: { onPlay?: (n: 1 | 2 | 3) => void }) {
     >
       <div className="screen">
         {onPlay && (
-          <button className="btn btn--primary" onClick={() => onPlay(3)}>
-            {lang === 'ko' ? STORY[2].titleKo : STORY[2].titleEn} · {t('story_play')}
+          <button className="btn btn--primary" onClick={() => onPlay(4)}>
+            {lang === 'ko' ? STORY[3].titleKo : STORY[3].titleEn} · {t('story_play')}
           </button>
         )}
         <div className="block">

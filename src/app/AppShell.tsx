@@ -7,6 +7,7 @@ import { LoginScreen } from '../features/auth/LoginScreen';
 import { EPISODE1 } from '../content/episode1';
 import { EPISODE2 } from '../content/episode2';
 import { EPISODE3 } from '../content/episode3';
+import { EPISODE4 } from '../content/episode4';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../services/auth';
 import './shell.css';
@@ -16,6 +17,7 @@ import './shell.css';
 const Episode1 = lazy(() => import('../features/episode1/Episode1').then((m) => ({ default: m.Episode1 })));
 const Episode2 = lazy(() => import('../features/episode2/Episode2').then((m) => ({ default: m.Episode2 })));
 const Episode3 = lazy(() => import('../features/episode3/Episode3').then((m) => ({ default: m.Episode3 })));
+const Episode4 = lazy(() => import('../features/episode4/Episode4').then((m) => ({ default: m.Episode4 })));
 const PracticeScreen = lazy(() => import('../features/practice/PracticeScreen').then((m) => ({ default: m.PracticeScreen })));
 const CollectionScreen = lazy(() => import('../features/collection/CollectionScreen').then((m) => ({ default: m.CollectionScreen })));
 const StoryScreen = lazy(() => import('../features/story/StoryScreen').then((m) => ({ default: m.StoryScreen })));
@@ -32,7 +34,7 @@ function ScreenFallback() {
 const GUEST_KEY = 'camnemi_debut_guest';
 
 /** 탭 + 에피소드 실행 상태 — History API state 로 저장/복원되는 라우트 */
-interface Route { tab: TabKey; playing: 0 | 1 | 2 | 3 }
+interface Route { tab: TabKey; playing: 0 | 1 | 2 | 3 | 4 }
 
 const INITIAL_ROUTE: Route = { tab: 'home', playing: 0 };
 
@@ -74,6 +76,7 @@ export function AppShell() {
       playing === 1 ? `EP.1 ${EPISODE1.title}`
       : playing === 2 ? `EP.2 ${EPISODE2.title}`
       : playing === 3 ? `EP.3 ${EPISODE3.title}`
+      : playing === 4 ? `EP.4 ${EPISODE4.title}`
       : TITLE_BY_TAB[tab];
     document.title = `${label} · ${BRAND_TITLE}`;
   }, [tab, playing]);
@@ -83,7 +86,7 @@ export function AppShell() {
     try { window.history.pushState(next, ''); } catch { /* noop */ }
   }
   function goTab(t: TabKey) { navigate({ tab: t, playing: 0 }); }
-  function playEp(n: 1 | 2 | 3) { navigate({ tab: 'story', playing: n }); }
+  function playEp(n: 1 | 2 | 3 | 4) { navigate({ tab: 'story', playing: n }); }
 
   // 로딩 스플래시
   if (loading && !guest) {
@@ -116,7 +119,9 @@ export function AppShell() {
             ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} />
             : playing === 2
               ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} />
-              : <Episode3 ep={EPISODE3} userId={userId ?? undefined} />}
+              : playing === 3
+                ? <Episode3 ep={EPISODE3} userId={userId ?? undefined} />
+                : <Episode4 ep={EPISODE4} userId={userId ?? undefined} />}
         </Suspense>
       </div>
     );
