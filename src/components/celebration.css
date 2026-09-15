@@ -1,9 +1,11 @@
 /* ══ Episode completion — full-screen celebration overlay ══ */
 .celebrate{
   position:fixed; inset:0; z-index:70;
-  display:flex; align-items:center; justify-content:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
   padding:var(--sp-5);
-  overflow:hidden;
+  padding-bottom:calc(var(--sp-5) + env(safe-area-inset-bottom));
+  /* 내용이 화면보다 크면 세로 스크롤로 바닥(버튼)까지 도달 가능하게 */
+  overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
   background:
     radial-gradient(120% 70% at 50% -10%, rgba(139,92,246,.5), transparent 60%),
     radial-gradient(90% 60% at 50% 110%, rgba(236,72,153,.42), transparent 62%),
@@ -24,6 +26,8 @@
 
 .celebrate__inner{position:relative; z-index:1; display:flex; flex-direction:column; align-items:center;
   text-align:center; gap:var(--sp-3); max-width:360px; width:100%;
+  /* 콘텐츠가 화면보다 작으면 세로 중앙, 넘치면 위부터 정렬되어 스크롤 가능 */
+  margin:auto 0;
   animation:springIn .5s cubic-bezier(.34,1.4,.5,1)}
 .celebrate__emoji{font-size:56px; line-height:1; animation:bob 1.8s ease-in-out infinite;
   filter:drop-shadow(0 8px 20px rgba(236,72,153,.5))}

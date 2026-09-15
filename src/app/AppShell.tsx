@@ -173,23 +173,25 @@ export function AppShell() {
   // 에피소드 플레이 중 → 전체화면 (탭바 숨김)
   if (playing !== 0) {
     return (
-      <div className="shell">
-        <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px 0' }}>
-          <button className="btn btn--ghost" style={{ flex: '0 0 auto', padding: '10px 16px', fontSize: 13 }}
-                  onClick={() => goTab('story')}>← {t('back')}</button>
+      <PlayerProfileProvider userId={userId ?? undefined} refreshKey={profileVersion}>
+        <div className="shell">
+          <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px 0' }}>
+            <button className="btn btn--ghost" style={{ flex: '0 0 auto', padding: '10px 16px', fontSize: 13 }}
+                    onClick={() => goTab('story')}>← {t('back')}</button>
+          </div>
+          <Suspense fallback={<ScreenFallback />}>
+            {playing === 1
+              ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
+              : playing === 2
+                ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
+                : playing === 3
+                  ? <Episode3 ep={EPISODE3} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
+                  : playing === 4
+                    ? <Episode4 ep={EPISODE4} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
+                    : <EpisodeLoader key={playing} no={playing} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />}
+          </Suspense>
         </div>
-        <Suspense fallback={<ScreenFallback />}>
-          {playing === 1
-            ? <Episode1 ep={EPISODE1} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
-            : playing === 2
-              ? <Episode2 ep={EPISODE2} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
-              : playing === 3
-                ? <Episode3 ep={EPISODE3} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
-                : playing === 4
-                  ? <Episode4 ep={EPISODE4} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />
-                  : <EpisodeLoader key={playing} no={playing} userId={userId ?? undefined} onNext={playNextEp} onExit={exitToStory} />}
-        </Suspense>
-      </div>
+      </PlayerProfileProvider>
     );
   }
 

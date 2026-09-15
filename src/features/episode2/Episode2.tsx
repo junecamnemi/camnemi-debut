@@ -9,8 +9,9 @@ import { WritingPractice } from '../episode1/scenes/WritingPractice';
 import { RewardScene } from '../episode1/scenes/RewardScene';
 import { PhraseLesson } from './scenes/PhraseLesson';
 import { EpisodeCelebration } from '../../components/EpisodeCelebration';
-import { setStageName as saveStageName, setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../../services/game';
+import { setSkill, unlock, logEvent, setCareer, setEpisodeDone } from '../../services/game';
 import { applyGuestProgress } from '../../services/localProgress';
+import { usePlayerProfile } from '../../hooks/usePlayerProfile';
 import { cutFor } from '../../content/cuts';
 import '../episode1/episode1.css';
 import './episode2.css';
@@ -24,7 +25,7 @@ interface Props {
   onExit?: () => void;
 }
 
-/** EP.2 플레이어 — 대화 → 자기소개 표현 → 매너 미니게임 → 쓰기 → 보상 */
+/** EP.2 플레이어 — 대화 → 자기소개 표현 → 매너 미니게임 → 쓰기 → 보상 (예명은 EP.1 에서만) */
 export function Episode2({ ep, userId, onNext, onExit }: Props) {
   const [phase, setPhase] = useState<Phase>('dlg');
   const [dlgIdx, setDlgIdx] = useState(0);
@@ -33,8 +34,6 @@ export function Episode2({ ep, userId, onNext, onExit }: Props) {
   const [taskIdx, setTaskIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
   const [writeDone, setWriteDone] = useState(false);
-  const [stageName, setName] = useState('');
-  const [named, setNamed] = useState(false);
   const [celebrated, setCelebrated] = useState(false);
 
   const member = MEMBERS[ep.member];
@@ -43,6 +42,10 @@ export function Episode2({ ep, userId, onNext, onExit }: Props) {
   const phrases = ep.phrases ?? [];
   const grammar = ep.grammar ?? [];
   const careerPct = 20;
+
+  // EP.1/My 에서 저장한 예명을 그대로 사용 — 재질문하지 않는다.
+  const { profile } = usePlayerProfile();
+  const stageName = profile?.stageName?.trim() || member.ko;
 
   function addEvent(ref: string, correct?: boolean) {
     if (userId) void logEvent(userId, 'episode', ref, correct);
@@ -72,21 +75,19 @@ export function Episode2({ ep, userId, onNext, onExit }: Props) {
     if (phase === 'write') {
       if (charIdx + 1 < (writing[taskIdx]?.word.length ?? 0)) { setCharIdx(charIdx + 1); setWriteDone(false); }
       else if (taskIdx + 1 < writing.length) { setTaskIdx(taskIdx + 1); setCharIdx(0); setWriteDone(false); }
-      else { setPhase('reward'); addEvent('ep02-write'); }
+      else { completeEpisode(); }
       return;
     }
   }
 
-  function finishNaming() {
-    if (!stageName.trim()) return;
-    setNamed(true);
+  /** 쓰기까지 마치면 곧바로 보상 처리 — 포토카드 해금·커리어·에피소드 완료 */
+  function completeEpisode() {
     if (userId) {
-      void saveStageName(userId, stageName.trim());
       void unlock(userId, photocardId(ep.no), 'photocard');
       void setCareer(userId, careerKeyForPct(careerPct), careerPct);
       void setEpisodeDone(userId, ep.no);
     } else {
-      applyGuestProgress({ stageName: stageName.trim(), careerStage: careerKeyForPct(careerPct), careerPct, episode: ep.no, unlockId: photocardId(ep.no) });
+      applyGuestProgress({ careerStage: careerKeyForPct(careerPct), careerPct, episode: ep.no, unlockId: photocardId(ep.no) });
     }
     addEvent('ep02-reward');
     setPhase('reward');
@@ -111,22 +112,7 @@ export function Episode2({ ep, userId, onNext, onExit }: Props) {
           {phase === 'write' && wtask && (
             <WritingPractice task={wtask} charIdx={charIdx} onCharDone={(isLast) => { setWriteDone(true); if (isLast) addEvent('ep02-write-word'); }} />
           )}
-          {phase === 'reward' && (
-            <>
-              {!named && (
-                <div className="card naming">
-                  <div className="naming__q">{'Your idol’s stage name?'}</div>
-                  <div className="naming__chips">
-                    {['루나', '스텔라', '하늘', '별이'].map((s) => (
-                      <button key={s} className="chip" onClick={() => setName(s)}>{s}</button>
-                    ))}
-                  </div>
-                  <input className="naming__in" value={stageName} onChange={(e) => setName(e.target.value)} placeholder={'e.g. Stella'} />
-                </div>
-              )}
-              {named && !celebrated && <RewardScene stageName={stageName} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
-            </>
-          )}
+          {phase === 'reward' && !celebrated && <RewardScene stageName={stageName} rewards={ep.rewards} no={ep.no} subtitle={ep.subtitle} />}
         </div>
       </div>
 
@@ -142,9 +128,6 @@ export function Episode2({ ep, userId, onNext, onExit }: Props) {
              phase === 'manners' ? (mannersIdx + 1 < manners.length ? 'Next' : 'Write practice') :
              'Reward'}
           </button>
-        )}
-        {phase === 'reward' && !named && (
-          <button className="btn btn--primary" disabled={!stageName.trim()} onClick={finishNaming}>Debut!</button>
         )}
       </div>
 
