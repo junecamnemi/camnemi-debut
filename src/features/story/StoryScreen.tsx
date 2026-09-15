@@ -4,6 +4,7 @@ import { Icon } from '../../components/Icon';
 import { ScreenBg } from '../../components/ScreenBg';
 import { useI18n } from '../../i18n';
 import { STORY } from '../../content/story';
+import { cutsFor } from '../../content/cuts';
 import { loadGameState } from '../../services/game';
 import { loadLocalProgress } from '../../services/localProgress';
 import type { StoryEpisode, EpisodeNo } from '../../types/game';
@@ -14,6 +15,51 @@ function stateOf(no: number, furthest: number): 'done' | 'now' | 'locked' {
   if (no <= furthest) return 'done';
   if (no === furthest + 1) return 'now';
   return 'locked';
+}
+
+/** 미리보기 컷씬 슬라이드쇼 타이밍(ms) — story.css .stslides__img transition/키프레임과 맞춘다. */
+const ST_HOLD_MS = 4000;  // 각 컷 유지 시간(크로스페이드 1.2s 는 story.css 에서 정의)
+
+/** 모션 최소화 선호 여부(접근성) */
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined'
+    && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+}
+
+/**
+ * 에피소드 컷씬 스틸 슬라이드쇼 — EP.{no} 의 4컷(16:9 랜드스케이프)을
+ * 천천히 크로스페이드 + 켄번즈(느린 줌/팬)로 자동 재생한다.
+ * - 프리뷰 시트가 열려 있는 동안만 타이머를 돌리고, 닫히면 unmount 로 정리.
+ * - 모션 최소화 선호 시 타이머를 돌리지 않고 첫 컷만 정지 표시(CSS 도 애니 정지).
+ */
+function StSlideshow({ no }: { no: number }) {
+  const cuts = cutsFor(no);
+  const [active, setActive] = useState(0);
+  const [reduced] = useState(() => prefersReducedMotion());
+
+  useEffect(() => {
+    if (reduced || cuts.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setActive((a) => (a + 1) % cuts.length);
+    }, ST_HOLD_MS);
+    return () => window.clearInterval(timer);
+  }, [reduced, cuts.length]);
+
+  return (
+    <div className="stslides" aria-hidden="true">
+      {cuts.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt=""
+          loading="eager"
+          decoding="async"
+          draggable={false}
+          className={`stslides__img${i === active ? ' is-active' : ''}`}
+        />
+      ))}
+    </div>
+  );
 }
 
 /** Story — EP.1~16 전체 스토리(제목·설명·대화·장면) + 장면 미리보기 시트 */
@@ -142,7 +188,7 @@ export function StoryScreen({ onPlay, userId }: { onPlay?: (n: EpisodeNo) => voi
           <button className="stsheet__bd" aria-label={t('story_close')} onClick={closePreview} />
           <div className="stsheet__panel">
             <div className="stsheet__media">
-              {open.scene && <img src={open.scene} alt={`EP.${open.no} ${lang === 'ko' ? open.titleKo : open.titleEn}`} />}
+              <StSlideshow key={open.no} no={open.no} />
               <div className="stsheet__scrim" />
               <button className="stsheet__x" aria-label={t('story_close')} onClick={closePreview}>
                 <Icon name="x" size={18} />

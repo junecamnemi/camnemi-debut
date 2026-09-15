@@ -16,6 +16,19 @@
   border-top-left-radius:var(--r-xl);border-top-right-radius:var(--r-xl)}
 .stsheet__media img,.stsheet__media video{width:100%;height:100%;object-fit:cover;
   object-position:center 22%;display:block}
+/* 에피소드 컷씬 스틸 슬라이드쇼 — 4컷(16:9) 천천히 크로스페이드 + 켄번즈.
+   .stslides 는 z-index:0 스택 컨텍스트를 만들어 내부 레이어가 scrim/헤더 위로 올라오지 않게 격리한다. */
+.stslides{position:absolute;inset:0;z-index:0}
+.stsheet__media .stslides__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:center;display:block;opacity:0;z-index:1;
+  /* 비활성 컷: 다음 컷이 위에서 페이드 인(1.2s) 완료될 때까지 opacity 1 유지 후 즉시 제거 — 딥(dip) 없이 교차 */
+  transition:opacity 0s linear 1.2s;
+  animation:stKenburns 16s ease-in-out infinite alternate;will-change:opacity,transform}
+.stsheet__media .stslides__img.is-active{opacity:1;z-index:2;transition:opacity 1.2s ease}
+@keyframes stKenburns{
+  0%{transform:scale(1.04) translate(0,0)}
+  100%{transform:scale(1.14) translate(-1.5%,-2%)}
+}
 .stsheet__scrim{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(10,6,18,.1) 0%,rgba(10,6,18,.05) 40%,rgba(22,14,37,.96) 100%)}
 .stsheet__x{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;
@@ -49,3 +62,10 @@
 
 @keyframes stFade{from{opacity:0}to{opacity:1}}
 @keyframes stUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* 접근성: 모션 최소화 선호 시 슬라이드쇼 애니/전환 정지
+   (기본 규칙과 동일한 특이도로 맞춰야 animation/transition 이 실제로 꺼진다) */
+@media (prefers-reduced-motion: reduce){
+  .stsheet__media .stslides__img,
+  .stsheet__media .stslides__img.is-active{animation:none;transition:none}
+}
