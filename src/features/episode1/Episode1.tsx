@@ -14,7 +14,7 @@ import { WritingPractice } from './scenes/WritingPractice';
 import { NamingScene } from './scenes/NamingScene';
 import { RewardScene } from './scenes/RewardScene';
 import { EpisodeCelebration } from '../../components/EpisodeCelebration';
-import { cutFor, cutVideoForLine } from '../../content/cuts';
+import { cutFor } from '../../content/cuts';
 import './episode1.css';
 
 type Phase = 'dlg' | 'jamo' | 'final' | 'combine' | 'write' | 'name' | 'reward';
@@ -143,7 +143,7 @@ export function Episode1({ ep, userId, onNext, onExit }: Props) {
       <div className="ep__body">
         <div className="scene" key={phase}
              style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)', flex: 1 }}>
-          {phase === 'dlg' && <DialogueScene member={member} line={ep.dialogue[dlgIdx]} sceneImage={cutFor(ep.no, dlgIdx, ep.dialogue.length, ep.dialogue[dlgIdx].cut)} sceneVideo={cutVideoForLine(ep.no, dlgIdx, ep.dialogue.length, ep.dialogue[dlgIdx].cut)} />}
+          {phase === 'dlg' && <DialogueScene member={member} line={ep.dialogue[dlgIdx]} sceneImage={cutFor(ep.no, dlgIdx, ep.dialogue.length, ep.dialogue[dlgIdx].cut)} />}
           {phase === 'jamo' && (
             <JamoLesson
               title={t((JAMO_UI[jamoStage] ?? JAMO_UI.cons).key)}

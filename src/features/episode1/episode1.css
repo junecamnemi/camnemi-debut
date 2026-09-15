@@ -182,9 +182,10 @@
 .dlg-scene .char--scene{flex:1 1 auto;min-height:0;overflow:hidden}
 .dlg-scene .dlg{flex:none}
 
-/* 스토리 컷씬(9:16 포트레이트) — 높이를 뷰포트 기준으로 제한하고(최대 52vh),
-   남는 공간(이름태그 36px + 여백 12px = ~48px 제외)에 맞춰 축소해 아래 대화가 잘리지 않게 한다 */
-.sceneframe--portrait{aspect-ratio:9/16;width:auto;max-width:320px;height:min(52vh,420px);max-height:calc(100% - 48px)}
+/* 스토리 컷씬(16:9 랜드스케이프) — 폭은 컨테이너 전체, 높이는 16:9 자동.
+   낮은 뷰포트에서도(최대 52vh) 아래 대화가 잘리지 않도록 높이를 제한한다
+   (이름태그 36px + 여백 12px = ~48px 제외). 이미지는 object-fit:cover 로 짤림 없이 채운다. */
+.sceneframe--landscape{aspect-ratio:16/9;width:100%;max-width:100%;height:auto;max-height:min(52vh,calc(100% - 48px))}
 /* 크로스페이드 레이어 — 장면 교체 시 이전/새 레이어를 겹쳐두고 opacity 로 전환(검은 프레임 방지).
    transition 시간은 DialogueScene.tsx 의 XFADE_MS(420) 와 일치해야 함. */
 .sceneframe__layer{position:absolute;inset:0;opacity:1;transition:opacity .42s ease}

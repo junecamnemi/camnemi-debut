@@ -1,4 +1,4 @@
-/** 화별 컷씬 4장(9:16 포트레이트) 경로 — EP.{no} 스토리를 4컷 만화로 재생.
+/** 화별 컷씬 4장(16:9 랜드스케이프) 경로 — EP.{no} 스토리를 4컷 만화로 재생.
  *  에피소드 대화 씬의 배경 장면으로 쓰므로 story.ts 의 대용량 STORY 데이터와 분리해
  *  플레이어 번들에 불필요한 데이터가 딸려오지 않게 작은 모듈로 유지한다. */
 export const cutsFor = (no: number): string[] =>
@@ -16,7 +16,8 @@ const cutIndex = (dlgIdx: number, dlgLen: number, cut?: number): number => {
 export const cutFor = (no: number, dlgIdx: number, dlgLen: number, cut?: number): string =>
   cutsFor(no)[cutIndex(dlgIdx, dlgLen, cut)];
 
-/** 컷 k(1..4)의 스토리 컷씬 영상(mp4) 경로 — 아직 생성 전이면 파일이 없을 수 있음(호출부에서 스틸로 폴백). */
+/** 컷 k(1..4)의 스토리 컷씬 영상(mp4) 경로 — 구 포트레이트 mp4 는 대화 씬에서 더 이상 사용하지 않는다.
+ *  랜드스케이프 영상이 준비되면 DialogueScene 에서 다시 연결한다(지금은 스틸만 표시). */
 export const cutVideoFor = (no: number, k: number): string =>
   `assets/story/videos/ep${no}_cut${k}.mp4`;
 
