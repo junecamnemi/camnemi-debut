@@ -110,6 +110,7 @@ const DICT = {
     write_great: 'Nice!',
     write_done: 'You did it!',
     write_retry: 'Almost! Trace the letter more closely ✍️',
+    combine_retry: 'Try again',
     reward_title: 'Unlocked',
     // episode completion celebration
     celebrate_badge: (n: number) => `EP.${n} Complete!`,
@@ -227,6 +228,7 @@ const DICT = {
     write_great: '잘했어요!',
     write_done: '다 했어요!',
     write_retry: '아직이에요 — 글자를 조금 더 정확히 따라 써보세요 ✍️',
+    combine_retry: '다시 시도',
     reward_title: '해금',
     celebrate_badge: (n: number) => `EP.${n} 완료!`,
     celebrate_title: (title: string) => `${title} 완료!`,

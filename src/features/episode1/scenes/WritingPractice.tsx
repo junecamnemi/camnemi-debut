@@ -39,7 +39,7 @@ export function WritingPractice({ task, charIdx, onCharDone }: Props) {
     cv.height = rect.height * 2;
     const ctx = cv.getContext('2d')!;
     ctx.scale(2, 2);
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 8;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.strokeStyle = '#a878ff';
@@ -168,7 +168,7 @@ export function WritingPractice({ task, charIdx, onCharDone }: Props) {
   }
 
   return (
-    <div className="card dlg">
+    <div className="card dlg write">
       <div className="write__label">✍️ {t('write_trace')}</div>
       <div className="write__word">{task.word} ({task.roman}) — letter {charIdx + 1}/{chars.length}: "{target}"</div>
 
