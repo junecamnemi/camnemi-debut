@@ -7,6 +7,8 @@ interface Props {
   line: DialogueLine;
   /** 스토리 컷씬 오버라이드 — 제공되면 line.scene/sceneVideo 대신 이 이미지를 16:9 랜드스케이프로 표시 */
   sceneImage?: string;
+  /** 스토리 컷씬 영상(16:9 mp4) — 있으면 재생, 없거나 로드 실패 시 sceneImage 스틸로 폴백 */
+  sceneVideo?: string;
 }
 
 /** 크로스페이드 전환 시간(ms) — episode1.css .sceneframe__layer transition 과 일치시킬 것 */
@@ -100,14 +102,14 @@ function SceneMedia({ videoSrc, imgSrc }: { videoSrc?: string; imgSrc?: string }
  * 대화 씬 — EP.1 장면 영상(있으면) 또는 장면 이미지(켄번즈) 또는 캐릭터 루프 영상.
  * 미디어 레이어는 대사 진행과 분리되어 안정적으로 유지되고, 장면이 바뀔 때만 크로스페이드된다.
  */
-export function DialogueScene({ member, line, sceneImage }: Props) {
+export function DialogueScene({ member, line, sceneImage, sceneVideo }: Props) {
   const { lang } = useI18n();
   const mname = lang === 'ko' ? member.ko : member.en;
   const halo = `var(${member.color})`;
-  // 컷씬은 항상 랜드스케이프 스틸을 표시한다(구 포트레이트 mp4 는 재생하지 않음).
-  // 랜드스케이프 영상이 준비되면 videoSrc 를 다시 연결하면 된다(cutVideoFor/cutVideoForLine 참조).
-  // sceneImage 가 주어지면(컷씬 오버라이드) line.scene/sceneVideo 는 무시.
-  const videoSrc = sceneImage ? undefined : line.sceneVideo;
+  // 컷씬 영상(sceneVideo, 16:9 mp4)이 있으면 재생하고, 없거나 로드 실패 시 스틸(sceneImage)로 폴백.
+  // sceneImage 가 주어지면(컷씬 오버라이드) line.scene/sceneVideo 는 무시 — 단 sceneVideo prop 이
+  // 주어지면 그 컷씬 mp4 를 재생한다(cutVideoForLine 참조). 아직 mp4 가 없는 에피소드는 404 → 스틸 폴백.
+  const videoSrc = sceneVideo ?? (sceneImage ? undefined : line.sceneVideo);
   const imgSrc = sceneImage ?? line.scene;
   const hasScene = !!(videoSrc || imgSrc);
 

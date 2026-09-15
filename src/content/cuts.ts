@@ -20,10 +20,10 @@ const cutIndex = (dlgIdx: number, dlgLen: number, cut?: number): number => {
 export const cutFor = (no: number, dlgIdx: number, dlgLen: number, cut?: number): string =>
   cutsFor(no)[cutIndex(dlgIdx, dlgLen, cut)];
 
-/** 컷 k(1..4)의 스토리 컷씬 영상(mp4) 경로 — 구 포트레이트 mp4 는 대화 씬에서 더 이상 사용하지 않는다.
- *  랜드스케이프 영상이 준비되면 DialogueScene 에서 다시 연결한다(지금은 스틸만 표시). */
+/** 컷 k(1..4)의 스토리 컷씬 영상(mp4, 16:9 랜드스케이프) 경로 — 스틸과 동일한 캐시 버스트를 붙인다.
+ *  아직 mp4 가 없는 에피소드는 404 가 나므로 DialogueScene 이 스틸로 폴백한다. */
 export const cutVideoFor = (no: number, k: number): string =>
-  `assets/story/videos/ep${no}_cut${k}.mp4`;
+  `assets/story/videos/ep${no}_cut${k}.mp4?${CUTS_CACHE_BUST}`;
 
 /** 대사 줄에 해당하는 컷씬 영상 경로(컷 1..4) — cutFor 와 같은 인덱스 매핑(같은 cut 명시값)을 쓴다. */
 export const cutVideoForLine = (no: number, dlgIdx: number, dlgLen: number, cut?: number): string =>
