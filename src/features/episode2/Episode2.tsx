@@ -103,7 +103,7 @@ export function Episode2({ ep, userId, onNext, onExit }: Props) {
 
       <div className="ep__body">
         <div className="scene" key={phase} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
-          {phase === 'dlg' && <DialogueScene member={member} line={cur} sceneImage={cutFor(ep.no, dlgIdx, ep.dialogue.length)} sceneVideo={cutVideoForLine(ep.no, dlgIdx, ep.dialogue.length)} />}
+          {phase === 'dlg' && <DialogueScene member={member} line={cur} sceneImage={cutFor(ep.no, dlgIdx, ep.dialogue.length, cur.cut)} sceneVideo={cutVideoForLine(ep.no, dlgIdx, ep.dialogue.length, cur.cut)} />}
           {phase === 'phrase' && <PhraseLesson phrases={phrases} grammar={grammar} />}
           {phase === 'manners' && manners[mannersIdx] && (
             <CombineGame question={manners[mannersIdx]} onAnswered={(c) => { setMannersOk(c); addEvent('ep02-manners-' + mannersIdx, c); }} />

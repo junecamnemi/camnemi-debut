@@ -21,6 +21,9 @@ export interface DialogueLine {
   ko: string;
   en?: string;
   tip?: string;
+  /** 스토리 컷씬 번호(1..4) — 대사 내용과 컷씬을 의미적으로 일치시키는 명시 매핑.
+   *  없으면 진행도 기반 버킷으로 폴백(cuts.ts cutIndex). */
+  cut?: 1 | 2 | 3 | 4;
   /** EP.1 애니 장면 이미지 (선택) */
   scene?: string;
   /** EP.1 애니 장면 영상 (선택) — 있으면 영상 재생 */

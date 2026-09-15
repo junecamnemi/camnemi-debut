@@ -9,18 +9,23 @@ export const EPISODE4: Episode = {
   member: 'chaea',
 
   dialogue: [
+    // cut: 1 선배 등장, 2 인사/절, 3 칭찬, 4 배움 각오
     { who: 'Senior', ko: '안녕하세요, 선배예요.',
       en: "Hello, I'm your sunbae.",
-      tip: "Today's training — greetings & manners · 안녕하세요" },
+      tip: "Today's training — greetings & manners · 안녕하세요",
+      cut: 1 },
     { who: 'Chaea', ko: '안녕하세요, 선배님! 만나서 영광이에요.',
       en: 'Hello, sunbae! It is an honor.',
-      tip: 'Address seniors with -님 · 선배님' },
+      tip: 'Address seniors with -님 · 선배님',
+      cut: 2 },
     { who: 'Senior', ko: '첫인상이 참 좋네요.',
       en: 'You make a lovely first impression.',
-      tip: 'A gentle compliment · -네요' },
+      tip: 'A gentle compliment · -네요',
+      cut: 3 },
     { who: 'Aran', ko: '잘 배우겠습니다!',
       en: "We'll learn a lot from you!",
-      tip: 'Formal polite ending -습니다 · 배우겠습니다' },
+      tip: 'Formal polite ending -습니다 · 배우겠습니다',
+      cut: 4 },
   ],
 
   // 인사·매너 표현 카드

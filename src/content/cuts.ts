@@ -4,19 +4,22 @@
 export const cutsFor = (no: number): string[] =>
   Array.from({ length: 4 }, (_, i) => `assets/story/cuts/ep${no}/ep${no}_cut${i + 1}.webp`);
 
-/** 대화 진행도(dlgIdx/dlgLen)를 컷 인덱스(0..3)로 매핑 — cutFor/cutVideoForLine 이 공유한다.
- *  EP.1(4줄)처럼 대사 수가 4면 줄마다 한 컷씩, 그보다 많으면 구간(bucket) 단위로 전환된다. */
-const cutIndex = (dlgIdx: number, dlgLen: number): number =>
-  dlgLen > 0 ? Math.min(Math.floor((dlgIdx / dlgLen) * 4), 3) : 0;
+/** 대사 줄의 컷 인덱스(0..3)를 결정 — cutFor/cutVideoForLine 이 공유한다.
+ *  - 대사에 명시된 cut(1..4)이 있으면 그 컷을 그대로 써서 대사 내용과 컷씬을 의미적으로 일치시킨다.
+ *  - 없으면(명시 매핑이 없는 에피소드) 대화 진행도(dlgIdx/dlgLen)를 4컷에 균등 버킷 매핑으로 폴백한다. */
+const cutIndex = (dlgIdx: number, dlgLen: number, cut?: number): number => {
+  if (cut !== undefined && cut >= 1 && cut <= 4) return cut - 1;
+  return dlgLen > 0 ? Math.min(Math.floor((dlgIdx / dlgLen) * 4), 3) : 0;
+};
 
-/** 대화 진행도를 4컷에 매핑 — 씬을 넘어갈수록 cut1→cut4 순으로 표시. */
-export const cutFor = (no: number, dlgIdx: number, dlgLen: number): string =>
-  cutsFor(no)[cutIndex(dlgIdx, dlgLen)];
+/** 대사 줄에 해당하는 컷씬 스틸 경로 — cut(1..4) 명시값 우선, 없으면 진행도 버킷. */
+export const cutFor = (no: number, dlgIdx: number, dlgLen: number, cut?: number): string =>
+  cutsFor(no)[cutIndex(dlgIdx, dlgLen, cut)];
 
 /** 컷 k(1..4)의 스토리 컷씬 영상(mp4) 경로 — 아직 생성 전이면 파일이 없을 수 있음(호출부에서 스틸로 폴백). */
 export const cutVideoFor = (no: number, k: number): string =>
   `assets/story/videos/ep${no}_cut${k}.mp4`;
 
-/** 대화 진행도에 해당하는 컷씬 영상 경로(컷 1..4) — cutFor 와 같은 인덱스 매핑을 쓴다. */
-export const cutVideoForLine = (no: number, dlgIdx: number, dlgLen: number): string =>
-  cutVideoFor(no, cutIndex(dlgIdx, dlgLen) + 1);
+/** 대사 줄에 해당하는 컷씬 영상 경로(컷 1..4) — cutFor 와 같은 인덱스 매핑(같은 cut 명시값)을 쓴다. */
+export const cutVideoForLine = (no: number, dlgIdx: number, dlgLen: number, cut?: number): string =>
+  cutVideoFor(no, cutIndex(dlgIdx, dlgLen, cut) + 1);

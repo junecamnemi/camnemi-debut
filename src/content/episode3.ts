@@ -9,15 +9,20 @@ export const EPISODE3: Episode = {
   member: 'aran',
 
   dialogue: [
+    // cut: 1 스케줄 물어보기, 2 시간 답변, 3 점심, 4 뮤직쇼
     { who: 'Aran', ko: '오늘 연습은 몇 시예요?',
       en: 'What time is practice today?',
-      tip: "Today's training — time & dates · 몇 시예요?" },
+      tip: "Today's training — time & dates · 몇 시예요?",
+      cut: 1 },
     { who: 'Me · CEO', ko: '오전 아홉 시에 시작해요.',
-      en: 'We start at nine in the morning.' },
+      en: 'We start at nine in the morning.',
+      cut: 2 },
     { who: 'Chaea', ko: '점심은 어디에서 먹어요?',
-      en: 'Where do we eat lunch?' },
+      en: 'Where do we eat lunch?',
+      cut: 3 },
     { who: 'Aran', ko: '내일은 뮤직쇼가 있어요!',
-      en: "There's a music show tomorrow!" },
+      en: "There's a music show tomorrow!",
+      cut: 4 },
   ],
 
   // 시간·날짜 표현 카드

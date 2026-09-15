@@ -9,15 +9,20 @@ export const EPISODE2: Episode = {
   member: 'chaea',
 
   dialogue: [
+    // cut: 1 도착/인사, 2 환영, 3 만나서 반가워요, 4 함께 연습
     { who: 'Chaea', ko: '안녕하세요! 저는 채아예요.',
       en: "Hello! I'm Chaea.",
-      tip: "Today's training — self-introduction · -이에요/예요" },
+      tip: "Today's training — self-introduction · -이에요/예요",
+      cut: 1 },
     { who: 'Me · CEO', ko: '어서 오세요. 잘 부탁해요.',
-      en: 'Welcome. Nice to have you.', },
+      en: 'Welcome. Nice to have you.',
+      cut: 2 },
     { who: 'Chaea', ko: '저는 캄보디아에서 왔어요. 만나서 반가워요!',
-      en: "I'm from Cambodia. Nice to meet you!" },
+      en: "I'm from Cambodia. Nice to meet you!",
+      cut: 3 },
     { who: 'Aran', ko: '우리 같이 연습해요!',
-      en: "Let's practice together!" },
+      en: "Let's practice together!",
+      cut: 4 },
   ],
 
   // 자기소개 표현 카드
